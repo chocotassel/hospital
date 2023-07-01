@@ -2,10 +2,22 @@ import { Context, Next } from 'koa';
 import jwt from 'jsonwebtoken';
 import { accessLogger } from '../logger';
 
+const unauthenticatedPaths = [
+  '/',
+  '/login',
+  '/register',
+]
+
 export default async function authMiddleware(ctx: Context, next: Next) {
 
   if (!process.env.JWT_SECRET) {
     throw new Error('Missing JWT_SECRET environment variable');
+  }
+
+  // Skip authentication for the login route
+  if (unauthenticatedPaths.includes(ctx.path)) {
+    await next();
+    return;
   }
       
   const token = ctx.headers.authorization;

@@ -1,10 +1,11 @@
 import Router from 'koa-router';
-import { AdminController } from '../controllers/adminController';
+import AdminController from '../controllers/adminController';
 
 const router = new Router();
 
-router.get('/department', AdminController.viewDepartment);
-router.put('/department', AdminController.modifyDepartment);
-// 同理，添加其他的路由
+router.get('/department', AdminController.getDepartments);
+router.put('/department', AdminController.createDepartment);
+router.put('/department', AdminController.updateDepartment);
+router.put('/department', AdminController.deleteDepartment);
 
 export default router;

@@ -1,7 +1,10 @@
+// db()
 import { Sequelize } from 'sequelize-typescript';
 import config from '../config';
 import path from 'path';
 import { dbLogger } from '../common/logger';
+
+console.log(config.databaseConfig);
 
 const sequelize = new Sequelize(config.databaseConfig.database as string, config.databaseConfig.username as string, config.databaseConfig.password, {
   host: config.databaseConfig.host,
@@ -21,6 +24,10 @@ const db =  async () => {
   try {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
+
+    // 同步所有定义的模型到数据库中
+    await sequelize.sync();
+    console.log('All models were synchronized successfully.');
   } catch (err) {
     console.error('Unable to connect to the database:', err);
     process.exit(1);
