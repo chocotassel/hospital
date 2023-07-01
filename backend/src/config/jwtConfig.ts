@@ -1,6 +1,6 @@
 const jwtConfig = {
   secret: process.env.JWT_SECRET,
-  expiresIn: '1h',
+  expiresIn: process.env.JWT_EXPIRATION,
 };
 
 export default jwtConfig;

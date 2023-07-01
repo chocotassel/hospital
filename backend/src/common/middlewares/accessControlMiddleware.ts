@@ -1,13 +1,12 @@
 import { Context, Next } from 'koa';
 import jwt from 'jsonwebtoken';
+import { accessLogger } from '../logger';
 
 export default async function authMiddleware(ctx: Context, next: Next) {
 
   if (!process.env.JWT_SECRET) {
     throw new Error('Missing JWT_SECRET environment variable');
   }
-  require('dotenv').config();
-  const JWT_SECRET = process.env.JWT_SECRET;
       
   const token = ctx.headers.authorization;
 
@@ -22,4 +21,6 @@ export default async function authMiddleware(ctx: Context, next: Next) {
   } catch (err) {
     ctx.throw(401, 'Authentication Error: Invalid Token');
   }
+
+  accessLogger.info(`${ctx.method} ${ctx.url} ${ctx.status} ${ctx.response.message} ${ctx.response.length}`);
 }
