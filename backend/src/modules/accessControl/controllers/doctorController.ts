@@ -9,5 +9,7 @@ export class DoctorController {
         // 修改医生自己的信息的代码
     }
 
-    // 同理，添加其他的方法
+    static async index(ctx: Context) {
+        ctx.body = 'Hello, world!';
+    }
 }
