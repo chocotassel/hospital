@@ -1,0 +1,32 @@
+{
+  "name": "hospital",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/koa": "^2.13.6",
+    "@types/koa-router": "^7.4.4",
+    "@types/node": "^20.3.3",
+    "dotenv": "^16.3.1",
+    "jsonwebtoken": "^9.0.0",
+    "koa": "^2.14.2",
+    "koa-bodyparser": "^4.4.1",
+    "koa-router": "^12.0.0",
+    "rbac": "^5.0.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.2",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/koa-bodyparser": "^4.3.10",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.1"
+  }
+}
