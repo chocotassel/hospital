@@ -10,9 +10,7 @@ import koaBody from 'koa-body';
 import bodyParser from 'koa-bodyparser';
 import mount from 'koa-mount';
 
-import adminRoutes from './modules/accessControl/routes/adminRoutes';
-import doctorRoutes from './modules/accessControl/routes/doctorRoutes';
-import loginRoutes from './modules/loginControl/routes/loginRoutes';
+import loginRoutes from './routes/loginRoutes';
 
 import errorHandlingMiddleware from './common/middlewares/errorHandlingMiddleware';
 import accessControlMiddleware from './common/middlewares/accessControlMiddleware';
@@ -34,8 +32,6 @@ app.use(accessControlMiddleware);
 
 
 // 路由
-app.use(adminRoutes.routes());
-app.use(doctorRoutes.routes());
 app.use(loginRoutes.routes());
 
 // // 统一接口前缀
