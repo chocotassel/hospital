@@ -51,3 +51,4 @@ const options = {
 https.createServer(options, app.callback()).listen(443);
 console.log('Server is running on https://localhost:443');
 
+export default app;

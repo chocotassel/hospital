@@ -52,3 +52,6 @@ dist-ssr
 # security
 .env
 *.pem
+
+
+coverage

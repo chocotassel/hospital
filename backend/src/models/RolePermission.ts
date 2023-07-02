@@ -1,10 +1,10 @@
 // 角色权限
 import { Model, Table, Column, DataType, ForeignKey, PrimaryKey, AllowNull, BelongsTo, HasMany } from "sequelize-typescript";
-import { Role } from "./Role";
-import { Permission } from "./Permission";
+import Role from "./Role";
+import Permission from "./Permission";
 
 @Table
-export class RolePermission extends Model {
+export default class RolePermission extends Model {
   @ForeignKey(() => Role)
   @Column(DataType.BIGINT)
   role_id!: bigint;

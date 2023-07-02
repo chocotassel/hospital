@@ -2,7 +2,7 @@
 import { Model, Table, Column, DataType, ForeignKey, PrimaryKey, AllowNull, BelongsTo, Unique, HasMany } from "sequelize-typescript";
 import Office from "./Office";
 import Visit from "./Visit";
-import { User } from "./User";
+import User from "./User";
 
 @Table
 export default class Doctor extends Model {
