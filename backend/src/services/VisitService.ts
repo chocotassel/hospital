@@ -16,7 +16,7 @@ class VisitService {
   async updateVisit(id: string, data: any) {
     const visit = await Visit.findOne({ where: { id } });
     if (!visit) {
-      throw new Error('Visit not found');
+      throw new Error('出诊记录不存在');
     }
 
     return await visit.update(data);
@@ -26,7 +26,7 @@ class VisitService {
   async deleteVisit(id: string) {
     const visit = await Visit.findOne({ where: { id } });
     if (!visit) {
-      throw new Error('Visit not found');
+      throw new Error('出诊记录不存在');
     }
 
     return await visit.destroy();
