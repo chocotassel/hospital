@@ -3,10 +3,32 @@ import userService from '../services/UserService';
 import response from '../common/utils/response';
 import { Rules } from 'async-validator';
 import validate from '../common/utils/validate';
+import { can } from '../common/utils/rbac';
 
 class UserController {
+  // 获取所有用户
+  async getUsers(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'viewUser')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
+    try {
+      const users = await userService.getUsers();
+      return response.success(ctx, users);
+    } catch (err) {
+      return response.fail(ctx, '服务器错误', err, 500);
+    }
+  }
+
+  
   // 创建用户
   async createUser(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyUser')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
     const rules: Rules = {
       username: {
         type: 'string',
@@ -38,6 +60,11 @@ class UserController {
 
   // 修改用户权限
   async changeRole(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyUser')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
     const rules: Rules = {
       user_id: {
         type: 'string',
@@ -64,6 +91,11 @@ class UserController {
 
   // 删除用户
   async deleteUser(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyUser')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
     const { id } = ctx.params;
     
     try {

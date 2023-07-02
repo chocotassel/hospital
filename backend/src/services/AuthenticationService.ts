@@ -1,12 +1,25 @@
 import User from '../models/User'
 import bcrypt from 'bcrypt';
 import auth from '../common/utils/auth';
+import Role from '../models/Role';
+import Permission from '../models/Permission';
 
 class AuthenticationService {
   async loginUser(account: string, password: string) {
     // 查找用户
     const condition = account.length === 11 ? { phone: account } : { username: account };
-    const user = await User.findOne({ where: condition });
+    const user = await User.findOne({ 
+      where: condition, 
+      include: [{
+        model: Role,
+        include: [{
+          model: Permission,
+          through: {
+            attributes: [],
+          }
+        }]
+      }]
+    });
 
     // 如果用户不存在，返回错误
     if (!user) {
@@ -20,8 +33,12 @@ class AuthenticationService {
       throw new Error('密码错误');
     }
 
-    // 创建一个会话（在这里，我们可以使用 JWT）
-    const token = auth.signToken({ userId: user.user_id });
+    // 获取角色名和权限名
+    const roleName = user.role.role_name;
+    const permissions = user.role.permissions.map(permission => permission.permission_name);
+
+    // 创建 token
+    const token = auth.signToken({ userId: user.user_id, role: roleName, permissions: permissions });
 
     return { token: token, message: '登录成功' };
   }

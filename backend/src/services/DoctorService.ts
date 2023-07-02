@@ -33,4 +33,4 @@ class DoctorService {
   }
 }
 
-export default DoctorService
+export default new DoctorService

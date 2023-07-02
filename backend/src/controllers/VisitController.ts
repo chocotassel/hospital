@@ -4,18 +4,18 @@ import VisitService from '../services/VisitService';
 import response from '../common/utils/response';
 import { Rules } from 'async-validator';
 import validate from '../common/utils/validate';
+import { can } from '../common/utils/rbac';
 
 class VisitController {
-  visitService: VisitService;
-
-  constructor() {
-    this.visitService = new VisitService();
-  }
-
   // 获取所有出诊
   async getVisits(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'viewVisit')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
     try {
-      const visits = await this.visitService.getVisits();
+      const visits = await VisitService.getVisits();
       return response.success(ctx, visits);
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
@@ -24,6 +24,11 @@ class VisitController {
 
   // 创建出诊
   async createVisit(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyVisit')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+    
     const rules: Rules = {
       doctor_id: {
         type: 'string',
@@ -45,7 +50,7 @@ class VisitController {
     }
 
     try {
-      const visit = await this.visitService.createVisit(data);
+      const visit = await VisitService.createVisit(data);
       return response.success(ctx, visit);
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
@@ -54,6 +59,11 @@ class VisitController {
 
   // 更新出诊信息
   async updateVisit(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyVisit')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+    
     const { id } = ctx.params;
     const rules: Rules = {
       doctor_id: {
@@ -76,7 +86,7 @@ class VisitController {
     }
 
     try {
-      const updatedVisit = await this.visitService.updateVisit(id, data);
+      const updatedVisit = await VisitService.updateVisit(id, data);
       return response.success(ctx, updatedVisit);
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
@@ -85,10 +95,15 @@ class VisitController {
 
   // 删除出诊
   async deleteVisit(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyVisit')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+    
     const { id } = ctx.params;
 
     try {
-      const result = await this.visitService.deleteVisit(id);
+      const result = await VisitService.deleteVisit(id);
       return response.success(ctx, result);
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);

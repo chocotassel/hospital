@@ -11,7 +11,7 @@ class DepartmentController {
   // 获取所有科室  
   async getDepartments(ctx: Context) {
     // 权限检查
-    if (!can(ctx.state.user.role, 'viewDepartment')) {
+    if (!can(ctx.state.user.permissions, 'viewDepartment')) {
       return response.fail(ctx, '权限校验失败', [], 403);
     }
 
@@ -50,6 +50,11 @@ class DepartmentController {
 
   // 创建科室
   async createDepartment(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyDepartment')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
     // 数据校验
     const rules: Rules = {
       department_name: {
@@ -80,6 +85,11 @@ class DepartmentController {
 
   // 更新科室信息
   async updateDepartment(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyDepartment')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
     const { id } = ctx.params;
 
     // 数据校验
@@ -113,6 +123,11 @@ class DepartmentController {
 
   // 删除科室
   async deleteDepartment(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyDepartment')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+    
     const { id } = ctx.params;
 
     try {

@@ -33,4 +33,4 @@ class VisitService {
   }
 }
 
-export default VisitService;
+export default new VisitService;

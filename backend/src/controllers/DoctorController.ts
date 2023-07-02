@@ -4,18 +4,18 @@ import DoctorService from '../services/DoctorService';
 import response from '../common/utils/response';
 import { Rules } from 'async-validator';
 import validate from '../common/utils/validate';
+import { can } from '../common/utils/rbac';
 
 class DoctorController {
-  doctorService: DoctorService;
-
-  constructor() {
-    this.doctorService = new DoctorService();
-  }
-
   // 获取所有医生
   async getDoctors(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'viewDepartment')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
     try {
-      const doctors = await this.doctorService.getDoctors();
+      const doctors = await DoctorService.getDoctors();
       return response.success(ctx, doctors);
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
@@ -24,6 +24,11 @@ class DoctorController {
 
   // 创建医生
   async createDoctor(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyDepartment')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
     const rules: Rules = {
       doctor_name: {
         type: 'string',
@@ -72,7 +77,7 @@ class DoctorController {
     }
 
     try {
-      const doctor = await this.doctorService.createDoctor(data);
+      const doctor = await DoctorService.createDoctor(data);
       return response.success(ctx, doctor);
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
@@ -81,6 +86,11 @@ class DoctorController {
 
   // 更新医生信息
   async updateDoctor(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyDepartment')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
     const { id } = ctx.params;
     const rules: Rules = {
       doctor_name: {
@@ -139,7 +149,7 @@ class DoctorController {
     }
 
     try {
-      const updatedDoctor = await this.doctorService.updateDoctor(id, data);
+      const updatedDoctor = await DoctorService.updateDoctor(id, data);
       return response.success(ctx, updatedDoctor);
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
@@ -148,10 +158,15 @@ class DoctorController {
 
   // 删除医生
   async deleteDoctor(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyDepartment')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
     const { id } = ctx.params;
 
     try {
-      const result = await this.doctorService.deleteDoctor(id);
+      const result = await DoctorService.deleteDoctor(id);
       return response.success(ctx, result);
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);

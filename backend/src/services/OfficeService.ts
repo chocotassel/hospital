@@ -33,4 +33,4 @@ class OfficeService {
   }
 }
 
-export default OfficeService;
+export default new OfficeService;

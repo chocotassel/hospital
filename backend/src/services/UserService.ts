@@ -2,6 +2,11 @@ import User from '../models/User';
 import Role from '../models/Role';
 
 class UserService {
+  // 获取所有用户
+  async getUsers() {
+    return await User.findAll();
+  }
+  
   // 创建用户
   async createUser(data: any) {
     const user = await User.create(data);
