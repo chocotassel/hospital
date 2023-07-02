@@ -1,3 +1,6 @@
+// 入口文件
+require('dotenv').config();
+
 import https from 'https';
 import fs from 'fs';
 import path from 'path';
@@ -5,15 +8,13 @@ import Koa from 'koa';
 import serve from 'koa-static';
 import koaBody from 'koa-body';
 import bodyParser from 'koa-bodyparser';
-require('dotenv').config({ path: path.join(__dirname, '..', '/.env') });
-
 import adminRoutes from './modules/accessControl/routes/adminRoutes';
 import doctorRoutes from './modules/accessControl/routes/doctorRoutes';
 import errorHandlingMiddleware from './common/middlewares/errorHandlingMiddleware';
 import accessControlMiddleware from './common/middlewares/accessControlMiddleware';
 import db from './db';
-db()
 
+db();
 
 const app = new Koa();
 

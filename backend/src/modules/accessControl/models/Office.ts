@@ -1,10 +1,29 @@
-import { Model, Table, Column, DataType, ForeignKey } from "sequelize-typescript";
+// 诊室
+import { Model, Table, Column, DataType, ForeignKey, PrimaryKey, AllowNull, BelongsTo, HasMany } from "sequelize-typescript";
+import Department from "./Department";
+import Doctor from "./Doctor";
 
 @Table
 export default class Office extends Model {
-  office_id!: number;
+  @PrimaryKey
+  @Column(DataType.BIGINT)
+  office_id!: bigint;
+  
+  @AllowNull(false)
+  @Column
   office_name!: string;
+
+  @Column(DataType.TEXT)
   office_description!: string;
-  department_id!: number;
+
+  @ForeignKey(() => Department)
+  @Column(DataType.BIGINT)
+  department_id!: bigint;
+  
+  @BelongsTo(() => Department)
+  department!: Department;
+
+  @HasMany(() => Doctor)
+  doctors!: Doctor[];
   // other properties...
 }

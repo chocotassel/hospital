@@ -4,6 +4,7 @@ import config from '../config';
 import path from 'path';
 import { dbLogger } from '../common/logger';
 
+
 console.log(config.databaseConfig);
 
 const sequelize = new Sequelize(config.databaseConfig.database as string, config.databaseConfig.username as string, config.databaseConfig.password, {
@@ -19,6 +20,7 @@ const sequelize = new Sequelize(config.databaseConfig.database as string, config
   },
   models: [path.join(__dirname, '..', 'modules', '**', 'models', '*.{ts,js}')],
 });
+import './seed'
 
 const db =  async () => {
   try {

@@ -1,9 +1,22 @@
-import { Model, Table, Column, DataType, ForeignKey } from "sequelize-typescript";
+// 科室
+import { Model, Table, Column, DataType, ForeignKey, PrimaryKey, AllowNull, HasMany } from "sequelize-typescript";
+import Office from "./Office";
 
 @Table
-export default class Department extends Model {
-  department_id!: number;
+class Department extends Model {
+  @PrimaryKey
+  @Column(DataType.BIGINT)
+  department_id!: bigint;
+
+  @AllowNull(false)
+  @Column(DataType.STRING(255))
   department_name!: string;
+
+  @Column(DataType.TEXT)
   department_description!: string;
-  // other properties...
+
+  @HasMany(() => Office)
+  offices!: Office[];
 }
+
+export default Department;
