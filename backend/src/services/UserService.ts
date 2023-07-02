@@ -16,7 +16,7 @@ class UserService {
     const role = await Role.findByPk(roleId);
     if (!role) throw new Error('权限不存在');
 
-    // await user.setRole(role);
+    await user.setRole(role);
   }
 
   // 修改用户的角色

@@ -10,9 +10,11 @@ class AuthenticationController  {
     
     // 数据校验
     const rules: Rules = {
-      username: {
+      account: {
         type: 'string',
         required: true,
+        min: 10,
+        max: 11,
       },
       password: {
         type: 'string',
@@ -26,9 +28,9 @@ class AuthenticationController  {
       return response.fail(ctx, '非法数据', error, 400);
     }
 
-    const { username, password } = data;
+    const { account, password } = data;
     try {
-      const result = await AuthenticationService.loginUser(username, password);
+      const result = await AuthenticationService.loginUser(account, password);
       // 发送响应
       return response.success(ctx, result);
     } catch (err) {

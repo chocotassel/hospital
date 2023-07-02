@@ -4,6 +4,7 @@ import Role from "./Role";
 
 @Table
 export default class User extends Model {
+  [x: string]: any;
   @PrimaryKey
   @Column(DataType.BIGINT)
   user_id!: bigint;

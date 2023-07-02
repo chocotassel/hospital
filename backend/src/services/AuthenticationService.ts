@@ -3,9 +3,10 @@ import bcrypt from 'bcrypt';
 import auth from '../common/utils/auth';
 
 class AuthenticationService {
-  async loginUser(username: string, password: string) {
-    // 数据库查询，查找用户
-    const user = await User.findOne({ where: { username } });
+  async loginUser(account: string, password: string) {
+    // 查找用户
+    const condition = account.length === 11 ? { phone: account } : { username: account };
+    const user = await User.findOne({ where: condition });
 
     // 如果用户不存在，返回错误
     if (!user) {
@@ -20,7 +21,7 @@ class AuthenticationService {
     }
 
     // 创建一个会话（在这里，我们可以使用 JWT）
-    const token = auth.signToken({ userId: user.id });
+    const token = auth.signToken({ userId: user.user_id });
 
     return { token: token, message: '登录成功' };
   }

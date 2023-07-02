@@ -14,7 +14,7 @@ class DoctorService {
 
   // 更新医生信息
   async updateDoctor(id: string, data: any) {
-    const doctor = await Doctor.findOne({ where: { id } });
+    const doctor = await Doctor.findOne({ where: { id: BigInt(id) } });
     if (!doctor) {
       throw new Error('医生不存在');
     }
@@ -24,7 +24,7 @@ class DoctorService {
 
   // 删除医生
   async deleteDoctor(id: string) {
-    const doctor = await Doctor.findOne({ where: { id } });
+    const doctor = await Doctor.findOne({ where: { id: BigInt(id) } });
     if (!doctor) {
       throw new Error('医生不存在');
     }

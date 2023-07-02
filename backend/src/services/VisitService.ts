@@ -14,7 +14,7 @@ class VisitService {
 
   // 更新出诊信息
   async updateVisit(id: string, data: any) {
-    const visit = await Visit.findOne({ where: { id } });
+    const visit = await Visit.findOne({ where: { id: BigInt(id) } });
     if (!visit) {
       throw new Error('出诊记录不存在');
     }
@@ -24,7 +24,7 @@ class VisitService {
 
   // 删除出诊
   async deleteVisit(id: string) {
-    const visit = await Visit.findOne({ where: { id } });
+    const visit = await Visit.findOne({ where: { id: BigInt(id) } });
     if (!visit) {
       throw new Error('出诊记录不存在');
     }

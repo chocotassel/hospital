@@ -14,7 +14,7 @@ class OfficeService {
 
   // 更新诊室信息
   async updateOffice(id: string, data: any) {
-    const office = await Office.findOne({ where: { id } });
+    const office = await Office.findOne({ where: { id: BigInt(id) } });
     if (!office) {
       throw new Error('诊室不存在');
     }
@@ -24,7 +24,7 @@ class OfficeService {
 
   // 删除诊室
   async deleteOffice(id: string) {
-    const office = await Office.findOne({ where: { id } });
+    const office = await Office.findOne({ where: { id: BigInt(id) } });
     if (!office) {
       throw new Error('诊室不存在');
     }

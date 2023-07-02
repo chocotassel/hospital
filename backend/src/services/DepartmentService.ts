@@ -11,22 +11,24 @@ class DepartmentService {
     return { departments, total };
   }
 
-  async createDepartment(department: any) {
-    return await Department.create(department);
+  async createDepartment(data: any) {
+    return await Department.create(data);
   }
 
-  async updateDepartment(id: number, department: any) {
-    if (!(await Department.findByPk(id))) {
+  async updateDepartment(id: string, data: any) {
+    const department = await Department.findOne({ where: { id: BigInt(id) } });
+    if (!department) {
       throw new Error('科室不存在');
     }
-    return await Department.update(department, { where: { id } });
+    return await department.update(data);
   }
 
-  async deleteDepartment(id: number) {
-    if (!(await Department.findByPk(id))) {
+  async deleteDepartment(id: string) {
+    const department = await Department.findOne({ where: { id: BigInt(id) } });
+    if (!department) {
       throw new Error('科室不存在');
     }
-    return await Department.destroy({ where: { id } });
+    return await department.destroy();
   }
 }
 
