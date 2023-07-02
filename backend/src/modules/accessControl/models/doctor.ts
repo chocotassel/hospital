@@ -48,13 +48,12 @@ export default class Doctor extends Model {
   photo!: Buffer;
 
   @ForeignKey(() => User)
-  @Unique
   @Column(DataType.STRING(15))
   employee_number!: string;
 
   @HasMany(() => Visit)
   visits!: Visit[];
-  
-  @BelongsTo(() => User)
+
+  @BelongsTo(() => User, {foreignKey: 'employee_number'})
   user!: User;
 }

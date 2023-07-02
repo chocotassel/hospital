@@ -25,6 +25,7 @@ export class User extends Model {
   @Column(DataType.BIGINT)
   role_id!: bigint;
   
+  @PrimaryKey
   @AllowNull(false)
   @Unique
   @Column(DataType.STRING(15))
