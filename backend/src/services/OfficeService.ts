@@ -16,7 +16,7 @@ class OfficeService {
   async updateOffice(id: string, data: any) {
     const office = await Office.findOne({ where: { id } });
     if (!office) {
-      throw new Error('Office not found');
+      throw new Error('诊室不存在');
     }
 
     return await office.update(data);
@@ -26,7 +26,7 @@ class OfficeService {
   async deleteOffice(id: string) {
     const office = await Office.findOne({ where: { id } });
     if (!office) {
-      throw new Error('Office not found');
+      throw new Error('诊室不存在');
     }
 
     return await office.destroy();

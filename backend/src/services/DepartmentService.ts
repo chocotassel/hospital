@@ -16,10 +16,16 @@ class DepartmentService {
   }
 
   async updateDepartment(id: number, department: any) {
+    if (!(await Department.findByPk(id))) {
+      throw new Error('科室不存在');
+    }
     return await Department.update(department, { where: { id } });
   }
 
   async deleteDepartment(id: number) {
+    if (!(await Department.findByPk(id))) {
+      throw new Error('科室不存在');
+    }
     return await Department.destroy({ where: { id } });
   }
 }

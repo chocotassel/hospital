@@ -16,7 +16,7 @@ class DoctorService {
   async updateDoctor(id: string, data: any) {
     const doctor = await Doctor.findOne({ where: { id } });
     if (!doctor) {
-      throw new Error('Doctor not found');
+      throw new Error('医生不存在');
     }
 
     return await doctor.update(data);
@@ -26,7 +26,7 @@ class DoctorService {
   async deleteDoctor(id: string) {
     const doctor = await Doctor.findOne({ where: { id } });
     if (!doctor) {
-      throw new Error('Doctor not found');
+      throw new Error('医生不存在');
     }
 
     return await doctor.destroy();

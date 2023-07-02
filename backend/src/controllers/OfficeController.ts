@@ -19,7 +19,7 @@ class OfficeController {
       return response.success(ctx, offices);
     } catch (err) {
       console.error(err);
-      return response.fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, '服务器错误', [], 500);
     }
   }
 
@@ -30,12 +30,19 @@ class OfficeController {
         type: 'string',
         required: true,
       },
-      // 其他字段规则...
+      office_description: {
+        type: 'string',
+      },
+      department_id: {
+        type: 'string',
+        required: true,
+        pattern: /^\d+$/,
+      },
     };
 
     const { data, error } = await validate(ctx, rules);
     if (error) {
-      return response.fail(ctx, 'Invalid data', error, 400);
+      return response.fail(ctx, '非法数据', error, 400);
     }
 
     try {
@@ -43,7 +50,7 @@ class OfficeController {
       return response.success(ctx, office);
     } catch (err) {
       console.error(err);
-      return response.fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, '服务器错误', [], 500);
     }
   }
 
@@ -55,12 +62,19 @@ class OfficeController {
         type: 'string',
         required: true,
       },
-      // 其他需要更新的字段...
+      office_description: {
+        type: 'string',
+      },
+      department_id: {
+        type: 'string',
+        required: true,
+        pattern: /^\d+$/,
+      },
     };
     
     const { data, error } = await validate(ctx, rules);
     if (error) {
-      return response.fail(ctx, 'Invalid data', error, 400);
+      return response.fail(ctx, '非法数据', error, 400);
     }
 
     try {
@@ -68,7 +82,7 @@ class OfficeController {
       return response.success(ctx, updatedOffice);
     } catch (err) {
       console.error(err);
-      return response.fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, '服务器错误', [], 500);
     }
   }
 
@@ -81,7 +95,7 @@ class OfficeController {
       return response.success(ctx, result);
     } catch (err) {
       console.error(err);
-      return response.fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, '服务器错误', [], 500);
     }
   }
 }

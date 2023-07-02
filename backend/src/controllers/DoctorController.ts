@@ -120,8 +120,9 @@ class DoctorController {
         required: false,
       },
       office_id: {
-        type: 'number',
+        type: 'string',
         required: true,
+        pattern: /^\d+$/,
       },
       // Note: file validation may need to be handled separately, e.g., in middleware
       photo: {
