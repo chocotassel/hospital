@@ -1,4 +1,5 @@
 import request from 'supertest';
+import {describe, expect, test, it} from '@jest/globals';
 import app from '../../src/index'; // 这是您的Koa应用实例
 
 describe('Department Management API', () => {

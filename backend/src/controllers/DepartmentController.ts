@@ -12,7 +12,7 @@ class DepartmentController {
   async getDepartments(ctx: Context) {
     // 权限检查
     if (!can(ctx.state.user.role, 'viewDepartment')) {
-      return response.fail(ctx, 'Permission denied', [], 403);
+      return response.fail(ctx, '权限校验失败', [], 403);
     }
 
     // 数据校验
@@ -31,7 +31,7 @@ class DepartmentController {
 
     const { data, error } = await validate(ctx, rules);
     if (error) {
-      return response.fail(ctx, 'Invalid data', error, 400);
+      return response.fail(ctx, '非法数据', error, 400);
     }
 
     const { page = 1, limit = 10 } = data;
@@ -44,20 +44,28 @@ class DepartmentController {
       return response.success(ctx, paginate(departments, page, total, limit));
     } catch (err) {
       console.error(err);
-      return response.fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, '服务器错误', [], 500);
     }
   }
+
 
   // 创建科室
   async createDepartment(ctx: Context) {
     // 数据校验
     const rules: Rules = {
-      // 定义科室创建的规则
+      department_name: {
+        type: 'string',
+        required: true,
+      },
+      department_description: {
+        type: 'string',
+        required: false,
+      },
     };
 
     const { data, error } = await validate(ctx, rules);
     if (error) {
-      return response.fail(ctx, 'Invalid data', error, 400);
+      return response.fail(ctx, '非法数据', error, 400);
     }
 
     try {
@@ -67,24 +75,28 @@ class DepartmentController {
       return response.success(ctx, department);
     } catch (err) {
       console.error(err);
-      return response.fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, '服务器错误', [], 500);
     }
   }
+
 
   // 更新科室信息
   async updateDepartment(ctx: Context) {
     // 数据校验
     const rules: Rules = {
-      id: {
-        type: 'number',
+      department_name: {
+        type: 'string',
         required: true,
       },
-      // 其他需要更新的字段...
+      department_description: {
+        type: 'string',
+        required: false,
+      },
     };
 
     const { data, error } = await validate(ctx, rules);
     if (error) {
-      return response.fail(ctx, 'Invalid data', error, 400);
+      return response.fail(ctx, '非法数据', error, 400);
     }
 
     try {
@@ -92,18 +104,19 @@ class DepartmentController {
       await DepartmentService.updateDepartment(data.id, data);
       
       // 发送响应
-      return response.success(ctx, { message: 'Department updated successfully' });
+      return response.success(ctx, { message: '科室更新成功' });
     } catch (err) {
       console.error(err);
-      return response.fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, '服务器错误', [], 500);
     }
   }
+
 
   // 删除科室
   async deleteDepartment(ctx: Context) {
     // 数据校验
     const rules: Rules = {
-      id: {
+      department_id: {
         type: 'number',
         required: true,
       },
@@ -111,7 +124,7 @@ class DepartmentController {
 
     const { data, error } = await validate(ctx, rules);
     if (error) {
-      return response.fail(ctx, 'Invalid data', error, 400);
+      return response.fail(ctx, '非法数据', error, 400);
     }
 
     try {
@@ -119,10 +132,10 @@ class DepartmentController {
       await DepartmentService.deleteDepartment(data.id);
       
       // 发送响应
-      return response.success(ctx, { message: 'Department deleted successfully' });
+      return response.success(ctx, { message: '科室删除成功' });
     } catch (err) {
       console.error(err);
-      return response.fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, '服务器错误', [], 500);
     }
   }
 }
