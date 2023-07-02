@@ -15,7 +15,7 @@ export default class Doctor extends Model {
   doctor_name!: string;
 
   @AllowNull(false)
-  @Column(DataType.ENUM('Male', 'Female'))
+  @Column(DataType.ENUM('男', '女'))
   gender!: string;
 
   @AllowNull(false)

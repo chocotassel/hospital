@@ -82,6 +82,8 @@ class DepartmentController {
 
   // 更新科室信息
   async updateDepartment(ctx: Context) {
+    const { id } = ctx.params;
+
     // 数据校验
     const rules: Rules = {
       department_name: {
@@ -101,7 +103,7 @@ class DepartmentController {
 
     try {
       // 使用服务更新科室
-      await DepartmentService.updateDepartment(data.id, data);
+      await DepartmentService.updateDepartment(id, data);
       
       // 发送响应
       return response.success(ctx, { message: '科室更新成功' });
@@ -114,22 +116,11 @@ class DepartmentController {
 
   // 删除科室
   async deleteDepartment(ctx: Context) {
-    // 数据校验
-    const rules: Rules = {
-      department_id: {
-        type: 'number',
-        required: true,
-      },
-    };
-
-    const { data, error } = await validate(ctx, rules);
-    if (error) {
-      return response.fail(ctx, '非法数据', error, 400);
-    }
+    const { id } = ctx.params;
 
     try {
       // 使用服务删除科室
-      await DepartmentService.deleteDepartment(data.id);
+      await DepartmentService.deleteDepartment(id);
       
       // 发送响应
       return response.success(ctx, { message: '科室删除成功' });

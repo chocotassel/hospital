@@ -19,7 +19,7 @@ class DoctorController {
       return response.success(ctx, doctors);
     } catch (err) {
       console.error(err);
-      return response.fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, '服务器错误', [], 500);
     }
   }
 
@@ -29,13 +29,47 @@ class DoctorController {
       doctor_name: {
         type: 'string',
         required: true,
+        min: 1,
+        max: 255,
       },
-      // 其他字段规则...
+      gender: {
+        type: 'enum',
+        required: true,
+        enum: ['Male', 'Female'],
+      },
+      date_of_birth: {
+        type: 'date',
+        required: true,
+      },
+      identity_card: {
+        type: 'string',
+        required: true,
+        len: 18,
+      },
+      phone_number: {
+        type: 'string',
+        required: true,
+        len: 15,
+      },
+      registration_fee: {
+        type: 'number',
+        required: true,
+        min: 0,
+      },
+      office_id: {
+        type: 'number',
+        required: true,
+      },
+      employee_number: {
+        type: 'string',
+        required: true,
+        len: 15,
+      },
     };
 
     const { data, error } = await validate(ctx, rules);
     if (error) {
-      return response.fail(ctx, 'Invalid data', error, 400);
+      return response.fail(ctx, '非法数据', error, 400);
     }
 
     try {
@@ -43,7 +77,7 @@ class DoctorController {
       return response.success(ctx, doctor);
     } catch (err) {
       console.error(err);
-      return response.fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, '服务器错误', [], 500);
     }
   }
 
@@ -54,12 +88,55 @@ class DoctorController {
       doctor_name: {
         type: 'string',
         required: true,
+        min: 1,
+        max: 255,
       },
-      // 其他需要更新的字段...
+      gender: {
+        type: 'enum',
+        required: true,
+        enum: ['男', '女'],
+      },
+      date_of_birth: {
+        type: 'date',
+        required: true,
+      },
+      identity_card: {
+        type: 'string',
+        required: true,
+        len: 18,
+      },
+      phone_number: {
+        type: 'string',
+        required: true,
+        len: 15,
+      },
+      registration_fee: {
+        type: 'number',
+        required: true,
+        min: 0,
+      },
+      description: {
+        type: 'string',
+        required: false,
+      },
+      office_id: {
+        type: 'number',
+        required: true,
+      },
+      // Note: file validation may need to be handled separately, e.g., in middleware
+      photo: {
+        type: 'string',
+        required: false,
+      },
+      employee_number: {
+        type: 'string',
+        required: true,
+        len: 15,
+      },
     };
     const { data, error } = await validate(ctx, rules);
     if (error) {
-      return response.fail(ctx, 'Invalid data', error, 400);
+      return response.fail(ctx, '非法数据', error, 400);
     }
 
     try {
@@ -67,7 +144,7 @@ class DoctorController {
       return response.success(ctx, updatedDoctor);
     } catch (err) {
       console.error(err);
-      return response.fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, '服务器错误', [], 500);
     }
   }
 
@@ -80,7 +157,7 @@ class DoctorController {
       return response.success(ctx, result);
     } catch (err) {
       console.error(err);
-      return response.fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, '服务器错误', [], 500);
     }
   }
 }
