@@ -18,8 +18,7 @@ class DoctorController {
       const doctors = await this.doctorService.getDoctors();
       return response.success(ctx, doctors);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 
@@ -76,8 +75,7 @@ class DoctorController {
       const doctor = await this.doctorService.createDoctor(data);
       return response.success(ctx, doctor);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 
@@ -144,8 +142,7 @@ class DoctorController {
       const updatedDoctor = await this.doctorService.updateDoctor(id, data);
       return response.success(ctx, updatedDoctor);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 
@@ -157,8 +154,7 @@ class DoctorController {
       const result = await this.doctorService.deleteDoctor(id);
       return response.success(ctx, result);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 }

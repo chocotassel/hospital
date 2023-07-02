@@ -5,12 +5,6 @@ import { Rules } from 'async-validator';
 import validate from '../common/utils/validate';
 
 class AuthenticationController  {
-  private authenticationService: AuthenticationService;
-
-  constructor() {
-    this.authenticationService = new AuthenticationService();
-  }
-
   // 用户登录
   login = async (ctx: Context) => {
     
@@ -29,17 +23,16 @@ class AuthenticationController  {
 
     const { data, error } = await validate(ctx, rules);
     if (error) {
-      return response.fail(ctx, 'Invalid data', error, 400);
+      return response.fail(ctx, '非法数据', error, 400);
     }
 
     const { username, password } = data;
     try {
-      const result = await this.authenticationService.loginUser(username, password);
+      const result = await AuthenticationService.loginUser(username, password);
       // 发送响应
       return response.success(ctx, result);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 

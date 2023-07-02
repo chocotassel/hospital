@@ -18,8 +18,7 @@ class VisitController {
       const visits = await this.visitService.getVisits();
       return response.success(ctx, visits);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 
@@ -49,8 +48,7 @@ class VisitController {
       const visit = await this.visitService.createVisit(data);
       return response.success(ctx, visit);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 
@@ -81,8 +79,7 @@ class VisitController {
       const updatedVisit = await this.visitService.updateVisit(id, data);
       return response.success(ctx, updatedVisit);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 
@@ -94,8 +91,7 @@ class VisitController {
       const result = await this.visitService.deleteVisit(id);
       return response.success(ctx, result);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 }

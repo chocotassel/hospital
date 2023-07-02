@@ -43,8 +43,7 @@ class DepartmentController {
       // 发送响应
       return response.success(ctx, paginate(departments, page, total, limit));
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 
@@ -74,8 +73,7 @@ class DepartmentController {
       // 发送响应
       return response.success(ctx, department);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 
@@ -108,8 +106,7 @@ class DepartmentController {
       // 发送响应
       return response.success(ctx, { message: '科室更新成功' });
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 
@@ -125,8 +122,7 @@ class DepartmentController {
       // 发送响应
       return response.success(ctx, { message: '科室删除成功' });
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 }

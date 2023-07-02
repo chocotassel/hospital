@@ -2,7 +2,7 @@ import User from '../models/User'
 import bcrypt from 'bcrypt';
 import auth from '../common/utils/auth';
 
-export default class AuthenticationService {
+class AuthenticationService {
   async loginUser(username: string, password: string) {
     // 数据库查询，查找用户
     const user = await User.findOne({ where: { username } });
@@ -25,3 +25,5 @@ export default class AuthenticationService {
     return { token: token, message: '登录成功' };
   }
 }
+
+export default new AuthenticationService();

@@ -18,8 +18,7 @@ class OfficeController {
       const offices = await this.officeService.getOffices();
       return response.success(ctx, offices);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 
@@ -49,8 +48,7 @@ class OfficeController {
       const office = await this.officeService.createOffice(data);
       return response.success(ctx, office);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 
@@ -81,8 +79,7 @@ class OfficeController {
       const updatedOffice = await this.officeService.updateOffice(id, data);
       return response.success(ctx, updatedOffice);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 
@@ -94,8 +91,7 @@ class OfficeController {
       const result = await this.officeService.deleteOffice(id);
       return response.success(ctx, result);
     } catch (err) {
-      console.error(err);
-      return response.fail(ctx, '服务器错误', [], 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 }
