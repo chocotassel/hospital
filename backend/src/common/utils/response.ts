@@ -31,7 +31,7 @@ function fail(ctx: Context, msg: string = 'fail', data: any = [], code: number =
   };
 }
 
-export { 
+export default { 
   success, 
   fail 
 };

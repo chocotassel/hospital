@@ -15,7 +15,7 @@ const sequelize = new Sequelize(config.databaseConfig.database as string, config
     updatedAt: 'updated_at',
     deletedAt: 'deleted_at',
   },
-  models: [path.join(__dirname, '..', 'modules', '**', 'models', '*.{ts,js}')],
+  models: [path.join(__dirname, '..', 'models', '*.{ts,js}')],
 });
 // import './seed'
 

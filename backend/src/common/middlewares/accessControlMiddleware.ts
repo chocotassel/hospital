@@ -5,7 +5,6 @@ import { accessLogger } from '../logger';
 const unauthenticatedPaths = [
   '/',
   '/login',
-  '/register',
 ]
 
 export default async function authMiddleware(ctx: Context, next: Next) {

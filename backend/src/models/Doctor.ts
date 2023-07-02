@@ -22,10 +22,12 @@ export default class Doctor extends Model {
   @Column(DataType.DATEONLY)
   date_of_birth!: Date;
 
+  @Unique
   @AllowNull(false)
   @Column(DataType.STRING(18))
   identity_card!: string;
 
+  @Unique
   @AllowNull(false)
   @Column(DataType.STRING(15))
   phone_number!: string;

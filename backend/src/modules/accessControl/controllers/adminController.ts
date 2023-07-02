@@ -1,9 +1,9 @@
 // adminController.ts
 import { Context } from 'koa';
-import Department from '../models/Department';
+import Department from '../../../models/Department';
 import { can } from '../../../common/utils/rbac';
 import validate from '../../../common/utils/validate';
-import { success, fail } from '../../../common/utils/response';
+import response from '../../../common/utils/response';
 import { paginate } from '../../../common/utils/paginate';
 import { Rules } from 'async-validator';
 
@@ -12,7 +12,7 @@ class AdminController {
   async getDepartments(ctx: Context) {
     // 权限检查
     if (!can(ctx.state.user.role, 'viewDepartment')) {
-      return fail(ctx, 'Permission denied', [], 403);
+      return response.fail(ctx, 'Permission denied', [], 403);
     }
 
     // 数据校验
@@ -31,7 +31,7 @@ class AdminController {
 
     const { data, error } = await validate(ctx, rules);
     if (error) {
-      return fail(ctx, 'Invalid data', error, 400);
+      return response.fail(ctx, 'Invalid data', error, 400);
     }
 
     const { page = 1, limit = 10 } = data;
@@ -46,10 +46,10 @@ class AdminController {
       const total = await Department.count();
 
       // 发送响应
-      return success(ctx, paginate(departments, page, total, limit));
+      return response.success(ctx, paginate(departments, page, total, limit));
     } catch (err) {
       console.error(err);
-      return fail(ctx, 'Internal server error', [], 500);
+      return response.fail(ctx, 'Internal server error', [], 500);
     }
   }
 

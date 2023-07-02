@@ -1,12 +1,13 @@
-import Department from '../modules/accessControl/models/Department';
-import Office from '../modules/accessControl/models/Office';
-import Doctor from '../modules/accessControl/models/Doctor';
-import Visit from '../modules/accessControl/models/Visit';
-import { Role } from '../modules/accessControl/models/Role';
-import { User } from '../modules/accessControl/models/User';
-import { Permission } from '../modules/accessControl/models/Permission';
-import { RolePermission } from '../modules/accessControl/models/RolePermission';
+import Department from '../models/Department';
+import Office from '../models/Office';
+import Doctor from '../models/Doctor';
+import Visit from '../models/Visit';
+import { Role } from '../models/Role';
+import { User } from '../models/User';
+import { Permission } from '../models/Permission';
+import { RolePermission } from '../models/RolePermission';
 import snowflake from '../common/utils/snowflake';
+import bcrypt from 'bcrypt';
 
 
 // 创建一些数据库数据
@@ -102,7 +103,7 @@ async function seedData() {
       user_id: snowflake.user.nextId(),
       username: 'admin',
       phone_number: '12345678910',
-      password: 'password',
+      password: bcrypt.hashSync('password', 10),
       role_id: role1.role_id,
       employee_number: '1404230001',
     });
@@ -111,25 +112,25 @@ async function seedData() {
       user_id: snowflake.user.nextId(),
       username: 'doctor1',
       phone_number: '12345678911',
-      password: 'password',
+      password: bcrypt.hashSync('password', 10),
       role_id: role2.role_id,
-      employee_number: doctor1.employee_number,
+      employee_number: '0101230001',
     });
 
     const user3 = await User.create({
       user_id: snowflake.user.nextId(),
       username: 'doctor2',
       phone_number: '12345678912',
-      password: 'password',
+      password: bcrypt.hashSync('password', 10),
       role_id: role2.role_id,
-      employee_number: doctor2.employee_number,
+      employee_number: '0101230002',
     });
 
     const user4 = await User.create({
       user_id: snowflake.user.nextId(),
       username: 'nurse 1',
       phone_number: '12345678913',
-      password: 'password',
+      password: bcrypt.hashSync('password', 10),
       role_id: role2.role_id,
       employee_number: '0102230003',
     });

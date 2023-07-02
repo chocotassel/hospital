@@ -33,5 +33,4 @@ export class User extends Model {
 
   @BelongsTo(() => Role)
   role!: Role;
-
 }

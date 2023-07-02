@@ -8,26 +8,38 @@ import Koa from 'koa';
 import serve from 'koa-static';
 import koaBody from 'koa-body';
 import bodyParser from 'koa-bodyparser';
+import mount from 'koa-mount';
+
 import adminRoutes from './modules/accessControl/routes/adminRoutes';
 import doctorRoutes from './modules/accessControl/routes/doctorRoutes';
+import loginRoutes from './modules/loginControl/routes/loginRoutes';
+
 import errorHandlingMiddleware from './common/middlewares/errorHandlingMiddleware';
 import accessControlMiddleware from './common/middlewares/accessControlMiddleware';
+
 import db from './db';
 
 db();
 
 const app = new Koa();
+// const api = new Koa();
 
 // 挂载前端应用
 app.use(serve(path.join(__dirname, '..', '..', 'frontend', 'build')));
 
-// 
-app.use(koaBody());
+// 访问控制中间件
 app.use(bodyParser());
 app.use(errorHandlingMiddleware);
-app.use(accessControlMiddleware);  // 在路由之前添加访问控制中间件
+app.use(accessControlMiddleware);
+
+
+// 路由
 app.use(adminRoutes.routes());
 app.use(doctorRoutes.routes());
+app.use(loginRoutes.routes());
+
+// // 统一接口前缀
+// app.use(mount('/api', api));
 
 // app.listen(3000, () => {
 //   console.log('Server is running on localhost:3000');
