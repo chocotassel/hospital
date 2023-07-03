@@ -5,6 +5,7 @@ import { accessLogger } from '../logger';
 const unauthenticatedPaths = [
   '/',
   '/login',
+  '/test'
 ]
 
 export default async function authMiddleware(ctx: Context, next: Next) {
@@ -19,12 +20,12 @@ export default async function authMiddleware(ctx: Context, next: Next) {
     return;
   }
       
-  const token = ctx.headers.authorization;
+  const token = ctx.headers.authorization?.split(' ')[1];
 
   if (!token) {
     ctx.throw(401, 'Authentication Error: No Token Provided');
   }
-
+  
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     ctx.state.user = decoded;

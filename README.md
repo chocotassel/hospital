@@ -45,7 +45,7 @@
   - `description`: TEXT
   - `office_id`: BIGINT, FOREIGN KEY REFERENCES `offices(office_id)`, NOT NULL
   - `photo`: BLOB
-  - `employee_number`: VARCHAR(255), NOT NULL, UNIQUE
+  - `employee_number`: VARCHAR(15), FOREIGN KEY REFERENCES users`(employee_number)`, NOT NULL, UNIQUE
 - `visits`（出诊）表：
   - `visit_id`: BIGINT, AUTO_INCREMENT, PRIMARY KEY
   - `visit_date`: DATE, NOT NULL
@@ -59,6 +59,7 @@
   - `username`: VARCHAR(255), NOT NULL
   - `password`: CHAR(64), NOT NULL
   - `role_id`: BIGINT, FOREIGN KEY REFERENCES `roles(role_id)`, NOT NULL
+  - `employee_number`: VARCHAR(15), NOT NULL, UNIQUE
 - `permissions`（权限）表：
   - `permission_id`: BIGINT, AUTO_INCREMENT, PRIMARY KEY
   - `permission_name`: VARCHAR(255), NOT NULL

@@ -10,7 +10,7 @@ export default class Office extends Model {
   office_id!: bigint;
   
   @AllowNull(false)
-  @Column
+  @Column(DataType.STRING)
   office_name!: string;
 
   @Column(DataType.TEXT)

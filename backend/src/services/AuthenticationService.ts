@@ -7,7 +7,7 @@ import Permission from '../models/Permission';
 class AuthenticationService {
   async loginUser(account: string, password: string) {
     // 查找用户
-    const condition = account.length === 11 ? { phone: account } : { username: account };
+    const condition = account.length === 11 ? { phone_number: account } : { username: account };
     const user = await User.findOne({ 
       where: condition, 
       include: [{

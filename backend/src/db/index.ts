@@ -24,9 +24,9 @@ const db =  async () => {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
 
-    // 同步所有定义的模型到数据库中
-    await sequelize.sync();
-    console.log('All models were synchronized successfully.');
+    // // 同步所有定义的模型到数据库中
+    // await sequelize.sync();
+    // console.log('All models were synchronized successfully.');
   } catch (err) {
     console.error('Unable to connect to the database:', err);
     process.exit(1);

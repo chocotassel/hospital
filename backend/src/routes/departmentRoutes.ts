@@ -3,10 +3,9 @@ import DepartmentController from '../controllers/DepartmentController';
 
 const router = new Router();
 
-router.post('/departments', DepartmentController.getDepartments);
-router.get('/departments', DepartmentController.createDepartment);
-router.get('/departments/:id', DepartmentController.updateDepartment);
-router.get('/departments/:id', DepartmentController.deleteDepartment);
-
+router.get('/departments', DepartmentController.getDepartments);
+router.post('/departments', DepartmentController.createDepartment);
+router.put('/departments/:id', DepartmentController.updateDepartment);
+router.delete('/departments/:id', DepartmentController.deleteDepartment);
 
 export default router;

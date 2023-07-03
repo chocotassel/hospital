@@ -1,4 +1,5 @@
 // VisitService.ts
+import snowflake from '../common/utils/snowflake';
 import Visit from '../models/Visit';
 
 class VisitService {
@@ -9,12 +10,13 @@ class VisitService {
 
   // 创建出诊
   async createVisit(data: any) {
+    data.visit_id = BigInt(snowflake.visit.nextId()).toString();
     return await Visit.create(data);
   }
 
   // 更新出诊信息
   async updateVisit(id: string, data: any) {
-    const visit = await Visit.findOne({ where: { id: BigInt(id) } });
+    const visit = await Visit.findOne({ where: { id: BigInt(id).toString() } });
     if (!visit) {
       throw new Error('出诊记录不存在');
     }
@@ -24,7 +26,7 @@ class VisitService {
 
   // 删除出诊
   async deleteVisit(id: string) {
-    const visit = await Visit.findOne({ where: { id: BigInt(id) } });
+    const visit = await Visit.findOne({ where: { id: BigInt(id).toString() } });
     if (!visit) {
       throw new Error('出诊记录不存在');
     }

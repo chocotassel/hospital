@@ -11,6 +11,11 @@ import bodyParser from 'koa-bodyparser';
 import mount from 'koa-mount';
 
 import loginRoutes from './routes/loginRoutes';
+import departmentRoutes from './routes/departmentRoutes';
+import officeRoutes from './routes/officeRoutes';
+import doctorRoutes from './routes/doctorRoutes';
+import visitRoutes from './routes/visitRoutes';
+import userRoutes from './routes/userRoutes';
 
 import errorHandlingMiddleware from './common/middlewares/errorHandlingMiddleware';
 import accessControlMiddleware from './common/middlewares/accessControlMiddleware';
@@ -33,6 +38,14 @@ app.use(accessControlMiddleware);
 
 // 路由
 app.use(loginRoutes.routes());
+app.use(departmentRoutes.routes());
+app.use(officeRoutes.routes());
+app.use(doctorRoutes.routes());
+app.use(visitRoutes.routes());
+app.use(userRoutes.routes());
+
+
+export default app;
 
 // // 统一接口前缀
 // app.use(mount('/api', api));
@@ -43,12 +56,13 @@ app.use(loginRoutes.routes());
 
 // app.use(router.routes()).use(router.allowedMethods());
 
-const options = {
-  key: fs.readFileSync(path.resolve(__dirname, '../key.pem')),
-  cert: fs.readFileSync(path.resolve(__dirname, '../cert.pem')),
-};
+// const options = {
+//   key: fs.readFileSync(path.resolve(__dirname, '../key.pem')),
+//   cert: fs.readFileSync(path.resolve(__dirname, '../cert.pem')),
+// };
 
-https.createServer(options, app.callback()).listen(443);
-console.log('Server is running on https://localhost:443');
+// const server = https.createServer(options, app.callback())
+// server.listen(443);
+// console.log('Server is running on https://localhost:443');
 
-export default app;
+// export default server;

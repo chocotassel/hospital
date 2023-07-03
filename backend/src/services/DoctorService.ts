@@ -1,4 +1,5 @@
 // DoctorService.ts
+import snowflake from '../common/utils/snowflake';
 import Doctor from '../models/Doctor';
 
 class DoctorService {
@@ -9,12 +10,13 @@ class DoctorService {
 
   // 创建医生
   async createDoctor(data: any) {
+    data.doctor_id = BigInt(snowflake.doctor.nextId()).toString();
     return await Doctor.create(data);
   }
 
   // 更新医生信息
   async updateDoctor(id: string, data: any) {
-    const doctor = await Doctor.findOne({ where: { id: BigInt(id) } });
+    const doctor = await Doctor.findOne({ where: { id: BigInt(id).toString() } });
     if (!doctor) {
       throw new Error('医生不存在');
     }
@@ -24,7 +26,7 @@ class DoctorService {
 
   // 删除医生
   async deleteDoctor(id: string) {
-    const doctor = await Doctor.findOne({ where: { id: BigInt(id) } });
+    const doctor = await Doctor.findOne({ where: { id: BigInt(id).toString() } });
     if (!doctor) {
       throw new Error('医生不存在');
     }

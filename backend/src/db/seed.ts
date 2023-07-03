@@ -2,10 +2,10 @@ import Department from '../models/Department';
 import Office from '../models/Office';
 import Doctor from '../models/Doctor';
 import Visit from '../models/Visit';
-import { Role } from '../models/Role';
-import { User } from '../models/User';
-import { Permission } from '../models/Permission';
-import { RolePermission } from '../models/RolePermission';
+import Role from '../models/Role';
+import User from '../models/User';
+import Permission from '../models/Permission';
+import RolePermission from '../models/RolePermission';
 import snowflake from '../common/utils/snowflake';
 import bcrypt from 'bcrypt';
 
@@ -148,12 +148,12 @@ async function seedData() {
 
     const permission3 = await Permission.create({
       permission_id: snowflake.permission.nextId(),
-      permission_name: 'viewConsultationRoom',
+      permission_name: 'viewOffice',
     });
 
     const permission4 = await Permission.create({
       permission_id: snowflake.permission.nextId(),
-      permission_name: 'modifyConsultationRoom',
+      permission_name: 'modifyOffice',
     });
 
     const permission5 = await Permission.create({
@@ -168,12 +168,12 @@ async function seedData() {
 
     const permission7 = await Permission.create({
       permission_id: snowflake.permission.nextId(),
-      permission_name: 'viewConsultation',
+      permission_name: 'viewVisit',
     });
 
     const permission8 = await Permission.create({
       permission_id: snowflake.permission.nextId(),
-      permission_name: 'modifyConsultation',
+      permission_name: 'modifyVisit',
     });
 
     // 关联角色和权限

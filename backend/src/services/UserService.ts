@@ -1,5 +1,6 @@
 import User from '../models/User';
 import Role from '../models/Role';
+import snowflake from '../common/utils/snowflake';
 
 class UserService {
   // 获取所有用户
@@ -9,6 +10,7 @@ class UserService {
   
   // 创建用户
   async createUser(data: any) {
+    data.user_id = BigInt(snowflake.user.nextId()).toString();
     const user = await User.create(data);
     return user;
   }
