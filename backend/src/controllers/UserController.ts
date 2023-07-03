@@ -32,12 +32,19 @@ class UserController {
     const rules: Rules = {
       username: {
         type: 'string',
-        required: true,
+        required: false,
       },
       password: {
         type: 'string',
         required: true,
       },
+      employee_number: {
+        type: 'string',
+        required: true,
+      },
+      phone_number: {
+        type: 'string',
+      }
     };
 
     const { data, error } = await validate(ctx, rules);

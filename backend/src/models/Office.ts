@@ -20,8 +20,8 @@ export default class Office extends Model {
   office_description!: string;
 
   @ForeignKey(() => Department)
-  @Column(DataType.BIGINT)
-  department_id!: bigint;
+  @Column(DataType.INTEGER)
+  department_id!: number;
   
   @BelongsTo(() => Department)
   department!: Department;

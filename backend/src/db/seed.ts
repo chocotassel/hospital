@@ -12,18 +12,14 @@ import bcrypt from 'bcrypt';
 
 // 创建一些数据库数据
 async function seedData() {
-  console.log(snowflake.department.nextId().toString());
-  
   try {
     // 创建一些部门
     const department1 = await Department.create({
-      department_id: snowflake.department.nextId(),
       department_name: 'Department 1',
       department_description: 'Department 1 description',
     });
 
     const department2 = await Department.create({
-      department_id: snowflake.department.nextId(),
       department_name: 'Department 2',
       department_description: 'Department 2 description',
     });

@@ -15,7 +15,6 @@ export default class User extends Model {
   @Column(DataType.STRING(255))
   username!: string;
 
-  @AllowNull(false)
   @Unique
   @Column(DataType.STRING(15))
   phone_number!: string;

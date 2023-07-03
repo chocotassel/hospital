@@ -1,5 +1,5 @@
 // 科室
-import { Model, Table, Column, DataType, ForeignKey, PrimaryKey, AllowNull, HasMany, Unique } from "sequelize-typescript";
+import { Model, Table, Column, DataType, ForeignKey, PrimaryKey, AllowNull, HasMany, Unique, AutoIncrement } from "sequelize-typescript";
 import Office from "./Office";
 
 @Table
@@ -7,8 +7,9 @@ class Department extends Model {
   @PrimaryKey
   @AllowNull(false)
   @Unique
-  @Column(DataType.BIGINT)
-  department_id!: bigint;
+  @AutoIncrement
+  @Column(DataType.INTEGER)
+  department_id!: number;
 
   @AllowNull(false)
   @Unique
