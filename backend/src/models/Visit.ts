@@ -1,10 +1,12 @@
 // 出诊记录
-import { Model, Table, Column, DataType, ForeignKey, PrimaryKey, AllowNull, BelongsTo } from "sequelize-typescript";
+import { Model, Table, Column, DataType, ForeignKey, PrimaryKey, AllowNull, BelongsTo, Unique } from "sequelize-typescript";
 import Doctor from "./Doctor";
 
 @Table
 export default class Visit extends Model {
   @PrimaryKey
+  @AllowNull(false)
+  @Unique
   @Column(DataType.BIGINT)
   visit_id!: bigint;
 

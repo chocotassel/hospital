@@ -1,15 +1,18 @@
 // 诊室
-import { Model, Table, Column, DataType, ForeignKey, PrimaryKey, AllowNull, BelongsTo, HasMany } from "sequelize-typescript";
+import { Model, Table, Column, DataType, ForeignKey, PrimaryKey, AllowNull, BelongsTo, HasMany, Unique } from "sequelize-typescript";
 import Department from "./Department";
 import Doctor from "./Doctor";
 
 @Table
 export default class Office extends Model {
   @PrimaryKey
+  @AllowNull(false)
+  @Unique
   @Column(DataType.BIGINT)
   office_id!: bigint;
   
   @AllowNull(false)
+  @Unique
   @Column(DataType.STRING)
   office_name!: string;
 
@@ -25,5 +28,4 @@ export default class Office extends Model {
 
   @HasMany(() => Doctor)
   doctors!: Doctor[];
-  // other properties...
 }

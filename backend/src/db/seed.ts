@@ -47,7 +47,7 @@ async function seedData() {
     const doctor1 = await Doctor.create({
       doctor_id: snowflake.doctor.nextId(),
       doctor_name: 'Doctor 1',
-      gender: 'Male',
+      gender: '男',
       date_of_birth: new Date('1990-01-01'),
       identity_card: '1234567890',
       phone_number: '123456789',
@@ -61,7 +61,7 @@ async function seedData() {
     const doctor2 = await Doctor.create({
       doctor_id: snowflake.doctor.nextId(),
       doctor_name: 'Doctor 2',
-      gender: 'Female',
+      gender: '女',
       date_of_birth: new Date('1995-01-01'),
       identity_card: '0987654321',
       phone_number: '987654321',

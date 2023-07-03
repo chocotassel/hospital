@@ -6,6 +6,8 @@ import Role from "./Role";
 export default class User extends Model {
   [x: string]: any;
   @PrimaryKey
+  @AllowNull(false)
+  @Unique
   @Column(DataType.BIGINT)
   user_id!: bigint;
 
@@ -14,6 +16,7 @@ export default class User extends Model {
   username!: string;
 
   @AllowNull(false)
+  @Unique
   @Column(DataType.STRING(15))
   phone_number!: string;
 

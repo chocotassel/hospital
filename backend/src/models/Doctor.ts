@@ -7,6 +7,8 @@ import User from "./User";
 @Table
 export default class Doctor extends Model {
   @PrimaryKey
+  @AllowNull(false)
+  @Unique
   @Column(DataType.BIGINT)
   doctor_id!: bigint;
 
