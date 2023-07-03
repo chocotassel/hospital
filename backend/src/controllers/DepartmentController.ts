@@ -48,6 +48,25 @@ class DepartmentController {
   }
 
 
+  // 获取单个科室
+  async getDepartment(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'viewDepartment')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
+    const { id } = ctx.params;
+
+    try {
+      // 使用服务获取数据
+      const department = await DepartmentService.getDepartment(id);
+      // 发送响应
+      return response.success(ctx, department);
+    } catch (err) {
+      return response.fail(ctx, '服务器错误', err, 500);
+    }
+  }
+
   // 创建科室
   async createDepartment(ctx: Context) {
     // 权限检查

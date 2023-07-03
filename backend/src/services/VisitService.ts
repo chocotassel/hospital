@@ -8,6 +8,11 @@ class VisitService {
     return await Visit.findAll();
   }
 
+  // 获取单个出诊
+  async getVisit(id: string) {
+    return await Visit.findOne({ where: { id: BigInt(id).toString() } });
+  }
+
   // 创建出诊
   async createVisit(data: any) {
     data.visit_id = BigInt(snowflake.visit.nextId()).toString();

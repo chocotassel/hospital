@@ -23,6 +23,23 @@ class OfficeController {
     }
   }
 
+  // 获取单个诊室
+  async getOffice(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'viewOffice')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
+    const { id } = ctx.params;
+
+    try {
+      const office = await OfficeService.getOffice(id);
+      return response.success(ctx, office);
+    } catch (err) {
+      return response.fail(ctx, '服务器错误', err, 500);
+    }
+  }
+
   // 创建诊室
   async createOffice(ctx: Context) {
     // 权限检查

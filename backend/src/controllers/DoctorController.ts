@@ -22,6 +22,23 @@ class DoctorController {
     }
   }
 
+  // 获取某个医生
+  async getDoctor(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'viewDepartment')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
+    const { id } = ctx.params;
+
+    try {
+      const doctor = await DoctorService.getDoctor(id);
+      return response.success(ctx, doctor);
+    } catch (err) {
+      return response.fail(ctx, '服务器错误', err, 500);
+    }
+  }
+
   // 创建医生
   async createDoctor(ctx: Context) {
     // 权限检查

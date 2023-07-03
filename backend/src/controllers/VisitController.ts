@@ -22,6 +22,23 @@ class VisitController {
     }
   }
 
+  // 获取单个出诊
+  async getVisit(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'viewVisit')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
+    const { id } = ctx.params;
+
+    try {
+      const visit = await VisitService.getVisit(id);
+      return response.success(ctx, visit);
+    } catch (err) {
+      return response.fail(ctx, '服务器错误', err, 500);
+    }
+  }
+
   // 创建出诊
   async createVisit(ctx: Context) {
     // 权限检查

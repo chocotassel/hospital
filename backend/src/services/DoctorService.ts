@@ -1,11 +1,35 @@
 // DoctorService.ts
 import snowflake from '../common/utils/snowflake';
+import Department from '../models/Department';
 import Doctor from '../models/Doctor';
+import Office from '../models/Office';
 
 class DoctorService {
   // 获取所有医生
   async getDoctors() {
-    return await Doctor.findAll();
+    return await Doctor.findAll({
+      include: [{
+        model: Office,
+        include: [{
+          model: Department,
+        }]
+      }]
+    });
+  }
+
+  // 获取单个医生
+  async getDoctor(id: string) {
+    return await Doctor.findOne({ 
+      where: { 
+        id: BigInt(id).toString() 
+      },
+      include: [{
+        model: Office,
+        include: [{
+          model: Department,
+        }]
+      }]
+    });
   }
 
   // 创建医生

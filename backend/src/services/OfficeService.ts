@@ -8,6 +8,11 @@ class OfficeService {
     return await Office.findAll();
   }
 
+  // 获取单个诊室
+  async getOffice(id: string) {
+    return await Office.findOne({ where: { id: BigInt(id).toString() } });
+  }
+
   // 创建诊室
   async createOffice(data: any) {
     data.office_id = BigInt(snowflake.office.nextId()).toString();
