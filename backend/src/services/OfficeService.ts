@@ -10,7 +10,7 @@ class OfficeService {
 
   // 获取单个诊室
   async getOffice(id: string) {
-    return await Office.findOne({ where: { id: BigInt(id).toString() } });
+    return await Office.findOne({ where: { office_id: BigInt(id).toString() } });
   }
 
   // 创建诊室
@@ -21,7 +21,7 @@ class OfficeService {
 
   // 更新诊室信息
   async updateOffice(id: string, data: any) {
-    const office = await Office.findOne({ where: { id: BigInt(id).toString() } });
+    const office = await Office.findOne({ where: { office_id: BigInt(id).toString() } });
     if (!office) {
       throw new Error('诊室不存在');
     }
@@ -31,7 +31,7 @@ class OfficeService {
 
   // 删除诊室
   async deleteOffice(id: string) {
-    const office = await Office.findOne({ where: { id: BigInt(id).toString() } });
+    const office = await Office.findOne({ where: { office_id: BigInt(id).toString() } });
     if (!office) {
       throw new Error('诊室不存在');
     }

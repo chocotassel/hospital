@@ -7,6 +7,11 @@ class UserService {
   async getUsers() {
     return await User.findAll();
   }
+
+  // 查找单个用户
+  async getUser(id: string) {
+    return await User.findOne({ where: { user_id: BigInt(id).toString() } });
+  }
   
   // 创建用户
   async createUser(data: any) {

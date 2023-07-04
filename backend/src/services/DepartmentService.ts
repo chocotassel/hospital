@@ -15,18 +15,17 @@ class DepartmentService {
 
   // 获取单个科室
   async getDepartment(id: string) {
-    return await Department.findOne({ where: { id: BigInt(id).toString() } });
+    return await Department.findOne({ where: { department_id: BigInt(id).toString() } });
   }
 
   // 创建科室
   async createDepartment(data: any) {
-    data.department_id = BigInt(snowflake.department.nextId()).toString();
     return await Department.create(data);
   }
 
   // 更新科室信息
   async updateDepartment(id: string, data: any) {
-    const department = await Department.findOne({ where: { id: BigInt(id).toString() } });
+    const department = await Department.findOne({ where: { department_id: BigInt(id).toString() } });
     if (!department) {
       throw new Error('科室不存在');
     }
@@ -35,7 +34,7 @@ class DepartmentService {
 
   // 删除科室
   async deleteDepartment(id: string) {
-    const department = await Department.findOne({ where: { id: BigInt(id).toString() } });
+    const department = await Department.findOne({ where: { department_id: BigInt(id).toString() } });
     if (!department) {
       throw new Error('科室不存在');
     }

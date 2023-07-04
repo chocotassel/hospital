@@ -10,7 +10,7 @@ class VisitService {
 
   // 获取单个出诊
   async getVisit(id: string) {
-    return await Visit.findOne({ where: { id: BigInt(id).toString() } });
+    return await Visit.findOne({ where: { visit_id: BigInt(id).toString() } });
   }
 
   // 创建出诊
@@ -21,7 +21,7 @@ class VisitService {
 
   // 更新出诊信息
   async updateVisit(id: string, data: any) {
-    const visit = await Visit.findOne({ where: { id: BigInt(id).toString() } });
+    const visit = await Visit.findOne({ where: { visit_id: BigInt(id).toString() } });
     if (!visit) {
       throw new Error('出诊记录不存在');
     }
@@ -31,7 +31,7 @@ class VisitService {
 
   // 删除出诊
   async deleteVisit(id: string) {
-    const visit = await Visit.findOne({ where: { id: BigInt(id).toString() } });
+    const visit = await Visit.findOne({ where: { visit_id: BigInt(id).toString() } });
     if (!visit) {
       throw new Error('出诊记录不存在');
     }

@@ -55,11 +55,6 @@ class OfficeController {
       office_description: {
         type: 'string',
       },
-      department_id: {
-        type: 'string',
-        required: true,
-        pattern: /^\d+$/,
-      },
     };
 
     const { data, error } = await validate(ctx, rules);
@@ -90,11 +85,6 @@ class OfficeController {
       },
       office_description: {
         type: 'string',
-      },
-      department_id: {
-        type: 'string',
-        required: true,
-        pattern: /^\d+$/,
       },
     };
     

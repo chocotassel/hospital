@@ -76,10 +76,12 @@ class UserController {
       user_id: {
         type: 'string',
         required: true,
+        pattern: /^\d+$/,
       },
       role_id: {
         type: 'string',
         required: true,
+        pattern: /^\d+$/,
       },
     };
 

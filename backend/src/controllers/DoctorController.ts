@@ -10,7 +10,7 @@ class DoctorController {
   // 获取所有医生
   async getDoctors(ctx: Context) {
     // 权限检查
-    if (!can(ctx.state.user.permissions, 'viewDepartment')) {
+    if (!can(ctx.state.user.permissions, 'viewDoctor')) {
       return response.fail(ctx, '权限校验失败', [], 403);
     }
 
@@ -25,7 +25,7 @@ class DoctorController {
   // 获取某个医生
   async getDoctor(ctx: Context) {
     // 权限检查
-    if (!can(ctx.state.user.permissions, 'viewDepartment')) {
+    if (!can(ctx.state.user.permissions, 'viewDoctor')) {
       return response.fail(ctx, '权限校验失败', [], 403);
     }
 
@@ -42,7 +42,7 @@ class DoctorController {
   // 创建医生
   async createDoctor(ctx: Context) {
     // 权限检查
-    if (!can(ctx.state.user.permissions, 'modifyDepartment')) {
+    if (!can(ctx.state.user.permissions, 'modifyDoctor')) {
       return response.fail(ctx, '权限校验失败', [], 403);
     }
 
@@ -56,7 +56,7 @@ class DoctorController {
       gender: {
         type: 'enum',
         required: true,
-        enum: ['Male', 'Female'],
+        enum: ['男', '女'],
       },
       date_of_birth: {
         type: 'date',
@@ -70,7 +70,7 @@ class DoctorController {
       phone_number: {
         type: 'string',
         required: true,
-        len: 15,
+        len: 11,
       },
       registration_fee: {
         type: 'number',
@@ -78,13 +78,14 @@ class DoctorController {
         min: 0,
       },
       office_id: {
-        type: 'number',
+        type: 'string',
         required: true,
+        pattern: /^\d+$/,
       },
       employee_number: {
         type: 'string',
         required: true,
-        len: 15,
+        len: 10,
       },
     };
 
@@ -104,7 +105,7 @@ class DoctorController {
   // 更新医生信息
   async updateDoctor(ctx: Context) {
     // 权限检查
-    if (!can(ctx.state.user.permissions, 'modifyDepartment')) {
+    if (!can(ctx.state.user.permissions, 'modifyDoctor')) {
       return response.fail(ctx, '权限校验失败', [], 403);
     }
 
@@ -133,7 +134,7 @@ class DoctorController {
       phone_number: {
         type: 'string',
         required: true,
-        len: 15,
+        len: 11,
       },
       registration_fee: {
         type: 'number',
@@ -157,7 +158,7 @@ class DoctorController {
       employee_number: {
         type: 'string',
         required: true,
-        len: 15,
+        len: 10,
       },
     };
     const { data, error } = await validate(ctx, rules);
@@ -176,7 +177,7 @@ class DoctorController {
   // 删除医生
   async deleteDoctor(ctx: Context) {
     // 权限检查
-    if (!can(ctx.state.user.permissions, 'modifyDepartment')) {
+    if (!can(ctx.state.user.permissions, 'modifyDoctor')) {
       return response.fail(ctx, '权限校验失败', [], 403);
     }
 

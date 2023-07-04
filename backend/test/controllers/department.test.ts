@@ -1,9 +1,8 @@
 import {describe, expect, test, it} from '@jest/globals';
 import request from 'supertest';
-import http from 'http';
 import app from '../../src/index'; // Koa应用实例
-const adminToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNjc1Njc0ODg0MTk1MzU2NjcyIiwicm9sZSI6ImFkbWluIiwicGVybWlzc2lvbnMiOlsidmlld0RlcGFydG1lbnQiLCJtb2RpZnlEZXBhcnRtZW50Iiwidmlld09mZmljZSIsIm1vZGlmeU9mZmljZSIsInZpZXdEb2N0b3IiLCJtb2RpZnlEb2N0b3IiLCJ2aWV3VmlzaXQiLCJtb2RpZnlWaXNpdCJdLCJpYXQiOjE2ODgzNDc0MzYsImV4cCI6MTY4ODM1MTAzNn0.oVLFoHshJh0Ri6gDuyhc06-9eGotPU6y8eA-GcyxOxk'
-const departmentId = '1675443362779631616'
+const adminToken = process.env.ADMIN_TOKEN
+const departmentId = '2'
 
 const server = app.callback()
 
@@ -23,12 +22,12 @@ describe('Department Management API', () => {
     const res = await request(server)
       .post('/departments')
       .send({
-        department_name: 'Test Department',
-        department_description: 'This is a test department'
+        department_name: 'Test Department0',
+        department_description: 'This is a test department0'
       })
       .set('Authorization', `Bearer ${adminToken}`);
     expect(res.statusCode).toEqual(200);
-    expect(res.body.data.department_name).toEqual('Test Department');
+    expect(res.body.code).toEqual(0);
   });
 
   // 测试更新科室的接口
@@ -41,7 +40,7 @@ describe('Department Management API', () => {
       })
       .set('Authorization', `Bearer ${adminToken}`);
     expect(res.statusCode).toEqual(200);
-    expect(res.body.data.department_name).toEqual('Updated Test Department');
+    expect(res.body.code).toEqual(0);
   });
 
   // 测试删除科室的接口

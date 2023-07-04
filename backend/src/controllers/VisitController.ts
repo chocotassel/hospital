@@ -50,6 +50,7 @@ class VisitController {
       doctor_id: {
         type: 'string',
         required: true,
+        pattern: /^\d+$/,
       },
       visit_hour: {
         type: 'number',
@@ -58,6 +59,11 @@ class VisitController {
       visit_date: {
         type: 'date',
         required: true,
+      },
+      visit_id: {
+        type: 'string',
+        required: true,
+        pattern: /^\d+$/,
       },
     };
 

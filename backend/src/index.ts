@@ -7,7 +7,7 @@ import path from 'path';
 import Koa from 'koa';
 import serve from 'koa-static';
 import koaBody from 'koa-body';
-import bodyParser from 'koa-bodyparser';
+// import bodyParser from 'koa-bodyparser';
 import mount from 'koa-mount';
 
 import loginRoutes from './routes/loginRoutes';
@@ -31,7 +31,7 @@ const app = new Koa();
 app.use(serve(path.join(__dirname, '..', '..', 'frontend', 'build')));
 
 // 访问控制中间件
-app.use(bodyParser());
+app.use(koaBody());
 app.use(errorHandlingMiddleware);
 app.use(accessControlMiddleware);
 
