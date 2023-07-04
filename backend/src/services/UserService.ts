@@ -7,6 +7,11 @@ class UserService {
   async getUsers() {
     return await User.findAll();
   }
+
+  // 查找单个用户
+  async getUser(id: string) {
+    return await User.findOne({ where: { user_id: BigInt(id).toString() } });
+  }
   
   // 创建用户
   async createUser(data: any) {
@@ -23,9 +28,17 @@ class UserService {
     const role = await Role.findByPk(roleId);
     if (!role) throw new Error('权限不存在');
 
-    await user.setRole(role);
+    return await user.setRole(role);
   }
 
+  // 修改用户信息
+  async updateUser(userId: bigint, data: any) {
+    const user = await User.findByPk(userId);
+    if (!user) throw new Error('用户不存在');
+
+    return await user.update(data);
+  }
+  
   // 修改用户的角色
   async changeRole(userId: bigint, newRoleId: bigint) {
     return this.assignRole(userId, newRoleId);
@@ -36,7 +49,7 @@ class UserService {
     const user = await User.findByPk(userId);
     if (!user) throw new Error('用户不存在');
     
-    await user.destroy();
+    return await user.destroy();
   }
 }
 

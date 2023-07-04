@@ -21,6 +21,22 @@ class UserController {
     }
   }
 
+  // 获取单个用户
+  async getUser(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'viewUser')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
+    const { id } = ctx.params;
+
+    try {
+      const user = await userService.getUser(id);
+      return response.success(ctx, user);
+    } catch (err) {
+      return response.fail(ctx, '服务器错误', err, 500);
+    }
+  }
   
   // 创建用户
   async createUser(ctx: Context) {
@@ -65,6 +81,52 @@ class UserController {
     }
   }
 
+  // 修改用户
+  async updateUser(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyUser')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
+    const rules: Rules = {
+      user_id: {
+        type: 'string',
+        required: true,
+        pattern: /^\d+$/,
+      },
+      username: {
+        type: 'string',
+        required: false,
+      },
+      password: {
+        type: 'string',
+        required: false,
+      },
+      employee_number: {
+        type: 'string',
+        required: false,
+      },
+      phone_number: {
+        type: 'string',
+        required: false,
+      }
+    };
+
+    const { id } = ctx.params;
+
+    const { data, error } = await validate(ctx, rules);
+    if (error) {
+      return response.fail(ctx, '非法数据', error, 400);
+    }
+
+    try {
+      await userService.updateUser(id, data);
+      return response.success(ctx, '用户修改成功');
+    } catch (err) {
+      return response.fail(ctx, '服务器错误', err, 500);
+    }
+  }
+
   // 修改用户权限
   async changeRole(ctx: Context) {
     // 权限检查
@@ -76,10 +138,12 @@ class UserController {
       user_id: {
         type: 'string',
         required: true,
+        pattern: /^\d+$/,
       },
       role_id: {
         type: 'string',
         required: true,
+        pattern: /^\d+$/,
       },
     };
 

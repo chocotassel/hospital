@@ -21,7 +21,7 @@ class DoctorService {
   async getDoctor(id: string) {
     return await Doctor.findOne({ 
       where: { 
-        id: BigInt(id).toString() 
+        doctor_id: BigInt(id).toString() 
       },
       include: [{
         model: Office,
@@ -40,7 +40,7 @@ class DoctorService {
 
   // 更新医生信息
   async updateDoctor(id: string, data: any) {
-    const doctor = await Doctor.findOne({ where: { id: BigInt(id).toString() } });
+    const doctor = await Doctor.findOne({ where: { doctor_id: BigInt(id).toString() } });
     if (!doctor) {
       throw new Error('医生不存在');
     }
@@ -50,7 +50,7 @@ class DoctorService {
 
   // 删除医生
   async deleteDoctor(id: string) {
-    const doctor = await Doctor.findOne({ where: { id: BigInt(id).toString() } });
+    const doctor = await Doctor.findOne({ where: { doctor_id: BigInt(id).toString() } });
     if (!doctor) {
       throw new Error('医生不存在');
     }

@@ -121,11 +121,11 @@ import axios from 'axios'
             value: "",
             //列表
             tableData: [{
-                    user_id: "xasdw12312",
-                    "username": "活着",
-                    "password": "1111111111",
-                    "role_name": "余华",
-                    "employee_number": "清华大学出版社",
+                    "user_id": "",
+                    "username": "",
+                    "password": "",
+                    "role_name": "",
+                    "employee_number": "",
                 }],
             currentPage: 1,
             pageSize: 10,
@@ -153,7 +153,7 @@ import axios from 'axios'
       handleCurrentChange(page) {
           console.log(`当前页: ${page}`);
           axios({
-            url: `/api/books`,
+            url: `/api/users`,
             method: 'get',
             params: {
               page: page,
@@ -169,100 +169,109 @@ import axios from 'axios'
         this.dialogFormVisible = true
         this.index = index
       },
-      handleEditconfirm () {
-        //添加
-        if(this.status === 1) {
-          this.tableData.unshift(this.form)
-          this.form = {}
-          this.status = 0
-        //编辑
-        } else {
-          Object.keys(this.tableData[this.index]).forEach((key)=>{
-            if(this.form[key]) {
-              this.tableData[this.index][key] = this.form[key]
-            }
-          })
-          this.form={}
-        }
-        this.dialogFormVisible = false
-        axios({
-          url: `/api/books/${this.tableData[this.index].user_id}`,
-          method: 'put',
-          data: this.tableData[this.index]
-        })
-        .then(()=> this.handleQueryAll())
-      },
 
-      handleDelete(index, row) {
-          this.$confirm('此操作将永久删除该书籍信息, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.tableData = this.tableData.filter(item => item.user_id  !== row.user_id)
-        })  
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-      },
-      
       handleReset() {
           this.formInline.username = "";
           this.formInline.role_name = "";
       },
-      handleQueryAll() {
-        axios({
-          url: `/api/books`,
-          method: 'get',
-        }).then(res => {
-          this.tableData = res.data
-          this.bookNumber = res.data.length
-        })
-      },
+
       handleQuery() {
-        let data = this.formInline
-        axios({
-          url: `/api/books`,
-          method: 'get',
-          data: {
-            type: data.type
-          }
-        }).then(res => {
-          this.tableData = res.data
+      const token = localStorage.getItem('token');
+    
+      axios.get('/api/users', {
+        params: this.formInline,
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          this.tableData = [response.data];
         })
-      },
-      handleAdd() {
-        axios.post(`/api/books`, this.tableData)
-        .then(res => {
-          console.log(this);
-          const data = res.data;
-          if (res.status == "200") {
-              this, this.tableData.push(data);
-          }
-          else if (res.status == "400") {
-              this.$message.warning(res.msg);
-          }
-          else if (res.status == "401") {
-              this.$message.error(res.msg);
-          }
-          else {
-              this.$message.error("服务器出错了！");
-          }
+        .catch(error => {
+          console.error(error);
+        });
+    },
+
+    // 添加按钮点击事件
+    handleAdd() {
+      this.dialogFormVisible = true; // 显示对话框
+      this.form = {}; // 将表单数据初始化为空对象
+    },
+
+    // 确定按钮点击事件
+    handleEditconfirm() {
+      const token = localStorage.getItem('token');
+    
+      axios.post('/api/users', this.form, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(() => {
+          this.handleQuery();
+          this.dialogFormVisible = false; // 隐藏对话框
         })
-        .then(()=> this.handleQueryAll())
+        .catch(error => {
+          console.error(error);
+        });
+    },
+
+    // 编辑按钮点击事件
+    handleEditConfirm() {
+      const token = localStorage.getItem('token');
+    
+      axios.put(`/api/users/${this.form.user_id}`, this.form, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(() => {
+          this.handleQuery();
+          this.dialogFormVisible = false; // 隐藏对话框
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+
+    // 删除按钮点击事件
+    handleDelete(index, row) {
+      const token = localStorage.getItem('token');
+    
+      axios.delete(`/api/users/${row.user_id}`, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(() => {
+          this.handleQuery();
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    handleQueryAll() {
+      const token = localStorage.getItem('token');
+      axios.get('/api/users', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log(response.data); // 输出响应数据，检查其格式是否为数组
         
-        this.dialogFormVisible=true
-        this.status = 1
-      },
+          if (Array.isArray(response.data)) {
+            this.tableData = [response.data]; // 将响应数据转换为数组
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
   },
+  mounted() {
+    // this.handleQueryAll();
+  }
 }
 </script>
 

@@ -50,6 +50,7 @@ class VisitController {
       doctor_id: {
         type: 'string',
         required: true,
+        pattern: /^\d+$/,
       },
       visit_hour: {
         type: 'number',

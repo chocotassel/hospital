@@ -100,9 +100,9 @@ import axios from 'axios'
             value: "",
             //列表
             tableData: [{
-                    department_id: "xasdw12312",
-                    "department_name": "活着",
-                    "department_description": "余华",
+                    "department_id": "",
+                    "department_name": "",
+                    "department_description": "",
                 }],
             currentPage: 1,
             pageSize: 10,
@@ -146,109 +146,109 @@ import axios from 'axios'
         this.dialogFormVisible = true
         this.index = index
       },
-      handleEditconfirm () {
-        //添加
-        if(this.status === 1) {
-          this.tableData.unshift(this.form)
-          this.form = {}
-          this.status = 0
-        //编辑
-        } else {
-          Object.keys(this.tableData[this.index]).forEach((key)=>{
-            if(this.form[key]) {
-              this.tableData[this.index][key] = this.form[key]
-            }
-          })
-          this.form={}
-        }
-        this.dialogFormVisible = false
-        axios({
-          url: `/api/departments/:id}`,
-          method: 'put',
-          data: this.tableData[this.index]
-        })
-        .then(()=> this.handleQueryAll())
-      },
-        //删除
-        handleDelete(index, row) {
-          this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          })
-          .then(() => {
-            // 向服务器发送删除数据的请求
-            axios.delete(`/api/departments/:id}`)
-              .then(() => {
-                this.$message({
-                  type: 'success',
-                  message: '删除成功!'
-                });
-                // 从表格数据中移除已删除的数据
-                this.tableData = this.tableData.filter(item => item.department_id !== row.department_id);
-              })
-              .catch(error => {
-                console.error('删除数据失败：', error);
-                this.$message.error('删除数据失败，请稍后重试。');
-              });
-          })  
-          .catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            });          
-          });
-        },
-
       //重置
       handleReset() {
           this.formInline.department_name = "";
       },
-      handleQueryAll() {
-        axios({
-          url: `/api/departments`,
-          method: 'get',
-        }).then(res => {
-          this.tableData = res.data
-          this.department_id = res.data.length
+      // 查询按钮点击事件
+    handleQuery() {
+      const token = localStorage.getItem('token');
+    
+      // 根据查询条件发送请求，获取医生列表
+      axios.get('/api/departments', {
+        params: this.formInline,
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          this.tableData = [response.data];
         })
-      },
-      handleQuery() {
-        let data = this.formInline
-        axios({
-          url: `/api/departments`,
-          method: 'get',
-          data: {
-            type: data.type
-          }
-        }).then(res => {
-          this.tableData = res.data
+        .catch(error => {
+          console.error(error);
+        });
+    },
+
+    // 添加按钮点击事件
+    handleAdd() {
+      this.dialogFormVisible = true; // 显示对话框
+      this.form = {}; // 将表单数据初始化为空对象
+    },
+
+    // 确定按钮点击事件
+    handleEditconfirm() {
+      const token = localStorage.getItem('token');
+    
+      axios.post('/api/departments', this.form, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(() => {
+          this.handleQuery();
+          this.dialogFormVisible = false; // 隐藏对话框
         })
-      },
-      handleAdd() {
-        axios.post(`/api/departments`, this.tableData)
-        .then(res => {
-          console.log(this);
-          const data = res.data;
-          if (res.status == "200") {
-              this, this.tableData.push(data);
-          }
-          else if (res.status == "400") {
-              this.$message.warning(res.msg);
-          }
-          else if (res.status == "401") {
-              this.$message.error(res.msg);
-          }
-          else {
-              this.$message.error("服务器出错了！");
-          }
+        .catch(error => {
+          console.error(error);
+        });
+    },
+
+    // 编辑按钮点击事件
+    handleEditConfirm() {
+      const token = localStorage.getItem('token');
+    
+      axios.put(`/api/departments/${this.form.department_id}`, this.form, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(() => {
+          this.handleQuery();
+          this.dialogFormVisible = false; // 隐藏对话框
         })
-        .then(()=> this.handleQueryAll())
+        .catch(error => {
+          console.error(error);
+        });
+    },
+
+    // 删除按钮点击事件
+    handleDelete(index, row) {
+      const token = localStorage.getItem('token');
+    
+      axios.delete(`/api/departments/${row.department_id}`, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(() => {
+          this.handleQuery();
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    handleQueryAll() {
+      const token = localStorage.getItem('token');
+      axios.get('/api/departments', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log(response.data); // 输出响应数据，检查其格式是否为数组
         
-        this.dialogFormVisible=true
-        this.status = 1
-      },
+          if (Array.isArray(response.data)) {
+            this.tableData = [response.data]; // 将响应数据转换为数组
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
   },
+  mounted() {
+    // this.handleQueryAll();
+  }
 }
 </script>
 

@@ -1,8 +1,8 @@
 <template>
-<div>
-<div class="personalCenter">
-    <el-container>
-      <el-header>个人中心</el-header>
+  <div>
+    <div class="personalCenter">
+      <el-container>
+        <el-header>个人中心</el-header>
         <el-container>
           <el-main>
             <el-card class="box-card">
@@ -15,150 +15,170 @@
                       box-align="center"
                     ></el-avatar>
                   </div>
-                <div class="change"><el-button type="primary" icon="el-icon-edit" @click="dialogVisible = true" >编辑</el-button></div>
+                  <div class="change">
+                    <el-button type="primary" icon="el-icon-edit" @click="dialogVisible = true">
+                      编辑
+                    </el-button>
+                  </div>
+                </div>
               </div>
-              </div>
-            <el-descriptions>
-              <el-descriptions-item label="员工号">{{info.employee_number}}</el-descriptions-item>
-              <el-descriptions-item label="姓名">{{info.doctor_name}}</el-descriptions-item>
-              <el-descriptions-item label="性别">{{info.gender ? '男' : '女'}}</el-descriptions-item>
-              <el-descriptions-item label="出生日期">{{info.date_of_birth}}</el-descriptions-item>
-              <el-descriptions-item label="身份证号">{{info.identity_card}}</el-descriptions-item>
-              <el-descriptions-item label="手机号">{{info.phone_number}}</el-descriptions-item>
-              <el-descriptions-item label="所属诊室">{{info.office_name}}</el-descriptions-item>
-            </el-descriptions>
-            <br>
-            <br>
+              <el-descriptions>
+                <el-descriptions-item label="员工号">{{ info.employee_number }}</el-descriptions-item>
+                <el-descriptions-item label="姓名">{{ info.doctor_name }}</el-descriptions-item>
+                <el-descriptions-item label="性别">{{ info.gender }}</el-descriptions-item>
+                <el-descriptions-item label="出生日期">{{ info.date_of_birth }}</el-descriptions-item>
+                <el-descriptions-item label="身份证号">{{ info.identity_card }}</el-descriptions-item>
+                <el-descriptions-item label="手机号">{{ info.phone_number }}</el-descriptions-item>
+                <el-descriptions-item label="所属诊室">{{ info.office_name }}</el-descriptions-item>
+              </el-descriptions>
+              <br>
+              <br>
             </el-card>
           </el-main>
 
-            <!-- Form -->
-            <el-dialog title="个人信息" :visible.sync="dialogVisible">
-              <el-form :model="form">
-                <el-form-item label="姓名" :label-width="formLabelWidth">
-                  <el-input v-model="form.doctor_name" autocomplete="off" ></el-input>
-                </el-form-item>
-                <el-form-item label="性别" :label-width="formLabelWidth">
-                  <el-radio v-model="radio" label="1">男</el-radio>
-                  <el-radio v-model="radio" label="0">女</el-radio>
-                </el-form-item>
-                <el-form-item label="身份证号" :label-width="formLabelWidth">
-                  <el-input v-model="form.identity_card" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="手机号" :label-width="formLabelWidth">
-                  <el-input v-model="form.phone_number" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="出生日期" :label-width="formLabelWidth">
-                  <el-input v-model="form.date_of_birth" autocomplete="off"></el-input>
-                </el-form-item>
-              </el-form>
-              <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="updateDoctor">确 定</el-button>
-              </div>
-            </el-dialog>
+          <!-- Form -->
+          <el-dialog title="个人信息" :visible.sync="dialogVisible">
+            <el-form :model="form">
+              <el-form-item label="姓名" :label-width="formLabelWidth">
+                <el-input v-model="form.doctor_name" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="性别" :label-width="formLabelWidth">
+                <el-radio-group v-model="form.gender">
+                  <el-radio label="Male">男</el-radio>
+                  <el-radio label="Female">女</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="身份证号" :label-width="formLabelWidth">
+                <el-input v-model="form.identity_card" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="手机号" :label-width="formLabelWidth">
+                <el-input v-model="form.phone_number" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="出生日期" :label-width="formLabelWidth">
+                <el-date-picker v-model="form.date_of_birth" type="date" placeholder="选择日期"></el-date-picker>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogVisible = false">取消</el-button>
+              <el-button type="primary" @click="updateDoctor">确定</el-button>
+            </div>
+          </el-dialog>
 
-
-            <el-dialog title="更改头像" :visible.sync="showChangeAvatarDialog">
-              <el-upload
-                class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :show-file-list="true"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
-            </el-dialog>
-
+          <el-dialog title="更改头像" :visible.sync="showChangeAvatarDialog">
+            <el-upload
+              class="avatar-uploader"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :show-file-list="true"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-dialog>
         </el-container>
-    </el-container>
+      </el-container>
+    </div>
   </div>
-
-</div>
 </template>
 
 <script>
-  import request from 'request'
-  export default {
-    name: "personinfo",
-    data() {
-      return {
-        i: null,
+import axios from 'axios';
 
-        info: {
-        employee_number: '01',
-        doctor_name: 'cxk',
-        phone_number: '110',
-        identity_card: '12345',
-        gender: '男',
-        office_name: '保卫科',
-        date_of_birth: '2001-10-10',
-        },
-        photo:'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+export default {
+  name: 'personinfo',
+  data() {
+    return {
+      i: null,
+      info: {
+        employee_number: '',
+        doctor_name: '',
+        phone_number: '',
+        identity_card: '',
+        gender: '',
+        office_name: '',
+        date_of_birth: '',
+      },
+      photo: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
 
-        //修改信息
-        dialogVisible: false,
-        form: {
+      // 修改信息
+      dialogVisible: false,
+      form: {
+        doctor_name: '',
+        gender: '',
+        identity_card: '',
+        phone_number: '',
+        date_of_birth: ''
+      },
+      formLabelWidth: '72px',
+      radio: '1',
+      input: '',
+      showChangeAvatarDialog: false,
+      imageUrl: '',
+    };
+  },
 
-        },
-        formLabelWidth: '72px',
-        radio: '1',
-        input: '',
-        showChangeAvatarDialog: false,
-        imageUrl: ''
+  methods: {
+    async getDoctor() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('/api/doctor/:id', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const userInfo = response.data;
+        console.log('用户信息：', userInfo);
+        this.info = userInfo;
+      } catch (error) {
+        console.error('获取用户信息失败：', error);
       }
     },
 
-    methods: {
-      async getDoctors() {
-        try {
-          const response = await request.get('/doctors');
-          const userInfo = response.data;
-          // 使用获取到的数据更新 info 对象
-          this.info = userInfo;
-          console.error('111');
-        } catch (error) {
-          console.error('获取用户信息失败：', error);
-        }
-      },
-
-      async updateDoctor() {
-        try {
-          const response = await request.put(`/doctors/:id}`, this.form);
-          const updatedDoctor = response.data;
-          console.log('更新医生信息成功:', updatedDoctor);
-          this.dialogVisible = false;
-        } catch (error) {
-          console.error('更新医生信息失败：', error);
-        }
-      },
-
-      toggleChangeAvatarDialog() {
-        this.showChangeAvatarDialog = true;
-      },
-      handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
-      },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
+    async updateDoctor() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.put(`/api/doctors/${this.info.employee_number}`, this.form, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const updatedDoctor = response.data;
+        console.log('更新医生信息成功:', updatedDoctor);
+        this.dialogVisible = false;
+        this.getDoctors(); // 更新完信息后重新获取医生信息
+      } catch (error) {
+        console.error('更新医生信息失败：', error);
       }
     },
-    mounted(){
-      this.getDoctors()
-    }
-  }
 
+
+
+    toggleChangeAvatarDialog() {
+      this.showChangeAvatarDialog = true;
+    },
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isJPG && isLt2M;
+    },
+  },
+  mounted() {
+    this.getDoctor();
+  },
+};
 </script>
+
 
 <style scoped>
 .el-header {

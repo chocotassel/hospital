@@ -3,16 +3,16 @@
   <el-card class="box-card">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item label="医生姓名" label-width="70px">
-            <el-input clearable v-model="formInline.username" placeholder="请输入医生姓名"></el-input>
+            <el-input clearable v-model="formInline.doctor_name" placeholder="请输入医生姓名"></el-input>
           </el-form-item>
           <el-form-item label="性别" label-width="70px">
-            <el-input clearable v-model="formInline.book_name" placeholder="请输入性别"></el-input>
+            <el-input clearable v-model="formInline.gender" placeholder="请输入性别"></el-input>
           </el-form-item>
           <el-form-item label="电话号码" label-width="70px">
-            <el-input clearable v-model="formInline.book_name" placeholder="请输入电话号码"></el-input>
+            <el-input clearable v-model="formInline.phone_number" placeholder="请输入电话号码"></el-input>
           </el-form-item>
           <el-form-item label="所属诊室" label-width="70px">
-            <el-input clearable v-model="formInline.book_name" placeholder="请输入所属诊室"></el-input>
+            <el-input clearable v-model="formInline.office_name" placeholder="请输入所属诊室"></el-input>
           </el-form-item>
           <el-form-item style="margin-left: 10px">
             <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
@@ -173,187 +173,197 @@
 </template>
 
 <script>
-import axios from 'axios'
-  export default {
-    name: 'doctor',
-    data() {
-        return {
-            formInline: {
-              employee_number: "",
-              doctor_name: "",
-              gender:"",
-              date_of_birth: "",
-              identity_card: "",
-              phone_number: "",
-              registration_fee: "",
-              description: "",
-              office_name: "",
-              photo: "",
-            },
-            value: "",
-            //列表
-            tableData: [{
-                    employee_number: "xasdw12312",
-                    "doctor_name": "活着",
-                    "gender": 1,
-                    "date_of_birth": "余华",
-                    "identity_card": "清华大学出版社",
-                    "phone_number": 23.3,
-                    "registration_fee": 9,
-                    "description": "huozhe.png",
-                    "office_name": 100,
-                    "photo": 100
-                }],
-            currentPage: 1,
-            pageSize: 10,
-            employee_number: 0,
-            status:0,
-            
-            //编辑 添加
-            dialogFormVisible: false,
-            form: {
-            },
-            formLabelWidth: '120px',
-            index:'',
-        };
+import axios from 'axios';
+
+export default {
+  name: 'doctor',
+  data() {
+    return {
+      formInline: {
+        employee_number: "",
+        doctor_name: "",
+        gender: "",
+        date_of_birth: "",
+        identity_card: "",
+        phone_number: "",
+        registration_fee: "",
+        description: "",
+        office_name: "",
+        photo: ""
+      },
+      value: "",
+      // 列表
+      tableData: [{
+        employee_number: "",
+        doctor_name: "",
+        gender: "",
+        date_of_birth: "",
+        identity_card: "",
+        phone_number: "",
+        registration_fee: "",
+        description: "",
+        office_name: "",
+        photo: ""
+      }],
+      currentPage: 1,
+      pageSize: 10,
+      employee_number: 0,
+      status: 0,
+
+      // 编辑 添加
+      dialogFormVisible: false,
+      form: {},
+      formLabelWidth: '120px',
+      index: ''
+    };
   },
   created() {
-    this.handleQueryAll()
+    this.handleQueryAll();
   },
   methods: {
-      onSubmit() {
-          console.log("submit!");
-      },
-      handleSizeChange(val) {
-          console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(page) {
-          console.log(`当前页: ${page}`);
-          axios({
-            url: `/api/doctors`,
-            method: 'get',
-            params: {
-              page: page,
-              size: this.pageSize
-            }
-          }).then(res => {
-            this.tableData = res.data
-          })
-      },
-      handleEdit(index, row){
-        console.log(row)
-        this.status = 0
-        this.dialogFormVisible = true
-        this.index = index
-      },
-      handleEditconfirm () {
-        //添加
-        if(this.status === 1) {
-          this.tableData.unshift(this.form)
-          this.form = {}
-          this.status = 0
-        //编辑
-        } else {
-          Object.keys(this.tableData[this.index]).forEach((key)=>{
-            if(this.form[key]) {
-              this.tableData[this.index][key] = this.form[key]
-            }
-          })
-          this.form={}
+    onSubmit() {
+      console.log("submit!");
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(page) {
+      console.log(`当前页: ${page}`);
+      axios({
+        url: `/api/doctors`,
+        method: 'get',
+        params: {
+          page: page,
+          size: this.pageSize
         }
-        this.dialogFormVisible = false
-        axios({
-          url: `/api/doctors/:id}`,
-          method: 'put',
-          data: this.tableData[this.index]
+      }).then(res => {
+        this.tableData = res.data;
+      });
+    },
+    handleEdit(index, row) {
+      console.log(row);
+      this.status = 0;
+      this.dialogFormVisible = true;
+      this.index = index;
+    },
+    handleReset() {
+      this.formInline.doctor_name = "";
+      this.formInline.gender = "";
+      this.formInline.phone_number = "";
+      this.formInline.office_name = "";
+    },
+    // 查询按钮点击事件
+    handleQuery() {
+      const token = localStorage.getItem('token');
+    
+      // 根据查询条件发送请求，获取医生列表
+      axios.get('/api/doctors', {
+        params: this.formInline,
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          this.tableData = [response.data];
         })
-        .then(()=> this.handleQueryAll())
-      },
-
-      handleDelete(index, row) {
-        this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-        .then(() => {
-          // 向服务器发送删除数据的请求
-          axios.delete(`/api/doctors/:id}`)
-            .then(() => {
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              });
-              // 从表格数据中移除已删除的数据
-              this.tableData = this.tableData.filter(item => item.employee_number !== row.employee_number);
-            })
-            .catch(error => {
-              console.error('删除数据失败：', error);
-              this.$message.error('删除数据失败，请稍后重试。');
-            });
-        })  
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
+        .catch(error => {
+          console.error(error);
         });
-      },
+    },
 
-      
-      handleReset() {
-          this.formInline.doctor_name_name = "";
-          this.formInline.gender = "";
-          this.formInline.phone_number = "";
-          this.formInline.office_name = "";
-      },
-      handleQueryAll() {
-        axios({
-          url: `/api/doctors`,
-          method: 'get',
-        }).then(res => {
-          this.tableData = res.data
-          this.employee_number = res.data.length
+    // 添加按钮点击事件
+    handleAdd() {
+      this.dialogFormVisible = true; // 显示对话框
+      this.form = {}; // 将表单数据初始化为空对象
+    },
+
+    // 确定按钮点击事件
+    handleEditconfirm() {
+      const token = localStorage.getItem('token');
+    
+      // 根据表单数据创建医生
+      axios.post('/api/doctors', this.form, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(() => {
+          // 创建成功，刷新医生列表
+          this.handleQuery();
+          this.dialogFormVisible = false; // 隐藏对话框
         })
-      },
-      handleQuery() {
-        let data = this.formInline
-        axios({
-          url: `/api/doctors`,
-          method: 'get',
-          data: {
-            type: data.type
-          }
-        }).then(res => {
-          this.tableData = res.data
+        .catch(error => {
+          console.error(error);
+        });
+    },
+
+    // 编辑按钮点击事件
+    handleEditConfirm() {
+      const token = localStorage.getItem('token');
+    
+      // 根据表单数据更新医生
+      axios.put(`/api/doctors/${this.form.employee_number}`, this.form, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(() => {
+          // 更新成功，刷新医生列表
+          this.handleQuery();
+          this.dialogFormVisible = false; // 隐藏对话框
         })
-      },
-      handleAdd() {
-        axios.post(`/api/doctors`, this.tableData)
-        .then(res => {
-          console.log(this);
-          const data = res.data;
-          if (res.status == "200") {
-              this, this.tableData.push(data);
-          }
-          else if (res.status == "400") {
-              this.$message.warning(res.msg);
-          }
-          else if (res.status == "401") {
-              this.$message.error(res.msg);
-          }
-          else {
-              this.$message.error("服务器出错了！");
-          }
+        .catch(error => {
+          console.error(error);
+        });
+    },
+
+    // 删除按钮点击事件
+    handleDelete(index, row) {
+      const token = localStorage.getItem('token');
+    
+      // 根据医生的出诊单号删除医生
+      axios.delete(`/api/doctors/${row.employee_number}`, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(() => {
+          // 删除成功，刷新医生列表
+          this.handleQuery();
         })
-        .then(()=> this.handleQueryAll())
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    handleQueryAll() {
+      const token = localStorage.getItem('token');
+      axios.get('/api/doctors', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log(response.data); // 输出响应数据，检查其格式是否为数组
         
-        this.dialogFormVisible=true
-        this.status = 1
-      },
+          if (Array.isArray(response.data)) {
+            this.tableData = [response.data]; // 将响应数据转换为数组
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
   },
-}
+  mounted() {
+    // this.handleQueryAll();
+  }
+};
 </script>
+
+
+
+
+
 
 <style scoped>
 .box-card {

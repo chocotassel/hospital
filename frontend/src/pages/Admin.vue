@@ -6,7 +6,7 @@
     <el-tab-pane label="科室管理"><department></department></el-tab-pane>
     <el-tab-pane label="诊室管理"><clinic></clinic></el-tab-pane>
     <el-tab-pane label="医生管理"><doctor></doctor>></el-tab-pane>
-    <el-tab-pane label="出诊管理"><appointmentRecord></appointmentRecord>></el-tab-pane>
+    <el-tab-pane label="出诊管理"><appointmentRecord></appointmentRecord></el-tab-pane>
     <el-tab-pane label="用户管理"><users></users></el-tab-pane>
   </el-tabs>
 
@@ -30,7 +30,7 @@ import appointmentRecord from '@/components/AppointmentRecord.vue'
   },
   methods: {
   },
-    components: { department,clinic,doctor,appointmentRecord,users }
+    components: { doctor,department,clinic,appointmentRecord,users }
 }
 </script>
 
