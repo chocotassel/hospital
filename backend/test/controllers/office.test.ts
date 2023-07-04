@@ -22,7 +22,7 @@ describe('Office Management API', () => {
     // 测试获取单个科室的接口
     it('should GET an existing office', async () => {
       const res = await request(server)
-        .get(`/offices/${officeId}`)
+        .get(`/office/${officeId}`)
         .set('Authorization', `Bearer ${adminToken}`);
       console.log(res.body);
       expect(res.statusCode).toEqual(200);

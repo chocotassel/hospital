@@ -23,7 +23,7 @@ describe('Doctor Management API', () => {
   // 测试获取单个医生的接口
   it('should GET an existing doctor', async () => {
     const res = await request(server)
-      .get(`/doctors/${doctorId}`)
+      .get(`/doctor/${doctorId}`)
       .set('Authorization', `Bearer ${adminToken}`);
     console.log('get doctor',res.body);
     expect(res.statusCode).toEqual(200);

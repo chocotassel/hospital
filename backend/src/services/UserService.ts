@@ -28,9 +28,17 @@ class UserService {
     const role = await Role.findByPk(roleId);
     if (!role) throw new Error('权限不存在');
 
-    await user.setRole(role);
+    return await user.setRole(role);
   }
 
+  // 修改用户信息
+  async updateUser(userId: bigint, data: any) {
+    const user = await User.findByPk(userId);
+    if (!user) throw new Error('用户不存在');
+
+    return await user.update(data);
+  }
+  
   // 修改用户的角色
   async changeRole(userId: bigint, newRoleId: bigint) {
     return this.assignRole(userId, newRoleId);
@@ -41,7 +49,7 @@ class UserService {
     const user = await User.findByPk(userId);
     if (!user) throw new Error('用户不存在');
     
-    await user.destroy();
+    return await user.destroy();
   }
 }
 

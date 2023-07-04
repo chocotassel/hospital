@@ -17,6 +17,15 @@ describe('Department Management API', () => {
     expect(Array.isArray(res.body.data.data)).toBe(true);
   });
 
+  // 测试获取单个科室的接口
+  it('should GET an existing department', async () => {
+    const res = await request(server)
+      .get(`/department/${departmentId}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.code).toEqual(0);
+  });
+
   // 测试创建科室的接口
   it('should POST a new department', async () => {
     const res = await request(server)

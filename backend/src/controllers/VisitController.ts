@@ -60,11 +60,6 @@ class VisitController {
         type: 'date',
         required: true,
       },
-      visit_id: {
-        type: 'string',
-        required: true,
-        pattern: /^\d+$/,
-      },
     };
 
     const { data, error } = await validate(ctx, rules);
