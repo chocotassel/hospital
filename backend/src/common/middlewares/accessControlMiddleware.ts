@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 import { accessLogger } from '../logger';
 
 const unauthenticatedPaths = [
-  '/',
   '/api/login',
-  '/api/test'
+  '/api/test',
+  '/uploads'
 ]
 
 const adminPaths = [
@@ -23,7 +23,7 @@ export default async function authMiddleware(ctx: Context, next: Next) {
   }
   
   // Skip authentication for the login route
-  if (unauthenticatedPaths.includes(ctx.path)) {
+  if (unauthenticatedPaths.some(path => ctx.path.startsWith(path))) {
     await next();
     return;
   }

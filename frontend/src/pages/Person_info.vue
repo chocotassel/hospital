@@ -11,7 +11,7 @@
                   <div @click="toggleChangeAvatarDialog">
                     <el-avatar
                       :size="100"
-                      :src="photo"
+                      :src="imageUrl"
                       box-align="center"
                     ></el-avatar>
                   </div>
@@ -169,7 +169,8 @@ export default {
     },
     handleAvatarSuccess(response) {
       console.log(response);
-      this.imageUrl = response.data.url; 
+      this.imageUrl = `https://localhost/${response.data.avatar}`;
+      this.showChangeAvatarDialog = false;
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg';
