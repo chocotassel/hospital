@@ -197,13 +197,6 @@ class DoctorController {
       }
 
       const { id } = ctx.params;
-
-      // try {
-      //   const result = await DoctorService.uploadAvatar(id, avatar);
-      //   return response.success(ctx, result);
-      // } catch (err) {
-      //   return response.fail(ctx, '服务器错误', err, 500);
-      // }
       const reader = fs.createReadStream(file.path);
       
       // 在文件名中包含用户的 ID，以便将头像文件和用户关联起来
