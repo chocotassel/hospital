@@ -219,7 +219,7 @@ export default {
     };
   },
   created() {
-    this.handleGetDepartments();
+    this.handleQueryAll();
   },
   methods: {
     onSubmit() {
@@ -248,29 +248,63 @@ export default {
       this.formInline.office_name = "";
     },
 
-    // 获取所有科室列表
-    handleGetDepartments() {
-      axios.get('/departments')
+      //查询全部
+      handleQueryAll() {
+      const token = localStorage.getItem('token');
+      const page = 1; // 页码
+      const limit = 10; // 每页显示的数量
+        
+      axios.get('/api/doctors', {
+        params: {
+          page,
+          limit
+        },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
         .then(response => {
-          this.departmentOptions = response.data;
+          console.log(response.data.data.data); // 输出响应数据，检查其格式是否符合预期
+      
+          if (Array.isArray(response.data.data.data)) {
+            this.tableData = response.data.data.data; 
+                    
+            // 遍历每个医生对象，将其对应的 office_name 存储到 doctor 对象中
+            this.tableData.forEach(doctor => {
+              doctor.office_name = doctor.office.office_name;
+            });
+          }
+
+
         })
         .catch(error => {
           console.error(error);
         });
     },
 
-    // 查询按钮点击事件
+    // 查询
     handleQuery() {
       const token = localStorage.getItem('token');
-      
-      axios.get('/api/doctors', {
-        params: this.formInline,
+      const page = 1; // 页码
+      const limit = 10; // 每页显示的数量
+      const departmentName = this.form.department_name; // 搜索关键字
+    
+      axios.get('/api/departments', {
+        params: {
+          page,
+          limit,
+          department_name: departmentName
+        },
         headers: {
           Authorization: 'Bearer ' + token
         }
       })
         .then(response => {
-          this.tableData = response.data.data;
+          console.log("单个:", response.data.data.data); // 输出响应数据，检查其格式是否符合预期
+        
+          if (Array.isArray(response.data.data.data)) {
+            this.tableData = response.data.data.data; // 将响应数据中的 departments 赋值给 tableData
+          }
         })
         .catch(error => {
           console.error(error);
@@ -305,7 +339,7 @@ export default {
           }
         })
           .then(() => {
-            this.handleGetDepartments();
+            this.handleQueryAll();
             this.dialogFormVisible = false; // 隐藏对话框
           })
           .catch(error => {
@@ -319,7 +353,7 @@ export default {
           }
         })
           .then(() => {
-            this.handleGetDepartments();
+            this.handleQueryAll();
             this.dialogFormVisible = false; // 隐藏对话框
           })
           .catch(error => {

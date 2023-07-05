@@ -151,28 +151,67 @@ import axios from 'axios'
           this.formInline.office_id = "";
           this.handleQueryAll()
       },
-      // 查询
-      handleQuery() {
-        const token = localStorage.getItem('token');
-        const officeId = this.formInline.office_id;
+      //查询全部
+      handleQueryAll() {
+      const token = localStorage.getItem('token');
+      const page = 1; // 页码
+      const limit = 10; // 每页显示的数量
+        
+      axios.get('/api/offices', {
+        params: {
+          page,
+          limit
+        },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log(response.data.data.data); // 输出响应数据，检查其格式是否符合预期
       
-        axios.get(`/api/office/${officeId}`, {
-          headers: {
-            Authorization: 'Bearer ' + token
+          if (Array.isArray(response.data.data.data)) {
+            this.tableData = response.data.data.data; 
+                    
+            this.tableData.forEach(office => {
+              office.department_name = office.department.department_name;
+            });
+          }
+
+
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+
+    // 查询
+    handleQuery() {
+      const token = localStorage.getItem('token');
+      const page = 1; // 页码
+      const limit = 10; // 每页显示的数量
+      const departmentName = this.form.department_name; // 搜索关键字
+    
+      axios.get('/api/offices', {
+        params: {
+          page,
+          limit,
+          department_name: departmentName
+        },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log("单个:", response.data.data.data); // 输出响应数据，检查其格式是否符合预期
+        
+          if (Array.isArray(response.data.data.data)) {
+            this.tableData = response.data.data.data; // 将响应数据中的 departments 赋值给 tableData
           }
         })
-          .then(response => {
-            if (response.data) {
-              this.tableData = [response.data.data]; // 更新表格显示的数据
-              console.log("111:",response.data)
-            } else {
-              this.tableData = []; // 清空表格数据
-            }
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      },
+        .catch(error => {
+          console.error(error);
+        });
+    },
 
     handleEdit(index, row){
       // 在这里可以访问到对应的科室号
@@ -244,24 +283,6 @@ import axios from 'axios'
         });
     },
 
-    handleQueryAll() {
-      const token = localStorage.getItem('token');
-      axios.get('/api/offices', {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(response => {
-          console.log(response.data.data); // 输出响应数据，检查其格式是否为数组
-        
-          if (Array.isArray(response.data.data)) {
-            this.tableData = response.data.data; // 将响应数据转换为数组
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    }
   },
   mounted() {
     // this.handleQueryAll();

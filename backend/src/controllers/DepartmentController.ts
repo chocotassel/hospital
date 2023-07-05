@@ -38,6 +38,7 @@ class DepartmentController {
     // 业务逻辑
     try {
       const { departments, total } = await DepartmentService.getDepartments(_page, _limit, _name);
+      console.log("222:",_name)
       return response.success(ctx, paginate(departments, _page, total, _limit));
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);

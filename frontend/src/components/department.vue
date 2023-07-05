@@ -171,39 +171,34 @@ import axios from 'axios'
         });
     },
 
-    //查询
+    // 查询
     handleQuery() {
       const token = localStorage.getItem('token');
       const page = 1; // 页码
       const limit = 10; // 每页显示的数量
-      const name = this.searchKeyword; // 搜索关键字
-
+      const departmentName = this.formInline.department_name; // 搜索关键字
+    
       axios.get('/api/departments', {
         params: {
           page,
           limit,
-          name // 将搜索关键字作为请求参数传递给后端接口
+          name: departmentName
         },
         headers: {
           Authorization: 'Bearer ' + token
         }
       })
         .then(response => {
-          console.log(response.data); // 输出响应数据，检查其格式是否符合预期
-
-          const { departments, total } = response.data;
-
-          if (Array.isArray(departments)) {
-            this.tableData = departments; // 将响应数据中的 departments 赋值给 tableData
-          }
+          console.log("单个:", response.data.data.data); // 输出响应数据，检查其格式是否符合预期
         
-          this.totalItems = total; // 设置总条目数
+          if (Array.isArray(response.data.data.data)) {
+            this.tableData = response.data.data.data; 
+          }
         })
         .catch(error => {
           console.error(error);
         });
     },
-
 
     handleEdit(index, row){
       // 在这里可以访问到对应的科室号
@@ -211,7 +206,6 @@ import axios from 'axios'
       this.editingDepartmentId = departmentId;
       this.dialogFormVisible = true;
       this.editingMode =true;
-
     }, 
 
     // 添加按钮点击事件
