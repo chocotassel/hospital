@@ -5,25 +5,29 @@ import Department from '../models/Department';
 import Doctor from '../models/Doctor';
 import Office from '../models/Office';
 
+interface Condition {
+  [key: string]: any; // 索引签名
+}
+
 class DoctorService {
   // 获取所有医生
-  async getDoctors(page: number, limit: number, name?: string) {
-    let whereCondition = {};
+  async getDoctors(page?: number, limit?: number, name?: string) {
+    let condition: Condition = {};
+    let whereCondition: Condition = {};
     
     // 如果传入了name，添加模糊查询条件
     if (name) {
-      whereCondition = {
-        doctor_name: {
-          [Op.like]: '%' + name + '%'
-        }
-      }
+      condition.user_name = { [Op.like]: '%' + name + '%' }
+      whereCondition.user_name = { [Op.like]: '%' + name + '%' }
     }
 
-    const doctors = await Department.findAll({
-      where: whereCondition,
-      limit,
-      offset: (page - 1) * limit,
-    });
+    // 如果传入了page和limit，添加offset条件
+    if (page && limit) {
+      condition.offset = (page - 1) * limit;
+      condition.limit = limit;
+    }
+
+    const doctors = await Department.findAll(condition);
     
     const total = await Department.count({
       where: whereCondition,

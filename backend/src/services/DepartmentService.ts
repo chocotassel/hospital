@@ -3,25 +3,29 @@ import { Op } from 'sequelize';
 import snowflake from '../common/utils/snowflake';
 import Department from '../models/Department';
 
+interface Condition {
+  [key: string]: any; // 索引签名
+}
+
 class DepartmentService {
   // 获取所有科室
-  async getDepartments(page: number, limit: number, name?: string) {
-    let whereCondition = {};
+  async getDepartments(page?: number, limit?: number, name?: string) {
+    let condition: Condition = {};
+    let whereCondition: Condition = {};
     
     // 如果传入了name，添加模糊查询条件
     if (name) {
-      whereCondition = {
-        department_name: {
-          [Op.like]: '%' + name + '%'
-        }
-      }
+      condition.user_name = { [Op.like]: '%' + name + '%' }
+      whereCondition.user_name = { [Op.like]: '%' + name + '%' }
     }
 
-    const departments = await Department.findAll({
-      where: whereCondition,
-      limit,
-      offset: (page - 1) * limit,
-    });
+    // 如果传入了page和limit，添加offset条件
+    if (page && limit) {
+      condition.offset = (page - 1) * limit;
+      condition.limit = limit;
+    }
+
+    const departments = await Department.findAll(condition);
     
     const total = await Department.count({
       where: whereCondition,
