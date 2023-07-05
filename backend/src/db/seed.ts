@@ -188,6 +188,7 @@ async function seedData() {
       permission_name: 'assignRoleToUser',
     });
 
+
     // 关联角色和权限
     await RolePermission.create({
       role_id: role1.role_id,
@@ -267,6 +268,16 @@ async function seedData() {
     await RolePermission.create({
       role_id: role2.role_id,
       permission_id: permission9.permission_id,
+    });
+
+    await RolePermission.create({
+      role_id: role2.role_id,
+      permission_id: permission6.permission_id,
+    });
+
+    await RolePermission.create({
+      role_id: role2.role_id,
+      permission_id: permission8.permission_id,
     });
 
     console.log('Data seeding completed!');
