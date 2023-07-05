@@ -2,7 +2,8 @@ import {describe, expect, test, it} from '@jest/globals';
 import request from 'supertest';
 import app from '../../src/index'; // Koa应用实例
 const adminToken = process.env.ADMIN_TOKEN
-let visitId = '1675674884128772096'
+let visitId = '1676074671579729920'
+let doctorId = '1676074671546044416'
 
 const server = app.callback()
 
@@ -34,7 +35,7 @@ describe('Visit Management API', () => {
     const res = await request(server)
       .post('/visits')
       .send({
-        doctor_id: '1676058374741430272',
+        doctor_id: doctorId,
         visit_date: new Date('2021-01-01'),
         visit_hour: 1,
       })
@@ -50,7 +51,7 @@ describe('Visit Management API', () => {
     const res = await request(server)
       .put(`/visits/${visitId}`)
       .send({
-        doctor_id: '1676058374741430272',
+        doctor_id: doctorId,
         visit_date: new Date('2021-01-01'),
         visit_hour: 2,
       })

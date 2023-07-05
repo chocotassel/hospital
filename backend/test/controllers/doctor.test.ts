@@ -2,7 +2,8 @@ import {describe, expect, test, it} from '@jest/globals';
 import request from 'supertest';
 import app from '../../src/index'; // Koa应用实例
 const adminToken = process.env.ADMIN_TOKEN
-let doctorId = '1675674884111863808'
+let doctorId = '1676074671546044416'
+let officeId = '1676074671503970304'
 
 const server = app.callback()
 
@@ -42,7 +43,7 @@ describe('Doctor Management API', () => {
         identity_card: '123456789012345678',
         phone_number: '12345678901',
         registration_fee: 100,
-        office_id: '1675674884036235264',
+        office_id: officeId,
         employee_number: '0101210001',
       })
       .set('Authorization', `Bearer ${adminToken}`);
@@ -64,7 +65,7 @@ describe('Doctor Management API', () => {
         identity_card: '123456789012345678',
         phone_number: '12345678901',
         registration_fee: 100,
-        office_id: '1675674884036235264',
+        office_id: officeId,
         employee_number: '0101210001',
       })
       .set('Authorization', `Bearer ${adminToken}`);
@@ -72,7 +73,6 @@ describe('Doctor Management API', () => {
     expect(res.statusCode).toEqual(200);
     expect(res.body.code).toEqual(0);
   }
-
   );
 
   // 测试删除医生的接口

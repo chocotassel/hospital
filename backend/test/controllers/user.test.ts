@@ -2,8 +2,8 @@ import {describe, expect, test, it} from '@jest/globals';
 import request from 'supertest';
 import app from '../../src/index'; // Koa应用实例
 const adminToken = process.env.ADMIN_TOKEN
-let userId = '1675674885319430144'
-let roleId = '1675674884183429120'
+let userId = '1676074671625342976'
+let roleId = '1676074671600832512'
 
 const server = app.callback()
 
