@@ -27,7 +27,7 @@ class OfficeController {
     } as { _page: number, _limit: number, _name: string };
 
     const schema = Joi.object({
-      _name: Joi.string(),
+      _name: Joi.string().allow(null, ''),
     });
 
     const { error } = schema.validate({ _name });
