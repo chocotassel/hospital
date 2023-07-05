@@ -8,8 +8,10 @@ const router = new Router({
 
 router.get('/doctors', doctorController.getDoctors);
 router.get('/doctor/:id', doctorController.getDoctorById);
+router.get('/doctor', doctorController.getDoctorByEmployeeNumber);
 // router.get('/doctor', doctorController.getDoctor);
 router.post('/doctors', doctorController.createDoctor);
+router.post('/doctors/upload', doctorController.updateAvatar);
 router.put('/doctors/:id', doctorController.updateDoctor);
 router.delete('/doctors/:id', doctorController.deleteDoctor);
 

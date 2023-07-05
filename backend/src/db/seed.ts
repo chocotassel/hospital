@@ -8,6 +8,7 @@ import Permission from '../models/Permission';
 import RolePermission from '../models/RolePermission';
 import snowflake from '../common/utils/snowflake';
 import bcrypt from 'bcrypt';
+import path from 'path';
 
 
 // 创建一些数据库数据
@@ -50,7 +51,7 @@ async function seedData() {
       registration_fee: 100.0,
       description: 'Doctor 1 description',
       office_id: office1.office_id,
-      photo: Buffer.from('doctor_photo'),
+      avatar: path.join(__dirname,'..', '..', '/public/uploads/doctor1_photo.jpg'),
       employee_number: '0101230001',
     });
 
@@ -64,7 +65,7 @@ async function seedData() {
       registration_fee: 150.0,
       description: 'Doctor 2 description',
       office_id: office2.office_id,
-      photo: Buffer.from('doctor_photo'),
+      avatar: path.join(__dirname,'..', '..', '/public/uploads/doctor2_photo.jpg'),
       employee_number: '0101230002',
     });
 

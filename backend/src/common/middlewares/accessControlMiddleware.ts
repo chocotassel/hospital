@@ -21,8 +21,6 @@ export default async function authMiddleware(ctx: Context, next: Next) {
   if (!process.env.JWT_SECRET) {
     throw new Error('Missing JWT_SECRET environment variable');
   }
-
-  console.log(ctx.path);
   
   // Skip authentication for the login route
   if (unauthenticatedPaths.includes(ctx.path)) {

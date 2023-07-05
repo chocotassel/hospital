@@ -48,8 +48,8 @@ export default class Doctor extends Model {
   @BelongsTo(() => Office)
   office!: Office;
 
-  @Column(DataType.BLOB)
-  photo!: Buffer;
+  @Column(DataType.STRING(255))
+  avatar!: string;
 
   @ForeignKey(() => User)
   @Column(DataType.STRING(15))

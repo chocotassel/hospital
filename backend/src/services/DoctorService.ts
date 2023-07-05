@@ -4,6 +4,7 @@ import snowflake from '../common/utils/snowflake';
 import Department from '../models/Department';
 import Doctor from '../models/Doctor';
 import Office from '../models/Office';
+import path from 'path';
 
 interface Condition {
   [key: string]: any; // 索引签名
@@ -58,6 +59,21 @@ class DoctorService {
     });
   }
 
+  // 获取单个医生 employee_number
+  async getDoctorByEmployeeNumber(employeeNumber: string) {
+    return await Doctor.findOne({
+      where: {
+        employee_number: employeeNumber
+      },
+      include: [{
+        model: Office,
+        include: [{
+          model: Department,
+        }]
+      }]
+    });
+  }
+
   // // 获取医生 name
   // async getDoctorByName(name: string) {
   //   return await Doctor.findAll({
@@ -89,6 +105,18 @@ class DoctorService {
     }
 
     return await doctor.update(data);
+  }
+
+  // 更新医生头像
+  async updateAvatar(id: string, avatar: any) {
+    const doctor = await Doctor.findOne({ where: { doctor_id: BigInt(id).toString() } });
+    if (!doctor) {
+      throw new Error('医生不存在');
+    }
+
+    const avatarPath = path.join(__dirname, '../../public/uploads', doctor.avatar);
+
+    // 删除旧头像
   }
 
   // 删除医生
