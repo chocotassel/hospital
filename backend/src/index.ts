@@ -26,7 +26,7 @@ import db from './db';
 db();
 
 const app = new Koa();
-const api = new Koa();
+// const api = new Koa();
 
 // 挂载前端应用
 app.use(serve(path.join(__dirname, '..', '..', 'frontend', 'dist')));
@@ -47,12 +47,10 @@ app.use(userRoutes.routes());
 app.use(permissionRoutes.routes());
 
 
-// 统一接口前缀
-app.use(mount('/api', api));
-
-
 export default app;
 
+// // 统一接口前缀
+// app.use(mount('/api', api));
 
 // app.listen(3000, () => {
 //   console.log('Server is running on localhost:3000');
