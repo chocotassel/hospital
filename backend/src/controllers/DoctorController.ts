@@ -181,35 +181,38 @@ class DoctorController {
     if (!can(ctx.state.user.permissions, 'modifyDoctor')) {
       return response.fail(ctx, '权限校验失败', [], 403);
     }
-
-    try {
-      // 检查是否有文件上传
-      if (!ctx.request.files || !ctx.request.files.file) {
-        ctx.status = 400;
-        return ctx.body = 'No file provided.';
-      }
-
-      const file = ctx.request.files.file as any;
     
-      if (Array.isArray(file)) {
-        ctx.status = 400;
-        return ctx.body = 'Multiple files are not allowed.';
-      }
+    // 检查是否有文件上传
+    if (!ctx.request.files || !ctx.request.files.file) {
+      ctx.status = 400;
+      return ctx.body = '未上传文件';
+    }
 
-      const { id } = ctx.params;
-      const reader = fs.createReadStream(file.path);
+    const file = ctx.request.files.file as any;
+  
+    if (Array.isArray(file)) {
+      ctx.status = 400;
+      return ctx.body = '不允许上传多个文件';
+    }
+
+    const { id } = ctx.params;
+    const reader = fs.createReadStream(file.filepath);
+    
+    // 在文件名中包含用户的 ID，以便将头像文件和用户关联起来
+    let filePath = path.join(__dirname,'..', '..', 'public/uploads/') + `/${id}_${file.newFilename}`;
+    const upStream = fs.createWriteStream(filePath);
+    reader.pipe(upStream);
+    console.log('上传成功', filePath);
       
-      // 在文件名中包含用户的 ID，以便将头像文件和用户关联起来
-      let filePath = path.join(__dirname,'..', '..', 'public/uploads/') + `/${id}_${file.name}`;
-      const upStream = fs.createWriteStream(filePath);
-      reader.pipe(upStream);
     
+    try {
       // 更新用户信息，保存头像的路径
-      const result = await DoctorService.updateAvatar(id, { avatar: filePath });
+      const relativeFilePath = 'uploads/' + `${id}_${file.newFilename}`;
+      const result = await DoctorService.updateAvatar(id, relativeFilePath);
     
       return response.success(ctx, result);
     } catch (err) {
-      return response.fail(ctx, 'Server error', err, 500);
+      return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 

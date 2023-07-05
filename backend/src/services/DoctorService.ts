@@ -110,15 +110,13 @@ class DoctorService {
   }
 
   // 更新医生头像
-  async updateAvatar(id: string, avatar: any) {
+  async updateAvatar(id: string, path: string) {
     const doctor = await Doctor.findOne({ where: { doctor_id: BigInt(id).toString() } });
     if (!doctor) {
       throw new Error('医生不存在');
     }
 
-    const avatarPath = path.join(__dirname, '../../public/uploads', doctor.avatar);
-
-    // 删除旧头像
+    return await doctor.update({ avatar: path });
   }
 
   // 删除医生
