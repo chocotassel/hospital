@@ -2,8 +2,8 @@
   <!-- 书籍列表卡片 -->
   <el-card class="box-card">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="用户ID" label-width="70px">
-            <el-input clearable v-model="formInline.user_id" placeholder="请输入用户ID"></el-input>
+          <el-form-item label="用户名" label-width="70px">
+            <el-input clearable v-model="formInline.username" placeholder="请输入用户名"></el-input>
           </el-form-item>
           <el-form-item style="margin-left: 10px">
             <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
@@ -31,14 +31,6 @@
         <template slot-scope="scope">
         <span style="margin-left: 10px">{{ scope.row.username }}</span>
         </template>
-        </el-table-column>
-
-        <el-table-column
-          label="密码"
-          width="300">
-          <template slot-scope="scope">
-            <span style="margin-left: 10px">{{ scope.row.password }}</span>
-          </template>
         </el-table-column>
 
         <el-table-column
@@ -76,9 +68,6 @@
           <el-form-item label="用户名" :label-width="formLabelWidth">
             <el-input v-model="form.username" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="密码" :label-width="formLabelWidth">
-            <el-input v-model="form.password" autocomplete="off"></el-input>
-          </el-form-item>
           <el-form-item label="所属角色" :label-width="formLabelWidth">
             <el-select v-model="form.role_name" placeholder="请选择角色">
               <el-option
@@ -89,9 +78,6 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <!-- <el-form-item label="员工号" :label-width="formLabelWidth">
-            <el-input v-model="form.employee_number" autocomplete="off"></el-input>
-          </el-form-item> -->
           <el-form-item label="所属部门" :label-width="formLabelWidth">
             <el-select v-model="form.department_id" placeholder="请选择所属部门">
               <el-option
@@ -126,7 +112,7 @@
         :current-page.sync="currentPage"
         :page-size="pageSize"
         @current-change="handleCurrentChange"
-        :total="bookNumber">
+        :total="bookNum">
       </el-pagination>
       
     </el-card>
@@ -147,14 +133,13 @@ import axios from 'axios'
             tableData: [{
                     "user_id": "",
                     "username": "",
-                    "password": "",
                     "role_name": "",
                     "employee_number": "",
                 }],
             currentPage: 1,
             pageSize: 10,
-            bookNumber: 0,
             status:0,
+            bookNum:0,
             
             //编辑 添加
             dialogFormVisible: false,
@@ -213,27 +198,70 @@ import axios from 'axios'
 
       handleReset() {
           this.formInline.username = "";
-          this.formInline.role_name = "";
+          this.handleQueryAll
       },
 
-      handleQuery() {
-        const token = localStorage.getItem('token');
+       //查询全部
+       handleQueryAll() {
+      const token = localStorage.getItem('token');
+      const page = 1; // 页码
+      const limit = 10; // 每页显示的数量
+        
+      axios.get('/api/users', {
+        params: {
+          page,
+          limit
+        },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log(response.data.data.data); // 输出响应数据，检查其格式是否符合预期
+      
+          if (Array.isArray(response.data.data.data)) {
+            this.tableData = response.data.data.data; 
+                    
+            // this.tableData.forEach(doctor => {
+            //   doctor.office_name = doctor.office.office_name;
+            // });           
+          }
 
-        axios.get('/api/users', {
-          params: {
-            department_name: this.formInline.department_name
-          },
-          headers: {
-            Authorization: 'Bearer ' + token
+
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+
+    // 查询
+    handleQuery() {
+      const token = localStorage.getItem('token');
+      const page = 1; // 页码
+      const limit = 10; // 每页显示的数量
+      const userName = this.formInline.username; // 搜索关键字
+    
+      axios.get('/api/users', {
+        params: {
+          page,
+          limit,
+          name: userName
+        },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log("单个:", response.data.data.data); // 输出响应数据，检查其格式是否符合预期
+        
+          if (Array.isArray(response.data.data.data)) {
+            this.tableData = response.data.data.data; 
           }
         })
-          .then(response => {
-            this.tableData = response.data.data; 
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      },
+        .catch(error => {
+          console.error(error);
+        });
+    },
 
       // 获取角色列表
       handleQueryAllRoles() {
@@ -255,8 +283,8 @@ import axios from 'axios'
 
       handleEdit(index, row){
       // 在这里可以访问到对应的科室号
-      const departmentId = row.department_id;
-      this.editingDepartmentId = departmentId;
+      const userId = row.user_id;
+      this.editingUserId = userId;
       this.dialogFormVisible = true;
       this.editingMode =true;
 
@@ -275,7 +303,7 @@ import axios from 'axios'
     
       if (this.editingMode === true) {
         // 编辑确认
-        axios.put(`/api/departments/${this.editingDepartmentId}`, this.form, {
+        axios.put(`/api/departments/${this.editingUserId}`, this.form, {
           headers: {
             Authorization: 'Bearer ' + token
           }
@@ -303,47 +331,28 @@ import axios from 'axios'
           });
       }
     },
-    handleQueryAll() {
-      const token = localStorage.getItem('token');
-      axios.get('/api/users', {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(response => {
-          console.log(response.data); 
+
+    // handleQueryAllDepartments() {
+    //   const token = localStorage.getItem('token');
+    //   axios.get('/api/departments', {
+    //     headers: {
+    //       Authorization: 'Bearer ' + token
+    //     }
+    //   })
+    //     .then(response => {
+    //       console.log(response.data.data.data); // 输出响应数据，检查其格式是否为数组
         
-          if (Array.isArray(response.data.data)) {
-            this.tableData = response.data.data; 
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    },
-    
-    handleQueryAllDepartments() {
-      const token = localStorage.getItem('token');
-      axios.get('/api/departments', {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(response => {
-          console.log(response.data.data.data); // 输出响应数据，检查其格式是否为数组
-        
-          if (Array.isArray(response.data.data.data)) {
-            this.departmentsData = response.data.data.data; // 将响应数据中的data属性赋值给tableData
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    }
+    //       if (Array.isArray(response.data.data.data)) {
+    //         this.departmentsData = response.data.data.data; // 将响应数据中的data属性赋值给tableData
+    //       }
+    //     })
+    //     .catch(error => {
+    //       console.error(error);
+    //     });
+    // }
   },
   mounted() {
     this.handleQueryAll();
-    this.handleQueryAllDepartments()
   }
 }
 </script>

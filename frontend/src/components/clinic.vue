@@ -2,8 +2,8 @@
   <!-- 书籍列表卡片 -->
   <el-card class="box-card">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="科室号" label-width="70px">
-            <el-input clearable v-model="formInline.office_id" placeholder="请输入科室号"></el-input>
+          <el-form-item label="科室名" label-width="70px">
+            <el-input clearable v-model="formInline.office_name" placeholder="请输入科室名"></el-input>
           </el-form-item>
           <el-form-item style="margin-left: 10px">
             <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
@@ -101,7 +101,7 @@ import axios from 'axios'
     data() {
         return {
             formInline: {
-              office_id: "",
+              office_name: "",
             },
             value: "",
             //列表
@@ -189,13 +189,13 @@ import axios from 'axios'
       const token = localStorage.getItem('token');
       const page = 1; // 页码
       const limit = 10; // 每页显示的数量
-      const departmentName = this.form.department_name; // 搜索关键字
+      const officeName = this.formInline.office_name; // 搜索关键字
     
       axios.get('/api/offices', {
         params: {
           page,
           limit,
-          department_name: departmentName
+          name: officeName
         },
         headers: {
           Authorization: 'Bearer ' + token
@@ -205,7 +205,7 @@ import axios from 'axios'
           console.log("单个:", response.data.data.data); // 输出响应数据，检查其格式是否符合预期
         
           if (Array.isArray(response.data.data.data)) {
-            this.tableData = response.data.data.data; // 将响应数据中的 departments 赋值给 tableData
+            this.tableData = response.data.data.data; 
           }
         })
         .catch(error => {
@@ -219,7 +219,6 @@ import axios from 'axios'
       this.editingofficeId = officeId;
       this.dialogFormVisible = true;
       this.editingMode =true;
-
     }, 
 
     // 添加按钮点击事件

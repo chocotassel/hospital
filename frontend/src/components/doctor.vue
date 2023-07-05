@@ -5,15 +5,6 @@
           <el-form-item label="医生姓名" label-width="70px">
             <el-input clearable v-model="formInline.doctor_name" placeholder="请输入医生姓名"></el-input>
           </el-form-item>
-          <el-form-item label="性别" label-width="70px">
-            <el-input clearable v-model="formInline.gender" placeholder="请输入性别"></el-input>
-          </el-form-item>
-          <el-form-item label="电话号码" label-width="70px">
-            <el-input clearable v-model="formInline.phone_number" placeholder="请输入电话号码"></el-input>
-          </el-form-item>
-          <el-form-item label="所属诊室" label-width="70px">
-            <el-input clearable v-model="formInline.office_name" placeholder="请输入所属诊室"></el-input>
-          </el-form-item>
           <el-form-item style="margin-left: 10px">
             <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
             <el-button type="primary" icon="el-icon-search" @click="handleQuery">查询</el-button>
@@ -102,7 +93,7 @@
           label="照片"
           width="130">
           <template slot-scope="scope">
-            <span style="margin-left: 10px">{{ scope.row.photo }}</span>
+            <img :src="scope.row.photoUrl" style="width: 100px; height: 100px;" />
           </template>
         </el-table-column>
 
@@ -149,9 +140,6 @@
           <el-form-item label="所属诊室" :label-width="formLabelWidth">
             <el-input v-model="form.office_name" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="照片" :label-width="formLabelWidth">
-            <el-input v-model="form.photo" autocomplete="off"></el-input>
-          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" >
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -180,16 +168,7 @@ export default {
   data() {
     return {
       formInline: {
-        employee_number: "",
         doctor_name: "",
-        gender: "",
-        date_of_birth: "",
-        identity_card: "",
-        phone_number: "",
-        registration_fee: "",
-        description: "",
-        office_name: "",
-        photo: ""
       },
       value: "",
       // 列表
@@ -203,7 +182,7 @@ export default {
         registration_fee: "",
         description: "",
         office_name: "",
-        photo: ""
+        photoUrl: ""
       }],
       departmentOptions:[],
       currentPage: 1,
@@ -243,9 +222,7 @@ export default {
     },
     handleReset() {
       this.formInline.doctor_name = "";
-      this.formInline.gender = "";
-      this.formInline.phone_number = "";
-      this.formInline.office_name = "";
+      this.handleQueryAll()
     },
 
       //查询全部
@@ -272,7 +249,11 @@ export default {
             // 遍历每个医生对象，将其对应的 office_name 存储到 doctor 对象中
             this.tableData.forEach(doctor => {
               doctor.office_name = doctor.office.office_name;
-            });
+            // 将 Buffer 数据转换为图片 URL
+            const bufferData = doctor.photo.data;
+            const base64Data = btoa(String.fromCharCode(...bufferData));
+            doctor.photoUrl = `data:image/png;base64,${base64Data}`;
+            });           
           }
 
 
@@ -287,13 +268,13 @@ export default {
       const token = localStorage.getItem('token');
       const page = 1; // 页码
       const limit = 10; // 每页显示的数量
-      const departmentName = this.form.department_name; // 搜索关键字
+      const doctorName = this.formInline.doctor_name; // 搜索关键字
     
-      axios.get('/api/departments', {
+      axios.get('/api/doctors', {
         params: {
           page,
           limit,
-          department_name: departmentName
+          name: doctorName
         },
         headers: {
           Authorization: 'Bearer ' + token
@@ -303,7 +284,7 @@ export default {
           console.log("单个:", response.data.data.data); // 输出响应数据，检查其格式是否符合预期
         
           if (Array.isArray(response.data.data.data)) {
-            this.tableData = response.data.data.data; // 将响应数据中的 departments 赋值给 tableData
+            this.tableData = response.data.data.data; 
           }
         })
         .catch(error => {
@@ -312,9 +293,8 @@ export default {
     },
 
     handleEdit(index, row){
-      // 在这里可以访问到对应的科室号
-      const departmentId = row.department_id;
-      this.editingDepartmentId = departmentId;
+      const doctorId = row.employee_number;
+      this.editingDoctorId = doctorId;
       this.dialogFormVisible = true;
       this.editingMode =true;
 
@@ -333,7 +313,7 @@ export default {
     
       if (this.editingMode === true) {
         // 编辑确认
-        axios.put(`/api/departments/${this.editingDepartmentId}`, this.form, {
+        axios.put(`/api/departments/${this.editingDoctorId}`, this.form, {
           headers: {
             Authorization: 'Bearer ' + token
           }

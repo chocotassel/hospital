@@ -2,8 +2,8 @@
   <!-- 书籍列表卡片 -->
   <el-card class="box-card">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="出诊单号" label-width="70px">
-            <el-input clearable v-model="formInline.visit_id" placeholder="请输入单号"></el-input>
+          <el-form-item label="医生姓名" label-width="70px">
+            <el-input clearable v-model="formInline.doctor_name" placeholder="请输入姓名"></el-input>
           </el-form-item>
           <el-form-item style="margin-left: 10px">
             <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
@@ -103,7 +103,7 @@ import axios from 'axios'
     data() {
         return {
             formInline: {
-              visit_id: "",
+              doctor_name: "",
             },
             
             value: "",
@@ -184,8 +184,6 @@ import axios from 'axios'
               doctor.doctor_name = doctor.doctor.doctor_name;
             });
           }
-
-
         })
         .catch(error => {
           console.error(error);
@@ -197,13 +195,13 @@ import axios from 'axios'
       const token = localStorage.getItem('token');
       const page = 1; // 页码
       const limit = 10; // 每页显示的数量
-      const departmentName = this.form.department_name; // 搜索关键字
+      const doctorName = this.formInline.doctor_name; // 搜索关键字
     
-      axios.get('/api/offices', {
+      axios.get('/api/visits', {
         params: {
           page,
           limit,
-          department_name: departmentName
+          name: doctorName
         },
         headers: {
           Authorization: 'Bearer ' + token

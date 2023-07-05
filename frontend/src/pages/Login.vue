@@ -120,7 +120,7 @@ export default {
               console.log(res.data);
               localStorage.setItem("token",res.data.data.token)
               this.$message.success('登录成功！');
-              this.$router.push('/admin');
+              this.$router.push('/info');
             }
             // else{
             //       this.$message.success('管理员登录成功！');

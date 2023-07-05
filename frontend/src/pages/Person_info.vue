@@ -60,7 +60,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogVisible = false">取消</el-button>
-              <el-button type="primary" @click="updateDoctor">确定</el-button>
+              <el-button type="primary" @click="dialogVisible = false">确定</el-button>
             </div>
           </el-dialog>
 
@@ -119,40 +119,39 @@ export default {
   },
 
   methods: {
-    async getDoctor() {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('/api/doctor/:id', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+    // 查询
+    handleQuery() {
+      const token = localStorage.getItem('token');
+      const doctorId = this.formInline.doctor_id; 
+    
+      axios.get(`/api/doctors/${doctorId}`, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log("单个:", response.data.data); // 输出响应数据，检查其格式是否符合预期
+        
+          if (Array.isArray(response.data.data)) {
+            this.tableData = response.data.data; 
+          } else {
+            const doctorData = response.data.data;
+            const row = {
+              employee_number: doctorData.employee_number,
+              doctor_name: doctorData.doctor_name,
+              gender: doctorData.gender,
+              date_of_birth: doctorData.date_of_birth,
+              office_name: doctorData.office.office_name,
+              identity_card: doctorData.identity_card,
+              phone_number:doctorData.phone_number
+            };
+            this.tableData = [row];
+          }
+        })
+        .catch(error => {
+          console.error(error);
         });
-        const userInfo = response.data;
-        console.log('用户信息：', userInfo);
-        this.info = userInfo;
-      } catch (error) {
-        console.error('获取用户信息失败：', error);
-      }
     },
-
-    async updateDoctor() {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.put(`/api/doctors/${this.info.employee_number}`, this.form, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const updatedDoctor = response.data;
-        console.log('更新医生信息成功:', updatedDoctor);
-        this.dialogVisible = false;
-        this.getDoctors(); // 更新完信息后重新获取医生信息
-      } catch (error) {
-        console.error('更新医生信息失败：', error);
-      }
-    },
-
-
 
     toggleChangeAvatarDialog() {
       this.showChangeAvatarDialog = true;
@@ -174,7 +173,7 @@ export default {
     },
   },
   mounted() {
-    this.getDoctor();
+
   },
 };
 </script>
