@@ -11,7 +11,7 @@ class DepartmentService {
     // 如果传入了name，添加模糊查询条件
     if (name) {
       whereCondition = {
-        departments_name: {
+        department_name: {
           [Op.like]: '%' + name + '%'
         }
       }
