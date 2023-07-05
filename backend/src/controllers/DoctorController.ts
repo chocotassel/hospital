@@ -254,14 +254,6 @@ class DoctorController {
       description: {
         type: 'string',
       },
-      office_id: {
-        type: 'string',
-        pattern: /^\d+$/,
-      },
-      employee_number: {
-        type: 'string',
-        len: 10,
-      },
     };
     const { data, error } = await validate(ctx, rules);
     if (error) {
