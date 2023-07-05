@@ -172,6 +172,21 @@ async function seedData() {
       permission_name: 'modifyVisit',
     });
 
+    const permission9 = await Permission.create({
+      permission_id: snowflake.permission.nextId(),
+      permission_name: 'viewUser',
+    });
+
+    const permission10 = await Permission.create({
+      permission_id: snowflake.permission.nextId(),
+      permission_name: 'modifyUser',
+    });
+
+    const permission11 = await Permission.create({
+      permission_id: snowflake.permission.nextId(),
+      permission_name: 'assignRoleToUser',
+    });
+
     // 关联角色和权限
     await RolePermission.create({
       role_id: role1.role_id,
@@ -211,6 +226,46 @@ async function seedData() {
     await RolePermission.create({
       role_id: role1.role_id,
       permission_id: permission8.permission_id,
+    });
+
+    await RolePermission.create({
+      role_id: role1.role_id,
+      permission_id: permission9.permission_id,
+    });
+
+    await RolePermission.create({
+      role_id: role1.role_id,
+      permission_id: permission10.permission_id,
+    });
+
+    await RolePermission.create({
+      role_id: role1.role_id,
+      permission_id: permission11.permission_id,
+    });
+
+    await RolePermission.create({
+      role_id: role2.role_id,
+      permission_id: permission1.permission_id,
+    });
+
+    await RolePermission.create({
+      role_id: role2.role_id,
+      permission_id: permission3.permission_id,
+    });
+
+    await RolePermission.create({
+      role_id: role2.role_id,
+      permission_id: permission5.permission_id,
+    });
+
+    await RolePermission.create({
+      role_id: role2.role_id,
+      permission_id: permission7.permission_id,
+    });
+
+    await RolePermission.create({
+      role_id: role2.role_id,
+      permission_id: permission9.permission_id,
     });
 
     console.log('Data seeding completed!');

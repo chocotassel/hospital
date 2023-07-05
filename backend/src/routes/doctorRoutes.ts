@@ -7,7 +7,7 @@ const router = new Router();
 router.get('/doctors', doctorController.getDoctors);
 router.get('/doctor/:id', doctorController.getDoctor);
 router.post('/doctors', doctorController.createDoctor);
-router.put('/doctors/:id', koaBody({multipart: true}), doctorController.updateDoctor);
+router.put('/doctors/:id', doctorController.updateDoctor);
 router.delete('/doctors/:id', doctorController.deleteDoctor);
 
 export default router;
