@@ -5,6 +5,8 @@ import response from '../common/utils/response';
 import { Rules } from 'async-validator';
 import validate from '../common/utils/validate';
 import { can } from '../common/utils/rbac';
+import Joi from 'joi';
+import { paginate } from '../common/utils/paginate';
 
 class VisitController {
   // 获取所有出诊
@@ -14,9 +16,20 @@ class VisitController {
       return response.fail(ctx, '权限校验失败', [], 403);
     }
 
+    // 查询参数校验
+    const { page = '1', limit = '10', name = '' } = ctx.query;
+
+    const { _page, _limit, _name } = {
+      _page: parseInt(<string>page, 10),
+      _limit: parseInt(<string>limit, 10),
+      _name: <string>name,
+    } as { _page: number, _limit: number, _name: string };
+
+
+    // 业务逻辑
     try {
-      const visits = await VisitService.getVisits();
-      return response.success(ctx, visits);
+      const { visits, total } = await VisitService.getVisits(_page, _limit, _name);
+      return response.success(ctx, paginate(visits, _page, total, _limit));
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
     }

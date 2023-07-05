@@ -1,9 +1,11 @@
 import { Context } from 'koa';
-import userService from '../services/UserService';
+import UserService from '../services/UserService';
 import response from '../common/utils/response';
 import { Rules } from 'async-validator';
 import validate from '../common/utils/validate';
 import { can } from '../common/utils/rbac';
+import Joi from 'joi';
+import { paginate } from '../common/utils/paginate';
 
 class UserController {
   // 获取所有用户
@@ -13,9 +15,29 @@ class UserController {
       return response.fail(ctx, '权限校验失败', [], 403);
     }
 
+    // 查询参数校验
+    const { page = '1', limit = '10', name = '' } = ctx.query;
+
+    const { _page, _limit, _name } = {
+      _page: parseInt(<string>page, 10),
+      _limit: parseInt(<string>limit, 10),
+      _name: <string>name,
+    } as { _page: number, _limit: number, _name: string };
+
+    const schema = Joi.object({
+      _name: Joi.string(),
+    });
+
+    const { error } = schema.validate({ _name });
+    
+    if (error) {
+      return response.fail(ctx, '非法参数', error.details, 400);
+    }
+
+    // 业务逻辑
     try {
-      const users = await userService.getUsers();
-      return response.success(ctx, users);
+      const {users, total} = await UserService.getUsers(_page, _limit, _name);
+      return response.success(ctx, paginate(users, _page, total, _limit));
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
     }
@@ -31,7 +53,7 @@ class UserController {
     const { id } = ctx.params;
 
     try {
-      const user = await userService.getUser(id);
+      const user = await UserService.getUser(id);
       return response.success(ctx, user);
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
@@ -69,10 +91,10 @@ class UserController {
     }
     
     try {
-      const user = await userService.createUser(data);
+      const user = await UserService.createUser(data);
       
       if (data.role_id) {
-        await userService.assignRole(user.user_id, data.role_id);
+        await UserService.assignRole(user.user_id, data.role_id);
       }
 
       return response.success(ctx, user);
@@ -120,7 +142,7 @@ class UserController {
     }
 
     try {
-      await userService.updateUser(id, data);
+      await UserService.updateUser(id, data);
       return response.success(ctx, '用户修改成功');
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
@@ -153,7 +175,7 @@ class UserController {
     }
     
     try {
-      await userService.changeRole(data.user_id, data.role_id);
+      await UserService.changeRole(data.user_id, data.role_id);
       return response.success(ctx, '权限修改成功');
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
@@ -170,7 +192,7 @@ class UserController {
     const { id } = ctx.params;
     
     try {
-      await userService.deleteUser(id);
+      await UserService.deleteUser(id);
       return response.success(ctx, '用户删除成功');
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);

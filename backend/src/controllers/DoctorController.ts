@@ -6,6 +6,7 @@ import { Rules } from 'async-validator';
 import validate from '../common/utils/validate';
 import { can } from '../common/utils/rbac';
 import Joi from 'joi';
+import { paginate } from '../common/utils/paginate';
 
 class DoctorController {
   // 获取所有医生
@@ -16,19 +17,19 @@ class DoctorController {
     }
 
     // 查询参数校验
-    const { _page = '1', _limit = '10', _name = '' } = ctx.query;
+    const { page = '1', limit = '10', name = '' } = ctx.query;
 
-    const { page, limit, name } = {
-      page: parseInt(<string>_page, 10),
-      limit: parseInt(<string>_limit, 10),
-      name: <string>_name,
-    } as { page: number, limit: number, name: string };
+    const { _page, _limit, _name } = {
+      _page: parseInt(<string>page, 10),
+      _limit: parseInt(<string>limit, 10),
+      _name: <string>name,
+    } as { _page: number, _limit: number, _name: string };
 
     const schema = Joi.object({
-      name: Joi.string().required(),
+      _name: Joi.string(),
     });
 
-    const { error } = schema.validate({ name });
+    const { error } = schema.validate({ _name });
     
     if (error) {
       return response.fail(ctx, '非法参数', error.details, 400);
@@ -36,8 +37,8 @@ class DoctorController {
 
     // 业务逻辑
     try {
-      const doctors = await DoctorService.getDoctors(page, limit, name);
-      return response.success(ctx, doctors);
+      const { doctors, total } = await DoctorService.getDoctors(_page, _limit, _name);
+      return response.success(ctx, paginate(doctors, _page, total, _limit));
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
     }
