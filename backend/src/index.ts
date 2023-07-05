@@ -22,6 +22,7 @@ import errorHandlingMiddleware from './common/middlewares/errorHandlingMiddlewar
 import accessControlMiddleware from './common/middlewares/accessControlMiddleware';
 
 import db from './db';
+import koaStatic from 'koa-static';
 
 db();
 
@@ -32,7 +33,12 @@ const app = new Koa();
 app.use(serve(path.join(__dirname, '..', '..', 'frontend', 'dist')));
 
 // 访问控制中间件
-app.use(koaBody());
+app.use(koaBody({
+  multipart: true,
+  formidable: {
+    maxFileSize: 200*1024*1024
+  }
+}));
 app.use(errorHandlingMiddleware);
 app.use(accessControlMiddleware);
 
@@ -46,6 +52,12 @@ app.use(visitRoutes.routes());
 app.use(userRoutes.routes());
 app.use(permissionRoutes.routes());
 
+app.use(doctorRoutes.allowedMethods());
+
+// 静态资源
+app.use(koaStatic(
+  path.join(__dirname , '../public')
+))
 
 export default app;
 

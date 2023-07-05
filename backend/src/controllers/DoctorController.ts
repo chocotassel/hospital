@@ -7,6 +7,8 @@ import validate from '../common/utils/validate';
 import { can } from '../common/utils/rbac';
 import Joi from 'joi';
 import { paginate } from '../common/utils/paginate';
+import path from 'path';
+import fs from 'fs';
 
 class DoctorController {
   // 获取所有医生
@@ -56,6 +58,23 @@ class DoctorController {
 
     try {
       const doctor = await DoctorService.getDoctorById(id);
+      return response.success(ctx, doctor);
+    } catch (err) {
+      return response.fail(ctx, '服务器错误', err, 500);
+    }
+  }
+
+  // 获取某个医生 employee_number
+  async getDoctorByEmployeeNumber(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'viewDoctor')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
+    const employee_number = ctx.query.employee_number as string;
+
+    try {
+      const doctor = await DoctorService.getDoctorByEmployeeNumber(employee_number);
       return response.success(ctx, doctor);
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
@@ -156,6 +175,51 @@ class DoctorController {
     }
   }
 
+  // 头像上传
+  async updateAvatar(ctx: Context) {
+    // 权限检查
+    if (!can(ctx.state.user.permissions, 'modifyDoctor')) {
+      return response.fail(ctx, '权限校验失败', [], 403);
+    }
+
+    try {
+      // 检查是否有文件上传
+      if (!ctx.request.files || !ctx.request.files.file) {
+        ctx.status = 400;
+        return ctx.body = 'No file provided.';
+      }
+
+      const file = ctx.request.files.file as any;
+    
+      if (Array.isArray(file)) {
+        ctx.status = 400;
+        return ctx.body = 'Multiple files are not allowed.';
+      }
+
+      const { id } = ctx.params;
+
+      // try {
+      //   const result = await DoctorService.uploadAvatar(id, avatar);
+      //   return response.success(ctx, result);
+      // } catch (err) {
+      //   return response.fail(ctx, '服务器错误', err, 500);
+      // }
+      const reader = fs.createReadStream(file.path);
+      
+      // 在文件名中包含用户的 ID，以便将头像文件和用户关联起来
+      let filePath = path.join(__dirname,'..', '..', 'public/uploads/') + `/${id}_${file.name}`;
+      const upStream = fs.createWriteStream(filePath);
+      reader.pipe(upStream);
+    
+      // 更新用户信息，保存头像的路径
+      const result = await DoctorService.updateAvatar(id, { avatar: filePath });
+    
+      return response.success(ctx, result);
+    } catch (err) {
+      return response.fail(ctx, 'Server error', err, 500);
+    }
+  }
+
   // 更新医生信息
   async updateDoctor(ctx: Context) {
     // 权限检查
@@ -204,11 +268,6 @@ class DoctorController {
         required: true,
         pattern: /^\d+$/,
       },
-      // Note: file validation may need to be handled separately, e.g., in middleware
-      photo: {
-        type: 'string',
-        required: false,
-      },
       employee_number: {
         type: 'string',
         required: true,
@@ -227,6 +286,7 @@ class DoctorController {
       return response.fail(ctx, '服务器错误', err, 500);
     }
   }
+
 
   // 删除医生
   async deleteDoctor(ctx: Context) {
