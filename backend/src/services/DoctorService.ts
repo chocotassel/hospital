@@ -34,9 +34,9 @@ class DoctorService {
       }]
     }]
 
-    const doctors = await Department.findAll(condition);
+    const doctors = await Doctor.findAll(condition);
     
-    const total = await Department.count({
+    const total = await Doctor.count({
       where: whereCondition,
     });
 
