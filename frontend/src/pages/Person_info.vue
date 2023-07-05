@@ -48,9 +48,6 @@
               <el-form-item label="手机号" :label-width="formLabelWidth">
                 <el-input v-model="form.phone_number" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="员工号" :label-width="formLabelWidth">
-                <el-input v-model="form.employee_number" autocomplete="off"></el-input>
-              </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogVisible = false">取消</el-button>
@@ -101,7 +98,6 @@ export default {
       dialogVisible: false,
       form: {
         doctor_name: '',
-        employee_number:'',
         phone_number: '',
       },
       formLabelWidth: '72px',
