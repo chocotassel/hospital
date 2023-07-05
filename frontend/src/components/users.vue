@@ -80,10 +80,37 @@
             <el-input v-model="form.password" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="所属角色" :label-width="formLabelWidth">
-            <el-input v-model="form.role_name" autocomplete="off"></el-input>
+            <el-select v-model="form.role_name" placeholder="请选择角色">
+              <el-option
+                v-for="item in rolesData"
+                :key="item.role_id"
+                :label="item.role_name"
+                :value="item.role_id">
+              </el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item label="员工号" :label-width="formLabelWidth">
+          <!-- <el-form-item label="员工号" :label-width="formLabelWidth">
             <el-input v-model="form.employee_number" autocomplete="off"></el-input>
+          </el-form-item> -->
+          <el-form-item label="所属部门" :label-width="formLabelWidth">
+            <el-select v-model="form.department_id" placeholder="请选择所属部门">
+              <el-option
+                v-for="item in departmentsData"
+                :key="item.department_id"
+                :label="item.department_name"
+                :value="item.department_id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="职位" :label-width="formLabelWidth">
+            <el-select v-model="form.position" placeholder="请选择职位">
+              <el-option
+                v-for="item in positions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" >
@@ -135,10 +162,33 @@ import axios from 'axios'
             },
             formLabelWidth: '120px',
             index:'',
+            departmentsData: [],
+            positions: [
+              {
+                value: '01',
+                label: '医生'
+              }, {
+                value: '02',
+                label: '护士'
+              }, {
+                value: '03',
+                label: '技师'
+              }, {
+                value: '04',
+                label: '行政人员'
+              }, {
+                value: '05',
+                label: '清洁人员'
+              }, {
+                value: '06',
+                label: '维修人员'
+              }
+            ],
+            rolesData: [],
         };
   },
   created() {
-    this.handleQueryAll()
+    this.handleQueryAllRoles()
   },
   methods: {
       onSubmit() {
@@ -185,6 +235,23 @@ import axios from 'axios'
         })
           .then(response => {
             this.tableData = response.data.data; 
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      },
+
+      // 获取角色列表
+      handleQueryAllRoles() {
+        const token = localStorage.getItem('token');
+
+        axios.get('/api/permission/roles', {
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
+        })
+          .then(response => {
+            this.rolesData = response.data.data;
           })
           .catch(error => {
             console.error(error);
@@ -267,10 +334,30 @@ import axios from 'axios'
         .catch(error => {
           console.error(error);
         });
+    },
+    
+    handleQueryAllDepartments() {
+      const token = localStorage.getItem('token');
+      axios.get('/api/departments', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log(response.data.data.data); // 输出响应数据，检查其格式是否为数组
+        
+          if (Array.isArray(response.data.data.data)) {
+            this.departmentsData = response.data.data.data; // 将响应数据中的data属性赋值给tableData
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
     }
   },
   mounted() {
-    // this.handleQueryAll();
+    this.handleQueryAll();
+    this.handleQueryAllDepartments()
   }
 }
 </script>
