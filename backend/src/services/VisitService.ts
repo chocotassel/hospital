@@ -2,31 +2,45 @@
 import { Op } from 'sequelize';
 import snowflake from '../common/utils/snowflake';
 import Visit from '../models/Visit';
+import Doctor from '../models/Doctor';
 
 class VisitService {
   // 获取所有出诊
   async getVisits(page: number, limit: number, name?: string) {
     let whereCondition = {};
-    
-    // 如果传入了name，添加模糊查询条件
+  
     if (name) {
+      // 先根据传入的医生名字模糊查询医生表，得到所有符合条件的医生的 ID
+      const doctors = await Doctor.findAll({
+        where: {
+          doctor_name: {
+            [Op.like]: '%' + name + '%'
+          }
+        },
+        attributes: ['doctor_id'] // 只需查询 doctor_id
+      });
+  
+      // 把得到的医生 ID 提取出来
+      const doctorIds = doctors.map(doctor => doctor.doctor_id);
+  
+      // 根据医生 ID 查询访问表
       whereCondition = {
-        visit_name: {
-          [Op.like]: '%' + name + '%'
+        doctor_id: {
+          [Op.in]: doctorIds
         }
       }
     }
-
+  
     const visits = await Visit.findAll({
       where: whereCondition,
       limit,
       offset: (page - 1) * limit,
     });
-    
+  
     const total = await Visit.count({
       where: whereCondition,
     });
-
+  
     return { visits, total };
   }
 
