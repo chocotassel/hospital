@@ -2,6 +2,7 @@
 import { Op } from 'sequelize';
 import snowflake from '../common/utils/snowflake';
 import Office from '../models/Office';
+import Department from '../models/Department';
 
 interface Condition {
   [key: string]: any; // 索引签名
@@ -25,6 +26,10 @@ class OfficeService {
       condition.limit = limit;
     }
 
+    condition.include = [{
+      model: Department,
+    }]
+
     const offices = await Office.findAll(condition);
     
     const total = await Office.count({
@@ -36,7 +41,14 @@ class OfficeService {
 
   // 获取单个诊室
   async getOffice(id: string) {
-    return await Office.findOne({ where: { office_id: BigInt(id).toString() } });
+    return await Office.findOne({ 
+      where: { 
+        office_id: BigInt(id).toString() 
+      },
+      include: [{
+        model: Department,
+      }]
+    });
   }
 
   // 创建诊室

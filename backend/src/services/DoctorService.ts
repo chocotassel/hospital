@@ -27,6 +27,13 @@ class DoctorService {
       condition.limit = limit;
     }
 
+    condition.include = [{
+      model: Office,
+      include: [{
+        model: Department,
+      }]
+    }]
+
     const doctors = await Department.findAll(condition);
     
     const total = await Department.count({
