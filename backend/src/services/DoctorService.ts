@@ -20,7 +20,15 @@ class DoctorService {
     }
   
     // 创建查询选项
-    let findOptions: any = { where: whereCondition };
+    let findOptions: any = { 
+      where: whereCondition,
+      include: [{
+        model: Office,
+        include: [{
+          model: Department,
+        }]
+      }]
+    };
   
     // 如果传入了page和limit，添加offset条件
     if (page && limit) {
