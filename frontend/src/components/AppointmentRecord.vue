@@ -29,7 +29,7 @@
 
           <el-table-column
           label="出诊日期"
-          width="200">
+          width="300">
         <template slot-scope="scope">
         <span style="margin-left: 10px">{{ scope.row.visit_date }}</span>
         </template>
@@ -37,7 +37,7 @@
 
         <el-table-column
           label="出诊时长"
-          width="200">
+          width="300">
           <template slot-scope="scope">
             <span style="margin-left: 10px">{{ scope.row.visit_hour }}</span>
           </template>
@@ -45,17 +45,9 @@
 
         <el-table-column
           label="医生姓名"
-          width="200">
+          width="250">
           <template slot-scope="scope">
             <span style="margin-left: 10px">{{ scope.row.doctor_name }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column
-          label="所属科室"
-          width="200">
-          <template slot-scope="scope">
-            <span style="margin-left: 10px">{{ scope.row.department_name }}</span>
           </template>
         </el-table-column>
 
@@ -83,9 +75,6 @@
           </el-form-item>
           <el-form-item label="医生姓名" :label-width="formLabelWidth">
             <el-input v-model="form.doctor_name" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="所属科室" :label-width="formLabelWidth">
-            <el-input v-model="form.department_name" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" >
@@ -124,7 +113,6 @@ import axios from 'axios'
                     "visit_date": "",
                     "visit_hour": "" + "小时",
                     "doctor_name": "",
-                    "department_name": ""
                 }],
             currentPage: 1,
             pageSize: 10,
@@ -192,8 +180,8 @@ import axios from 'axios'
           if (Array.isArray(response.data.data.data)) {
             this.tableData = response.data.data.data; 
                     
-            this.tableData.forEach(office => {
-              office.department_name = office.department.department_name;
+            this.tableData.forEach(doctor => {
+              doctor.doctor_name = doctor.doctor.doctor_name;
             });
           }
 
