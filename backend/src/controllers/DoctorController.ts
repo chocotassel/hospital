@@ -256,12 +256,10 @@ class DoctorController {
       },
       office_id: {
         type: 'string',
-        required: true,
         pattern: /^\d+$/,
       },
       employee_number: {
         type: 'string',
-        required: true,
         len: 10,
       },
     };

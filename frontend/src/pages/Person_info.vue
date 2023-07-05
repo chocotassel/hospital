@@ -16,13 +16,14 @@
                     ></el-avatar>
                   </div>
                   <div class="change">
-                    <el-button type="primary" icon="el-icon-edit" @click="dialogVisible = true">
+                    <el-button type="primary" icon="el-icon-edit" @click="handleEdit(info)">
                       编辑
                     </el-button>
                   </div>
                 </div>
               </div>
               <el-descriptions>
+                <el-descriptions-item label="医生号">{{ info.doctor_id }}</el-descriptions-item>
                 <el-descriptions-item label="员工号">{{ info.employee_number }}</el-descriptions-item>
                 <el-descriptions-item label="姓名">{{ info.doctor_name }}</el-descriptions-item>
                 <el-descriptions-item label="性别">{{ info.gender }}</el-descriptions-item>
@@ -30,6 +31,8 @@
                 <el-descriptions-item label="身份证号">{{ info.identity_card }}</el-descriptions-item>
                 <el-descriptions-item label="手机号">{{ info.phone_number }}</el-descriptions-item>
                 <el-descriptions-item label="所属诊室">{{ info.office_name }}</el-descriptions-item>
+                <el-descriptions-item label="挂号费">{{ info.registration_fee }}</el-descriptions-item>
+                <el-descriptions-item label="自我描述">{{ info.description }}</el-descriptions-item>
               </el-descriptions>
               <br>
               <br>
@@ -42,25 +45,16 @@
               <el-form-item label="姓名" :label-width="formLabelWidth">
                 <el-input v-model="form.doctor_name" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="性别" :label-width="formLabelWidth">
-                <el-radio-group v-model="form.gender">
-                  <el-radio label="Male">男</el-radio>
-                  <el-radio label="Female">女</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item label="身份证号" :label-width="formLabelWidth">
-                <el-input v-model="form.identity_card" autocomplete="off"></el-input>
-              </el-form-item>
               <el-form-item label="手机号" :label-width="formLabelWidth">
                 <el-input v-model="form.phone_number" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="出生日期" :label-width="formLabelWidth">
-                <el-date-picker v-model="form.date_of_birth" type="date" placeholder="选择日期"></el-date-picker>
+              <el-form-item label="员工号" :label-width="formLabelWidth">
+                <el-input v-model="form.employee_number" autocomplete="off"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogVisible = false">取消</el-button>
-              <el-button type="primary" @click="dialogVisible = false">确定</el-button>
+              <el-button type="primary" @click="handleEditconfirm">确定</el-button>
             </div>
           </el-dialog>
 
@@ -99,22 +93,22 @@ export default {
         gender: '',
         office_name: '',
         date_of_birth: '',
+        registration_fee: '',
+        description: '',
       },
-      photo: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
 
       // 修改信息
       dialogVisible: false,
       form: {
         doctor_name: '',
-        gender: '',
-        identity_card: '',
+        employee_number:'',
         phone_number: '',
-        date_of_birth: ''
       },
       formLabelWidth: '72px',
       radio: '1',
       input: '',
       showChangeAvatarDialog: false,
+      editingDoctorId: null,
       imageUrl: '',
       file: null,
 
@@ -144,13 +138,16 @@ export default {
           if (response.data.data) {
             const doctorData = response.data.data;
             const row = {
+              doctor_id:doctorData.doctor_id,
               employee_number: doctorData.employee_number,
               doctor_name: doctorData.doctor_name,
               gender: doctorData.gender,
               date_of_birth: doctorData.date_of_birth,
               office_name: doctorData.office.office_name,
               identity_card: doctorData.identity_card,
-              phone_number: doctorData.phone_number
+              phone_number: doctorData.phone_number,
+              description: doctorData.description,
+              registration_fee: doctorData.registration_fee
             };
             this.info = row;
             this.uploadUrl += doctorData.doctor_id;
@@ -163,12 +160,36 @@ export default {
         });
     },
 
+    handleEdit(info){
+      console.log(info.doctor_id);
+      const doctorId = info.doctor_id;
+      this.editingDoctorId = doctorId;
+      this.dialogVisible = true;
+    }, 
+
+      // 确定按钮点击事件
+      handleEditconfirm() {
+      const token = localStorage.getItem('token');
+      // 编辑确认
+      axios.put(`/api/doctors/${this.editingDoctorId}`, this.form, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(() => {
+          this.handleQuery();
+          this.dialogVisible = false; // 隐藏对话框
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
 
     toggleChangeAvatarDialog() {
       this.showChangeAvatarDialog = true;
     },
     handleAvatarSuccess(response) {
-      console.log(response);
+      console.log("111:",response);
       this.imageUrl = `https://localhost/${response.data.avatar}`;
       this.showChangeAvatarDialog = false;
     },

@@ -304,7 +304,6 @@ export default {
       this.editingDoctorId = doctorId;
       this.dialogFormVisible = true;
       this.editingMode =true;
-
     }, 
 
     // 添加按钮点击事件
@@ -320,7 +319,7 @@ export default {
     
       if (this.editingMode === true) {
         // 编辑确认
-        axios.put(`/api/departments/${this.editingDoctorId}`, this.form, {
+        axios.put(`/api/doctors/${this.editingDoctorId}`, this.form, {
           headers: {
             Authorization: 'Bearer ' + token
           }
@@ -334,7 +333,7 @@ export default {
           });
       } else {
         // 添加确认
-        axios.post('/api/departments', this.form, {
+        axios.post('/api/doctors', this.form, {
           headers: {
             Authorization: 'Bearer ' + token
           }
