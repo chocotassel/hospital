@@ -206,6 +206,9 @@ import axios from 'axios'
         
           if (Array.isArray(response.data.data.data)) {
             this.tableData = response.data.data.data; 
+            this.tableData.forEach(office => {
+              office.department_name = office.department.department_name;
+            });
           }
         })
         .catch(error => {

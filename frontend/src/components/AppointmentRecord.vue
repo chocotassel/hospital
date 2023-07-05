@@ -211,7 +211,10 @@ import axios from 'axios'
           console.log("单个:", response.data.data.data); // 输出响应数据，检查其格式是否符合预期
         
           if (Array.isArray(response.data.data.data)) {
-            this.tableData = response.data.data.data; // 将响应数据中的 departments 赋值给 tableData
+            this.tableData = response.data.data.data; 
+            this.tableData.forEach(doctor => {
+              doctor.doctor_name = doctor.doctor.doctor_name;
+            });
           }
         })
         .catch(error => {

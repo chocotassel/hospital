@@ -153,10 +153,6 @@ export default {
         });
     },
 
-    //上传头像
-    upload(event){
-      this.file
-    },
 
     toggleChangeAvatarDialog() {
       this.showChangeAvatarDialog = true;

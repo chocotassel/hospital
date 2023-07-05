@@ -285,6 +285,13 @@ export default {
         
           if (Array.isArray(response.data.data.data)) {
             this.tableData = response.data.data.data; 
+            this.tableData.forEach(doctor => {
+              doctor.office_name = doctor.office.office_name;
+            // 将 Buffer 数据转换为图片 URL
+            // const bufferData = doctor.photo.data;
+            // const base64Data = btoa(String.fromCharCode(...bufferData));
+            // doctor.photoUrl = `data:image/png;base64,${base64Data}`;
+            });  
           }
         })
         .catch(error => {
