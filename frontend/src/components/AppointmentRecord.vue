@@ -75,10 +75,7 @@
       <!-- Form -->
       <el-dialog title="出诊信息" :visible.sync="dialogFormVisible" >
         <el-form :model="form">
-          <el-form-item label="出诊单号" :label-width="formLabelWidth">
-            <el-input v-model="form.visit_id" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="出诊日期" :label-width="formLabelWidth">
+          <el-form-item label="出诊时长" :label-width="formLabelWidth">
             <el-input v-model="form.visit_date" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="出诊时长" :label-width="formLabelWidth">
@@ -119,6 +116,7 @@ import axios from 'axios'
             formInline: {
               visit_id: "",
             },
+            
             value: "",
             //列表
             tableData: [{
@@ -132,10 +130,15 @@ import axios from 'axios'
             pageSize: 10,
             visit_id: 0,
             status:0,
-            
+  
             //编辑 添加
             dialogFormVisible: false,
             form: {
+              visit_date: new Date(), // 设置为Date类型
+              visit_hour: 0,
+              doctor_id: "", 
+              doctor_name: "",
+              department_name: ""
             },
             formLabelWidth: '120px',
             index:'',
@@ -164,12 +167,6 @@ import axios from 'axios'
             this.tableData = res.data
           })
       },
-      handleEdit(index, row){
-        console.log(row)
-        this.status = 0
-        this.dialogFormVisible = true
-        this.index = index
-      },
       handleReset() {
           this.formInline.visit_id = "";
           this.handleQueryAll()
@@ -197,64 +194,77 @@ import axios from 'axios'
           });
       },
 
+      handleEdit(index, row){
+      // 在这里可以访问到对应的科室号
+      const visitId = row.visit_id;
+      this.editingvisitId = visitId;
+      this.dialogFormVisible = true;
+      this.editingMode =true;
+
+    }, 
+
     // 添加按钮点击事件
     handleAdd() {
       this.dialogFormVisible = true; // 显示对话框
       this.form = {}; // 将表单数据初始化为空对象
+      this.editingMode = false;
     },
 
     // 确定按钮点击事件
     handleEditconfirm() {
       const token = localStorage.getItem('token');
+      this.form.visit_hour = parseInt(this.form.visit_hour);
     
-      axios.post('/api/visits', this.form, {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(() => {
-          this.handleQuery();
-          this.dialogFormVisible = false; // 隐藏对话框
+      if (this.editingMode === true) {
+        // 编辑确认
+        axios.put(`/api/visits/${this.editingvisitId}`, this.form, {
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
         })
-        .catch(error => {
-          console.error(error);
-        });
-    },
-
-    // 编辑按钮点击事件
-    handleEditConfirm() {
-      const token = localStorage.getItem('token');
-    
-      axios.put(`/api/visits/${this.form.visit_id}`, this.form, {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(() => {
-          this.handleQuery();
-          this.dialogFormVisible = false; // 隐藏对话框
+          .then(() => {
+            this.handleQueryAll();
+            this.dialogFormVisible = false; // 隐藏对话框
+            this.form={}
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      } else {
+        // 添加确认
+        axios.post('/api/visits', this.form, {
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
         })
-        .catch(error => {
-          console.error(error);
-        });
+          .then(() => {
+            this.handleQueryAll();
+            this.dialogFormVisible = false; // 隐藏对话框
+            this.form={}
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
     },
 
     // 删除按钮点击事件
     handleDelete(index, row) {
       const token = localStorage.getItem('token');
-    
       axios.delete(`/api/visits/${row.visit_id}`, {
         headers: {
           Authorization: 'Bearer ' + token
         }
       })
         .then(() => {
-          this.handleQuery();
+          console.log("id:",row.visit_id)
+          this.tableData.splice(index, 1); // 从表格数据中移除被删除的项
         })
         .catch(error => {
           console.error(error);
         });
     },
+
     handleQueryAll() {
       const token = localStorage.getItem('token');
       axios.get('/api/visits', {

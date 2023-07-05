@@ -160,12 +160,6 @@ import axios from 'axios'
             this.tableData = res.data
           })
       },
-      handleEdit(index, row){
-        console.log(row)
-        this.status = 0
-        this.dialogFormVisible = true
-        this.index = index
-      },
 
       handleReset() {
           this.formInline.username = "";
@@ -192,63 +186,55 @@ import axios from 'axios'
       },
 
 
+      handleEdit(index, row){
+      // 在这里可以访问到对应的科室号
+      const departmentId = row.department_id;
+      this.editingDepartmentId = departmentId;
+      this.dialogFormVisible = true;
+      this.editingMode =true;
+
+    }, 
+
     // 添加按钮点击事件
     handleAdd() {
       this.dialogFormVisible = true; // 显示对话框
       this.form = {}; // 将表单数据初始化为空对象
+      this.editingMode = false;
     },
 
     // 确定按钮点击事件
     handleEditconfirm() {
       const token = localStorage.getItem('token');
     
-      axios.post('/api/users', this.form, {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(() => {
-          this.handleQuery();
-          this.dialogFormVisible = false; // 隐藏对话框
+      if (this.editingMode === true) {
+        // 编辑确认
+        axios.put(`/api/departments/${this.editingDepartmentId}`, this.form, {
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
         })
-        .catch(error => {
-          console.error(error);
-        });
-    },
-
-    // 编辑按钮点击事件
-    handleEditConfirm() {
-      const token = localStorage.getItem('token');
-    
-      axios.put(`/api/users/${this.form.user_id}`, this.form, {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(() => {
-          this.handleQuery();
-          this.dialogFormVisible = false; // 隐藏对话框
+          .then(() => {
+            this.handleQueryAll();
+            this.dialogFormVisible = false; // 隐藏对话框
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      } else {
+        // 添加确认
+        axios.post('/api/departments', this.form, {
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
         })
-        .catch(error => {
-          console.error(error);
-        });
-    },
-
-    // 删除按钮点击事件
-    handleDelete(index, row) {
-      const token = localStorage.getItem('token');
-    
-      axios.delete(`/api/users/${row.user_id}`, {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(() => {
-          this.handleQuery();
-        })
-        .catch(error => {
-          console.error(error);
-        });
+          .then(() => {
+            this.handleQueryAll();
+            this.dialogFormVisible = false; // 隐藏对话框
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
     },
     handleQueryAll() {
       const token = localStorage.getItem('token');

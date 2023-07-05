@@ -4,10 +4,10 @@
 
   <el-tabs :tab-position="tabPosition" style="height: 100vh;">
     <el-tab-pane label="科室管理"><department></department></el-tab-pane>
-    <el-tab-pane label="诊室管理"><clinic></clinic></el-tab-pane>
-    <el-tab-pane label="医生管理"><doctor></doctor>></el-tab-pane>
-    <el-tab-pane label="出诊管理"><appointmentRecord></appointmentRecord></el-tab-pane>
-    <el-tab-pane label="用户管理"><users></users></el-tab-pane>
+    <el-tab-pane label="诊室管理"></el-tab-pane>
+    <el-tab-pane label="医生管理"></el-tab-pane>
+    <el-tab-pane label="出诊管理"></el-tab-pane>
+    <el-tab-pane label="用户管理"></el-tab-pane>
   </el-tabs>
 
 
@@ -17,10 +17,10 @@
 
 <script>
 import department from '@/components/department.vue'
-import clinic from '@/components/clinic.vue'
-import doctor from '@/components/doctor.vue'
-import users from '@/components/users.vue'
-import appointmentRecord from '@/components/AppointmentRecord.vue'
+// import clinic from '@/components/clinic.vue'
+// import doctor from '@/components/doctor.vue'
+// import users from '@/components/users.vue'
+// import appointmentRecord from '@/components/AppointmentRecord.vue'
   export default {
     name: 'Admin',
     data() {
@@ -30,7 +30,7 @@ import appointmentRecord from '@/components/AppointmentRecord.vue'
   },
   methods: {
   },
-    components: { doctor,department,clinic,appointmentRecord,users }
+    components: { department }
 }
 </script>
 
