@@ -50,6 +50,7 @@ export default async function authMiddleware(ctx: Context, next: Next) {
 
     await next();
   } catch (err) {
+    console.log(err);
     ctx.throw(401, '权限校验失败');
   }
 

@@ -67,7 +67,8 @@
           <el-dialog title="更改头像" :visible.sync="showChangeAvatarDialog">
             <el-upload
               class="avatar-uploader"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              :action="uploadUrl"
+              :headers="headers"
               :show-file-list="true"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
@@ -115,6 +116,13 @@ export default {
       input: '',
       showChangeAvatarDialog: false,
       imageUrl: '',
+      file: null,
+
+      token: '',
+      uploadUrl: '/api/doctors/upload/',
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
     };
   },
 
@@ -122,6 +130,7 @@ export default {
     /// 查询
     handleQuery() {
       const token = localStorage.getItem('token');
+      this.token = token;
       const employeeNumber = this.$store.state.employee_number; // 使用医生的 employee_number 字段进行查询
     
       axios.get(`/api/doctor/?employee_number=${employeeNumber}`, {
@@ -144,6 +153,7 @@ export default {
               phone_number: doctorData.phone_number
             };
             this.info = row;
+            this.uploadUrl += doctorData.doctor_id;
           } else {
             this.info = {}; // 清空表格数据，因为未找到匹配的医生
           }
@@ -153,16 +163,13 @@ export default {
         });
     },
 
-    //上传头像
-    upload(event){
-      this.file
-    },
 
     toggleChangeAvatarDialog() {
       this.showChangeAvatarDialog = true;
     },
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+    handleAvatarSuccess(response) {
+      console.log(response);
+      this.imageUrl = response.data.url; 
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg';
