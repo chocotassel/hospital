@@ -2,11 +2,8 @@
   <!-- 书籍列表卡片 -->
   <el-card class="box-card">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="科室名称" label-width="70px">
-            <el-input clearable v-model="formInline.office_name" placeholder="请输入科室名"></el-input>
-          </el-form-item>
-          <el-form-item label="诊室名称" label-width="70px">
-            <el-input clearable v-model="formInline.department_name" placeholder="请输入科室名"></el-input>
+          <el-form-item label="科室号" label-width="70px">
+            <el-input clearable v-model="formInline.office_id" placeholder="请输入科室号"></el-input>
           </el-form-item>
           <el-form-item style="margin-left: 10px">
             <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
@@ -108,14 +105,11 @@ import axios from 'axios'
         return {
             formInline: {
               office_id: "",
-              office_name: "",
-              office_description:"",
-              department_name: "",
             },
             value: "",
             //列表
             tableData: [{
-                    "office_id": "xasdw12312",
+                    "office_id": "",
                     "office_name": "",
                     "office_description": "",
                     "department_name": "",
@@ -163,26 +157,31 @@ import axios from 'axios'
         this.index = index
       },
       handleReset() {
-          this.formInline.department_name = "";
-          this.formInline.office_name = "";
+          this.formInline.office_id = "";
+          this.handleQueryAll()
       },
+      // 查询
       handleQuery() {
-      const token = localStorage.getItem('token');
-    
-      // 根据查询条件发送请求，获取医生列表
-      axios.get('/api/offices', {
-        params: this.formInline,
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(response => {
-          this.tableData = [response.data];
+        const token = localStorage.getItem('token');
+        const officeId = this.formInline.office_id;
+      
+        axios.get(`/api/office/${officeId}`, {
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
         })
-        .catch(error => {
-          console.error(error);
-        });
-    },
+          .then(response => {
+            if (response.data) {
+              this.tableData = [response.data.data]; // 更新表格显示的数据
+              console.log("111:",response.data)
+            } else {
+              this.tableData = []; // 清空表格数据
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      },
 
     // 添加按钮点击事件
     handleAdd() {
@@ -250,10 +249,10 @@ import axios from 'axios'
         }
       })
         .then(response => {
-          console.log(response.data); // 输出响应数据，检查其格式是否为数组
+          console.log(response.data.data); // 输出响应数据，检查其格式是否为数组
         
-          if (Array.isArray(response.data)) {
-            this.tableData = [response.data]; // 将响应数据转换为数组
+          if (Array.isArray(response.data.data)) {
+            this.tableData = response.data.data; // 将响应数据转换为数组
           }
         })
         .catch(error => {

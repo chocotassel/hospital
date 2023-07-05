@@ -343,10 +343,10 @@ export default {
         }
       })
         .then(response => {
-          console.log(response.data); // 输出响应数据，检查其格式是否为数组
+          console.log(response.data.data); // 输出响应数据，检查其格式是否为数组
         
-          if (Array.isArray(response.data)) {
-            this.tableData = [response.data]; // 将响应数据转换为数组
+          if (Array.isArray(response.data.data)) {
+            this.tableData = response.data.data; // 将响应数据转换为数组
           }
         })
         .catch(error => {

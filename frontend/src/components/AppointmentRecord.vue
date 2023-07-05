@@ -2,11 +2,8 @@
   <!-- 书籍列表卡片 -->
   <el-card class="box-card">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="出诊日期" label-width="70px">
-            <el-input clearable v-model="formInline.visit_date" placeholder="请输入日期"></el-input>
-          </el-form-item>
-          <el-form-item label="医生姓名" label-width="70px">
-            <el-input clearable v-model="formInline.doctor_name" placeholder="请输入姓名"></el-input>
+          <el-form-item label="出诊单号" label-width="70px">
+            <el-input clearable v-model="formInline.visit_id" placeholder="请输入单号"></el-input>
           </el-form-item>
           <el-form-item style="margin-left: 10px">
             <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
@@ -121,7 +118,6 @@ import axios from 'axios'
         return {
             formInline: {
               visit_id: "",
-              doctor_name:"",
             },
             value: "",
             //列表
@@ -176,25 +172,30 @@ import axios from 'axios'
       },
       handleReset() {
           this.formInline.visit_id = "";
-          this.formInline.doctor_name = "";
+          this.handleQueryAll()
       },
+      // 查询
       handleQuery() {
-      const token = localStorage.getItem('token');
-    
-      // 根据查询条件发送请求，获取医生列表
-      axios.get('/api/visits', {
-        params: this.formInline,
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(response => {
-          this.tableData = [response.data];
+        const token = localStorage.getItem('token');
+        const visitId = this.formInline.visit_id;
+      
+        axios.get(`/api/visit/${visitId}`, {
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
         })
-        .catch(error => {
-          console.error(error);
-        });
-    },
+          .then(response => {
+            if (response.data) {
+              this.tableData = [response.data.data]; // 更新表格显示的数据
+              console.log("111:",response.data.data)
+            } else {
+              this.tableData = []; // 清空表格数据
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      },
 
     // 添加按钮点击事件
     handleAdd() {
@@ -262,10 +263,10 @@ import axios from 'axios'
         }
       })
         .then(response => {
-          console.log(response.data); // 输出响应数据，检查其格式是否为数组
+          console.log(response.data.data); // 输出响应数据，检查其格式是否为数组
         
-          if (Array.isArray(response.data)) {
-            this.tableData = [response.data]; // 将响应数据转换为数组
+          if (Array.isArray(response.data.data)) {
+            this.tableData = response.data.data; // 将响应数据转换为数组
           }
         })
         .catch(error => {

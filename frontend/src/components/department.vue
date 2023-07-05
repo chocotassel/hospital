@@ -2,8 +2,8 @@
   <!-- 书籍列表卡片 -->
   <el-card class="box-card">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="科室名称" label-width="70px">
-            <el-input clearable v-model="formInline.book_name" placeholder="请输入科室名"></el-input>
+          <el-form-item label="科室号" label-width="70px">
+            <el-input clearable v-model="formInline.department_id" placeholder="请输入科室号"></el-input>
           </el-form-item>
           <el-form-item style="margin-left: 10px">
             <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
@@ -72,6 +72,7 @@
           <el-button type="primary"  @click="handleEditconfirm">确 定</el-button>
         </div>
       </el-dialog>
+      
       <br>
       <!--   分页 -->
       <el-pagination
@@ -94,8 +95,6 @@ import axios from 'axios'
         return {
             formInline: {
               department_id: "",
-              department_name: "",
-              department_description:"",
             },
             value: "",
             //列表
@@ -140,34 +139,42 @@ import axios from 'axios'
             this.tableData = res.data
           })
       },
-      handleEdit(index, row){
-        console.log(row)
-        this.status = 0
-        this.dialogFormVisible = true
-        this.index = index
+
+      handleEdit(departmentId){
+        // 在这里可以访问到对应的科室号
+        console.log('科室号:', departmentId);
+        this.editingDepartmentId = departmentId
+        this.dialogFormVisible = true;
       },
+
       //重置
       handleReset() {
-          this.formInline.department_name = "";
+          this.formInline.department_id = "";
+          this.handleQueryAll();
       },
-      // 查询按钮点击事件
-    handleQuery() {
-      const token = localStorage.getItem('token');
-    
-      // 根据查询条件发送请求，获取医生列表
-      axios.get('/api/departments', {
-        params: this.formInline,
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(response => {
-          this.tableData = [response.data];
+      // 查询
+      handleQuery() {
+        const token = localStorage.getItem('token');
+        const departmentId = this.formInline.department_id;
+      
+        axios.get(`/api/department/${departmentId}`, {
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
         })
-        .catch(error => {
-          console.error(error);
-        });
-    },
+          .then(response => {
+            if (response.data) {
+              this.tableData = [response.data.data]; // 更新表格显示的数据
+              console.log("111:",response.data.data)
+            } else {
+              this.tableData = []; // 清空表格数据
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      },
+
 
     // 添加按钮点击事件
     handleAdd() {
@@ -179,37 +186,38 @@ import axios from 'axios'
     handleEditconfirm() {
       const token = localStorage.getItem('token');
     
-      axios.post('/api/departments', this.form, {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(() => {
-          this.handleQuery();
-          this.dialogFormVisible = false; // 隐藏对话框
+      if (this.editingDepartmentId) {
+        // 编辑确认
+        axios.put(`/api/departments/${this.form.department_id}`, this.form, {
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
         })
-        .catch(error => {
-          console.error(error);
-        });
+          .then(() => {
+            this.handleQueryAll();
+            this.editingDepartmentId = null
+            this.dialogFormVisible = false; // 隐藏对话框
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      } else {
+        // 添加确认
+        axios.post('/api/departments', this.form, {
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
+        })
+          .then(() => {
+            this.handleQueryAll();
+            this.dialogFormVisible = false; // 隐藏对话框
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
     },
 
-    // 编辑按钮点击事件
-    handleEditConfirm() {
-      const token = localStorage.getItem('token');
-    
-      axios.put(`/api/departments/${this.form.department_id}`, this.form, {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(() => {
-          this.handleQuery();
-          this.dialogFormVisible = false; // 隐藏对话框
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    },
 
     // 删除按钮点击事件
     handleDelete(index, row) {
@@ -221,7 +229,7 @@ import axios from 'axios'
         }
       })
         .then(() => {
-          this.handleQuery();
+          this.tableData.splice(index, 1); // 从表格数据中移除被删除的项
         })
         .catch(error => {
           console.error(error);
@@ -235,10 +243,10 @@ import axios from 'axios'
         }
       })
         .then(response => {
-          console.log(response.data); // 输出响应数据，检查其格式是否为数组
+          console.log(response.data.data.data); // 输出响应数据，检查其格式是否为数组
         
-          if (Array.isArray(response.data)) {
-            this.tableData = [response.data]; // 将响应数据转换为数组
+          if (Array.isArray(response.data.data.data)) {
+            this.tableData = response.data.data.data; // 将响应数据中的data属性赋值给tableData
           }
         })
         .catch(error => {

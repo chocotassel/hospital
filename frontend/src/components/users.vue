@@ -2,11 +2,8 @@
   <!-- 书籍列表卡片 -->
   <el-card class="box-card">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="用户名" label-width="70px">
-            <el-input clearable v-model="formInline.username" placeholder="请输入用户名"></el-input>
-          </el-form-item>
-          <el-form-item label="所属角色" label-width="70px">
-            <el-input clearable v-model="formInline.role_name" placeholder="请输入角色名"></el-input>
+          <el-form-item label="用户ID" label-width="70px">
+            <el-input clearable v-model="formInline.user_id" placeholder="请输入用户ID"></el-input>
           </el-form-item>
           <el-form-item style="margin-left: 10px">
             <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
@@ -21,7 +18,7 @@
           style="width: 100%">
 
           <el-table-column
-          label="用户号"
+          label="用户ID"
           width="200">
         <template slot-scope="scope">
         <span style="margin-left: 10px">{{ scope.row.user_id }}</span>
@@ -176,21 +173,24 @@ import axios from 'axios'
       },
 
       handleQuery() {
-      const token = localStorage.getItem('token');
-    
-      axios.get('/api/users', {
-        params: this.formInline,
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(response => {
-          this.tableData = [response.data];
+        const token = localStorage.getItem('token');
+
+        axios.get('/api/users', {
+          params: {
+            department_name: this.formInline.department_name
+          },
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
         })
-        .catch(error => {
-          console.error(error);
-        });
-    },
+          .then(response => {
+            this.tableData = response.data.data; 
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      },
+
 
     // 添加按钮点击事件
     handleAdd() {
@@ -258,10 +258,10 @@ import axios from 'axios'
         }
       })
         .then(response => {
-          console.log(response.data); // 输出响应数据，检查其格式是否为数组
+          console.log(response.data); 
         
-          if (Array.isArray(response.data)) {
-            this.tableData = [response.data]; // 将响应数据转换为数组
+          if (Array.isArray(response.data.data)) {
+            this.tableData = response.data.data; 
           }
         })
         .catch(error => {
