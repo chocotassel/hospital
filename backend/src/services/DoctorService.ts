@@ -12,33 +12,25 @@ interface Condition {
 class DoctorService {
   // 获取所有医生
   async getDoctors(page?: number, limit?: number, name?: string) {
-    let condition: Condition = {};
-    let whereCondition: Condition = {};
-    
+    let whereCondition: any = {};
+  
     // 如果传入了name，添加模糊查询条件
     if (name) {
-      condition.doctor_name = { [Op.like]: '%' + name + '%' }
-      whereCondition.doctor_name = { [Op.like]: '%' + name + '%' }
+      whereCondition.doctor_name = { [Op.like]: '%' + name + '%' };
     }
-
+  
+    // 创建查询选项
+    let findOptions: any = { where: whereCondition };
+  
     // 如果传入了page和limit，添加offset条件
     if (page && limit) {
-      condition.offset = (page - 1) * limit;
-      condition.limit = limit;
+      findOptions.offset = (page - 1) * limit;
+      findOptions.limit = limit;
     }
-
-    condition.include = [{
-      model: Office,
-      include: [{
-        model: Department,
-      }]
-    }]
-
-    const doctors = await Doctor.findAll(condition);
-    
-    const total = await Doctor.count({
-      where: whereCondition,
-    });
+  
+    const doctors = await Doctor.findAll(findOptions);
+  
+    const total = await Doctor.count({ where: whereCondition });
 
     return { doctors, total };
   }

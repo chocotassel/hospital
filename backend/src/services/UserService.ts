@@ -11,26 +11,25 @@ interface Condition {
 class UserService {
   // 获取所有用户
   async getUsers(page?: number, limit?: number, name?: string) {
-    let condition: Condition = {};
-    let whereCondition: Condition = {};
-    
+    let whereCondition: any = {};
+  
     // 如果传入了name，添加模糊查询条件
     if (name) {
-      condition.user_name = { [Op.like]: '%' + name + '%' }
-      whereCondition.user_name = { [Op.like]: '%' + name + '%' }
+      whereCondition.username = { [Op.like]: '%' + name + '%' };
     }
-
+  
+    // 创建查询选项
+    let findOptions: any = { where: whereCondition };
+  
     // 如果传入了page和limit，添加offset条件
     if (page && limit) {
-      condition.offset = (page - 1) * limit;
-      condition.limit = limit;
+      findOptions.offset = (page - 1) * limit;
+      findOptions.limit = limit;
     }
-
-    const users = await User.findAll(condition);
-    
-    const total = await User.count({
-      where: whereCondition,
-    });
+  
+    const users = await User.findAll(findOptions);
+  
+    const total = await User.count({ where: whereCondition });
 
     return { users, total };
   }

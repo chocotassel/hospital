@@ -11,30 +11,25 @@ interface Condition {
 class OfficeService {
   // 获取所有诊室
   async getOffices(page?: number, limit?: number, name?: string) {
-    let condition: Condition = {};
-    let whereCondition: Condition = {};
-    
+    let whereCondition: any = {};
+  
     // 如果传入了name，添加模糊查询条件
     if (name) {
-      condition.office_name = { [Op.like]: '%' + name + '%' }
-      whereCondition.office_name = { [Op.like]: '%' + name + '%' }
+      whereCondition.office_name = { [Op.like]: '%' + name + '%' };
     }
-
+  
+    // 创建查询选项
+    let findOptions: any = { where: whereCondition };
+  
     // 如果传入了page和limit，添加offset条件
     if (page && limit) {
-      condition.offset = (page - 1) * limit;
-      condition.limit = limit;
+      findOptions.offset = (page - 1) * limit;
+      findOptions.limit = limit;
     }
-
-    condition.include = [{
-      model: Department,
-    }]
-
-    const offices = await Office.findAll(condition);
-    
-    const total = await Office.count({
-      where: whereCondition,
-    });
+  
+    const offices = await Office.findAll(findOptions);
+  
+    const total = await Office.count({ where: whereCondition });
 
     return { offices, total };
   }
