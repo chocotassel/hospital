@@ -35,6 +35,9 @@ class VisitService {
       where: whereCondition,
       limit,
       offset: (page - 1) * limit,
+      include: [{
+        model: Doctor,
+      }]
     });
   
     const total = await Visit.count({
@@ -46,7 +49,14 @@ class VisitService {
 
   // 获取单个出诊
   async getVisit(id: string) {
-    return await Visit.findOne({ where: { visit_id: BigInt(id).toString() } });
+    return await Visit.findOne({ 
+      where: { 
+        visit_id: BigInt(id).toString() 
+      },
+      include: [{
+        model: Doctor,
+      }]
+    });
   }
 
   // 创建出诊

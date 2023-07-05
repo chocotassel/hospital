@@ -3,7 +3,7 @@ import UserService from "../../services/UserService";
 type PositionCode = '01' | '02' | '03' | '04' | '05' | '06';
 
 
-async function generateEmployeeNumber(department: number, position: PositionCode): Promise<string> {
+export async function generateEmployeeNumber(department: number, position: PositionCode): Promise<string> {
   const departmentCode = department.toString().padStart(2, '0');
   
   const year = new Date().getFullYear().toString().slice(-2);

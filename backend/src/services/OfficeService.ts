@@ -2,6 +2,7 @@
 import { Op } from 'sequelize';
 import snowflake from '../common/utils/snowflake';
 import Office from '../models/Office';
+import Department from '../models/Department';
 
 interface Condition {
   [key: string]: any; // 索引签名
@@ -15,8 +16,8 @@ class OfficeService {
     
     // 如果传入了name，添加模糊查询条件
     if (name) {
-      condition.user_name = { [Op.like]: '%' + name + '%' }
-      whereCondition.user_name = { [Op.like]: '%' + name + '%' }
+      condition.office_name = { [Op.like]: '%' + name + '%' }
+      whereCondition.office_name = { [Op.like]: '%' + name + '%' }
     }
 
     // 如果传入了page和limit，添加offset条件
@@ -24,6 +25,10 @@ class OfficeService {
       condition.offset = (page - 1) * limit;
       condition.limit = limit;
     }
+
+    condition.include = [{
+      model: Department,
+    }]
 
     const offices = await Office.findAll(condition);
     
@@ -36,7 +41,14 @@ class OfficeService {
 
   // 获取单个诊室
   async getOffice(id: string) {
-    return await Office.findOne({ where: { office_id: BigInt(id).toString() } });
+    return await Office.findOne({ 
+      where: { 
+        office_id: BigInt(id).toString() 
+      },
+      include: [{
+        model: Department,
+      }]
+    });
   }
 
   // 创建诊室

@@ -2,7 +2,7 @@ import User from '../models/User';
 import Role from '../models/Role';
 import snowflake from '../common/utils/snowflake';
 import { Op } from 'sequelize';
-import { off } from 'process';
+import { generateEmployeeNumber } from '../common/utils/employeeNumber';
 
 interface Condition {
   [key: string]: any; // 索引签名
@@ -43,6 +43,7 @@ class UserService {
   // 创建用户
   async createUser(data: any) {
     data.user_id = BigInt(snowflake.user.nextId()).toString();
+    data.employee_number = generateEmployeeNumber(data.department, data.position);
     const user = await User.create(data);
     return user;
   }
@@ -81,3 +82,4 @@ class UserService {
 }
 
 export default new UserService();
+
