@@ -6,6 +6,7 @@ import validate from '../common/utils/validate';
 import { can } from '../common/utils/rbac';
 import Joi from 'joi';
 import { paginate } from '../common/utils/paginate';
+import PermissionService from '../services/PermissionService';
 
 class UserController {
   // 获取所有用户
@@ -99,7 +100,7 @@ class UserController {
       const user = await UserService.createUser(data);
       
       if (data.role_id) {
-        await UserService.assignRole(user.user_id, data.role_id);
+        await PermissionService.assignRole(user.user_id, data.role_id);
       }
 
       return response.success(ctx, user);
@@ -154,38 +155,6 @@ class UserController {
     }
   }
 
-  // 修改用户权限
-  async changeRole(ctx: Context) {
-    // 权限检查
-    if (!can(ctx.state.user.permissions, 'modifyUser')) {
-      return response.fail(ctx, '权限校验失败', [], 403);
-    }
-
-    const rules: Rules = {
-      user_id: {
-        type: 'string',
-        required: true,
-        pattern: /^\d+$/,
-      },
-      role_id: {
-        type: 'string',
-        required: true,
-        pattern: /^\d+$/,
-      },
-    };
-
-    const { data, error } = await validate(ctx, rules);
-    if (error) {
-      return response.fail(ctx, '非法数据', error, 400);
-    }
-    
-    try {
-      await UserService.changeRole(data.user_id, data.role_id);
-      return response.success(ctx, '权限修改成功');
-    } catch (err) {
-      return response.fail(ctx, '服务器错误', err, 500);
-    }
-  }
 
   // 删除用户
   async deleteUser(ctx: Context) {
