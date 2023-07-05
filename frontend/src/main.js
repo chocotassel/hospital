@@ -7,6 +7,7 @@ import * as echarts from 'echarts'
 import vueResource from 'vue-resource'
 import VueRouter from 'vue-router'
 import router from './router'
+import store from './store';
 
 
 Vue.use(ElementUI,{size:'mini'});
@@ -26,6 +27,7 @@ Vue.use(VueRouter)
 Vue.prototype.request = request;
 Vue.prototype.$echarts = echarts
 new Vue({
+    store,
     render: h => h(App),
     router: router,
     //安装全局事件总线

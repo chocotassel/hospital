@@ -119,12 +119,12 @@ export default {
   },
 
   methods: {
-    // 查询
+    /// 查询
     handleQuery() {
       const token = localStorage.getItem('token');
-      const doctorId = this.formInline.doctor_id; 
+      const employeeNumber = this.$store.state.employee_number; // 使用医生的 employee_number 字段进行查询
     
-      axios.get(`/api/doctors/${doctorId}`, {
+      axios.get(`/api/doctor/?employee_number=${employeeNumber}`, {
         headers: {
           Authorization: 'Bearer ' + token
         }
@@ -132,9 +132,7 @@ export default {
         .then(response => {
           console.log("单个:", response.data.data); // 输出响应数据，检查其格式是否符合预期
         
-          if (Array.isArray(response.data.data)) {
-            this.tableData = response.data.data; 
-          } else {
+          if (response.data.data) {
             const doctorData = response.data.data;
             const row = {
               employee_number: doctorData.employee_number,
@@ -143,14 +141,21 @@ export default {
               date_of_birth: doctorData.date_of_birth,
               office_name: doctorData.office.office_name,
               identity_card: doctorData.identity_card,
-              phone_number:doctorData.phone_number
+              phone_number: doctorData.phone_number
             };
-            this.tableData = [row];
+            this.info = row;
+          } else {
+            this.info = {}; // 清空表格数据，因为未找到匹配的医生
           }
         })
         .catch(error => {
           console.error(error);
         });
+    },
+
+    //上传头像
+    upload(event){
+      this.file
     },
 
     toggleChangeAvatarDialog() {
@@ -173,7 +178,7 @@ export default {
     },
   },
   mounted() {
-
+    this.handleQuery()
   },
 };
 </script>

@@ -108,29 +108,34 @@ export default {
     },
 
     methods: {
-      // 用户登录
-      UserLogin() {
-        axios.post('/api/login', {
-          account: this.loginUser.account,
-          password: this.loginUser.password
-        })
-          .then(res => {
-            console.log(res);
-            if (res.data.code === 0) {
-              console.log(res.data);
-              localStorage.setItem("token",res.data.data.token)
-              this.$message.success('登录成功！');
-              this.$router.push('/info');
+    // 用户登录
+    UserLogin() {
+      axios.post('/api/login', {
+        account: this.loginUser.account,
+        password: this.loginUser.password
+      })
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 0) {
+            console.log(res.data);
+            const employeeNumber = res.data.data.employeeNumber
+            localStorage.setItem("token", res.data.data.token);
+            console.log(employeeNumber)
+            this.$store.commit("setEmployeeNumber", employeeNumber)
+            this.$message.success('登录成功！');
+
+            if (res.data.data.role === "admin") {
+                console.log(res.data.data.role)
+              this.$router.push('/admin'); // 跳转到 /admin 路由
+            } else {
+              this.$router.push('/info'); // 跳转到 /info 路由
             }
-            // else{
-            //       this.$message.success('管理员登录成功！');
-            //       this.$router.push('/admin');
-            // }
-          })
-          .catch(error => {
-            console.error(error);
-            this.$message.error('请求出错！');
-          });
+          }
+        })
+        .catch(error => {
+          console.error(error);
+          this.$message.error('请求出错！');
+        });
     }
 },
 
