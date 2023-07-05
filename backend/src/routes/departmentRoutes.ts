@@ -1,7 +1,9 @@
 import Router from 'koa-router';
 import DepartmentController from '../controllers/DepartmentController';
 
-const router = new Router();
+const router = new Router({
+  prefix: '/api'  // 添加 '/api' 前缀
+});
 
 router.get('/departments', DepartmentController.getDepartments);
 router.get('/department/:id', DepartmentController.getDepartmentById);

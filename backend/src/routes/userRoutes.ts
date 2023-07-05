@@ -1,7 +1,9 @@
 import Router from 'koa-router';
 import userController from '../controllers/UserController';
 
-const router = new Router();
+const router = new Router({
+  prefix: '/api'  // 添加 '/api' 前缀
+});
 
 router.get('/users', userController.getUsers);
 router.get('/user/:id', userController.getUser);

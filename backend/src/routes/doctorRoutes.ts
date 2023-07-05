@@ -2,7 +2,9 @@ import Router from 'koa-router';
 import doctorController from '../controllers/DoctorController';
 import koaBody from 'koa-body';
 
-const router = new Router();
+const router = new Router({
+  prefix: '/api'  // 添加 '/api' 前缀
+});
 
 router.get('/doctors', doctorController.getDoctors);
 router.get('/doctor/:id', doctorController.getDoctorById);

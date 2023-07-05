@@ -16,6 +16,7 @@ import officeRoutes from './routes/officeRoutes';
 import doctorRoutes from './routes/doctorRoutes';
 import visitRoutes from './routes/visitRoutes';
 import userRoutes from './routes/userRoutes';
+import permissionRoutes from './routes/permissionRoutes';
 
 import errorHandlingMiddleware from './common/middlewares/errorHandlingMiddleware';
 import accessControlMiddleware from './common/middlewares/accessControlMiddleware';
@@ -25,10 +26,10 @@ import db from './db';
 db();
 
 const app = new Koa();
-// const api = new Koa();
+const api = new Koa();
 
 // 挂载前端应用
-app.use(serve(path.join(__dirname, '..', '..', 'frontend', 'build')));
+app.use(serve(path.join(__dirname, '..', '..', 'frontend', 'dist')));
 
 // 访问控制中间件
 app.use(koaBody());
@@ -43,16 +44,19 @@ app.use(officeRoutes.routes());
 app.use(doctorRoutes.routes());
 app.use(visitRoutes.routes());
 app.use(userRoutes.routes());
+app.use(permissionRoutes.routes());
+
+
+// 统一接口前缀
+app.use(mount('/api', api));
 
 
 export default app;
 
-// // 统一接口前缀
-// app.use(mount('/api', api));
 
-app.listen(3000, () => {
-  console.log('Server is running on localhost:3000');
-});
+// app.listen(3000, () => {
+//   console.log('Server is running on localhost:3000');
+// });
 
 // app.use(router.routes()).use(router.allowedMethods());
 
