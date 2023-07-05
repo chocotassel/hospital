@@ -76,13 +76,18 @@ class UserController {
         type: 'string',
         required: true,
       },
-      employee_number: {
+      phone_number: {
+        type: 'string',
+      },
+      department_id: {
+        type: 'string',
+        required: true,
+        pattern: /^\d+$/,
+      },
+      position: {
         type: 'string',
         required: true,
       },
-      phone_number: {
-        type: 'string',
-      }
     };
 
     const { data, error } = await validate(ctx, rules);
