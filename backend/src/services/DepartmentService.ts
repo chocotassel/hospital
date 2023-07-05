@@ -15,8 +15,8 @@ class DepartmentService {
     
     // 如果传入了name，添加模糊查询条件
     if (name) {
-      condition.user_name = { [Op.like]: '%' + name + '%' }
-      whereCondition.user_name = { [Op.like]: '%' + name + '%' }
+      condition.department_name = { [Op.like]: '%' + name + '%' }
+      whereCondition.department_name = { [Op.like]: '%' + name + '%' }
     }
 
     // 如果传入了page和limit，添加offset条件
