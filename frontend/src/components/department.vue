@@ -2,8 +2,8 @@
   <!-- 书籍列表卡片 -->
   <el-card class="box-card">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
-          <el-form-item label="科室号" label-width="70px">
-            <el-input clearable v-model="formInline.department_id" placeholder="请输入科室号"></el-input>
+          <el-form-item label="科室名" label-width="70px">
+            <el-input clearable v-model="formInline.department_name" placeholder="请输入科室名"></el-input>
           </el-form-item>
           <el-form-item style="margin-left: 10px">
             <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
@@ -57,9 +57,6 @@
       <!-- Form -->
       <el-dialog title="科室信息" :visible.sync="dialogFormVisible" >
         <el-form :model="form">
-          <el-form-item label="科室号" :label-width="formLabelWidth">
-            <el-input v-model="form.department_id" autocomplete="off"></el-input>
-          </el-form-item>
           <el-form-item label="科室名称" :label-width="formLabelWidth">
             <el-input v-model="form.department_name" autocomplete="off"></el-input>
           </el-form-item>
@@ -94,7 +91,7 @@ import axios from 'axios'
     data() {
         return {
             formInline: {
-              department_id: "",
+              department_name: "",
             },
             value: "",
             //列表
@@ -114,6 +111,7 @@ import axios from 'axios'
             },
             formLabelWidth: '120px',
             index:'',
+            editingMode: false
         };
   },
   created() {
@@ -140,63 +138,98 @@ import axios from 'axios'
           })
       },
 
-      handleEdit(departmentId){
-        // 在这里可以访问到对应的科室号
-        console.log('科室号:', departmentId);
-        this.editingDepartmentId = departmentId
-        this.dialogFormVisible = true;
-      },
-
       //重置
       handleReset() {
           this.formInline.department_id = "";
           this.handleQueryAll();
       },
-      // 查询
-      handleQuery() {
-        const token = localStorage.getItem('token');
-        const departmentId = this.formInline.department_id;
+      //查询全部
+      handleQueryAll() {
+      const token = localStorage.getItem('token');
+      const page = 1; // 页码
+      const limit = 10; // 每页显示的数量
+        
+      axios.get('/api/departments', {
+        params: {
+          page,
+          limit
+        },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log(response.data.data.data); // 输出响应数据，检查其格式是否符合预期
       
-        axios.get(`/api/department/${departmentId}`, {
-          headers: {
-            Authorization: 'Bearer ' + token
+          if (Array.isArray(response.data.data.data)) {
+            this.tableData = response.data.data.data; // 将响应数据中的 departments 赋值给 tableData
+          }
+
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+
+    // 查询
+    handleQuery() {
+      const token = localStorage.getItem('token');
+      const page = 1; // 页码
+      const limit = 10; // 每页显示的数量
+      const departmentName = this.formInline.department_name; // 搜索关键字
+    
+      axios.get('/api/departments', {
+        params: {
+          page,
+          limit,
+          name: departmentName
+        },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log("单个:", response.data.data.data); // 输出响应数据，检查其格式是否符合预期
+        
+          if (Array.isArray(response.data.data.data)) {
+            this.tableData = response.data.data.data; 
           }
         })
-          .then(response => {
-            if (response.data) {
-              this.tableData = [response.data.data]; // 更新表格显示的数据
-              console.log("111:",response.data.data)
-            } else {
-              this.tableData = []; // 清空表格数据
-            }
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      },
+        .catch(error => {
+          console.error(error);
+        });
+    },
 
+    handleEdit(index, row){
+      // 在这里可以访问到对应的科室号
+      const departmentId = row.department_id;
+      this.editingDepartmentId = departmentId;
+      this.dialogFormVisible = true;
+      this.editingMode =true;
+    }, 
 
     // 添加按钮点击事件
     handleAdd() {
       this.dialogFormVisible = true; // 显示对话框
       this.form = {}; // 将表单数据初始化为空对象
+      this.editingMode = false;
     },
 
     // 确定按钮点击事件
     handleEditconfirm() {
       const token = localStorage.getItem('token');
     
-      if (this.editingDepartmentId) {
+      if (this.editingMode === true) {
         // 编辑确认
-        axios.put(`/api/departments/${this.form.department_id}`, this.form, {
+        axios.put(`/api/departments/${this.editingDepartmentId}`, this.form, {
           headers: {
             Authorization: 'Bearer ' + token
           }
         })
           .then(() => {
             this.handleQueryAll();
-            this.editingDepartmentId = null
             this.dialogFormVisible = false; // 隐藏对话框
+            this.form={}
           })
           .catch(error => {
             console.error(error);
@@ -211,6 +244,7 @@ import axios from 'axios'
           .then(() => {
             this.handleQueryAll();
             this.dialogFormVisible = false; // 隐藏对话框
+            this.form={}
           })
           .catch(error => {
             console.error(error);
@@ -235,24 +269,6 @@ import axios from 'axios'
           console.error(error);
         });
     },
-    handleQueryAll() {
-      const token = localStorage.getItem('token');
-      axios.get('/api/departments', {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-        .then(response => {
-          console.log(response.data.data.data); // 输出响应数据，检查其格式是否为数组
-        
-          if (Array.isArray(response.data.data.data)) {
-            this.tableData = response.data.data.data; // 将响应数据中的data属性赋值给tableData
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    }
   },
   mounted() {
     // this.handleQueryAll();
