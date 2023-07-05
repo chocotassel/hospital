@@ -40,7 +40,7 @@ class AuthenticationService {
     // 创建 token
     const token = auth.signToken({ userId: user.user_id, role: roleName, permissions: permissions });
 
-    return { token: token, message: '登录成功' };
+    return { token: token, message: '登录成功', role: roleName };
   }
 }
 

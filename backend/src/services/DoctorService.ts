@@ -5,6 +5,8 @@ import Department from '../models/Department';
 import Doctor from '../models/Doctor';
 import Office from '../models/Office';
 import path from 'path';
+import { sequelize } from '../db';
+import Visit from '../models/Visit';
 
 interface Condition {
   [key: string]: any; // 索引签名
@@ -121,12 +123,34 @@ class DoctorService {
 
   // 删除医生
   async deleteDoctor(id: string) {
-    const doctor = await Doctor.findOne({ where: { doctor_id: BigInt(id).toString() } });
-    if (!doctor) {
-      throw new Error('医生不存在');
-    }
+    // const doctor = await Doctor.findOne({ where: { doctor_id: BigInt(id).toString() } });
+    // if (!doctor) {
+    //   throw new Error('医生不存在');
+    // }
 
-    return await doctor.destroy();
+    // return await doctor.destroy();
+    const transaction = await sequelize.transaction();
+
+    try {
+      // 删除医生的所有就诊记录
+      await Visit.destroy({
+        where: { doctor_id: id },
+        transaction
+      });
+
+      // 删除医生
+      await Doctor.destroy({
+        where: { doctor_id: id },
+        transaction
+      });
+
+      // 提交事务
+      await transaction.commit();
+    } catch (err) {
+      // 发生错误，回滚事务
+      await transaction.rollback();
+      throw err;
+    }
   }
 }
 

@@ -3,6 +3,9 @@ import { Op } from 'sequelize';
 import snowflake from '../common/utils/snowflake';
 import Office from '../models/Office';
 import Department from '../models/Department';
+import { sequelize } from '../db';
+import Doctor from '../models/Doctor';
+import Visit from '../models/Visit';
 
 interface Condition {
   [key: string]: any; // 索引签名
@@ -69,12 +72,49 @@ class OfficeService {
 
   // 删除诊室
   async deleteOffice(id: string) {
-    const office = await Office.findOne({ where: { office_id: BigInt(id).toString() } });
-    if (!office) {
-      throw new Error('诊室不存在');
-    }
+    // const office = await Office.findOne({ where: { office_id: BigInt(id).toString() } });
+    // if (!office) {
+    //   throw new Error('诊室不存在');
+    // }
 
-    return await office.destroy();
+    // return await office.destroy();
+    const transaction = await sequelize.transaction();
+    
+    try {
+      // 查询办公室下的所有医生
+      const doctors = await Doctor.findAll({
+        where: { office_id: id },
+        transaction
+      });
+
+      for (const doctor of doctors) {
+        // 删除医生的所有就诊记录
+        await Visit.destroy({
+          where: { doctor_id: doctor.doctor_id },
+          transaction
+        });
+      }
+
+      // 删除办公室下的所有医生
+      await Doctor.destroy({
+        where: { office_id: id },
+        transaction
+      });
+
+      // 删除办公室
+      await Office.destroy({
+        where: { office_id: id },
+        transaction
+      });
+
+      // 提交事务
+      await transaction.commit();
+    } catch (err) {
+      // 发生错误，回滚事务
+      await transaction.rollback();
+      throw err;
+    }
+  
   }
 }
 

@@ -4,7 +4,7 @@ import config from '../config';
 import path from 'path';
 import { dbLogger } from '../common/logger';
 
-const sequelize = new Sequelize(config.databaseConfig.database as string, config.databaseConfig.username as string, config.databaseConfig.password, {
+export const sequelize = new Sequelize(config.databaseConfig.database as string, config.databaseConfig.username as string, config.databaseConfig.password, {
   host: config.databaseConfig.host,
   port: config.databaseConfig.port,
   dialect: 'mysql',
