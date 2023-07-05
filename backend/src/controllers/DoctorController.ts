@@ -233,16 +233,13 @@ class DoctorController {
       },
       gender: {
         type: 'enum',
-        required: true,
         enum: ['男', '女'],
       },
       date_of_birth: {
         type: 'date',
-        required: true,
       },
       identity_card: {
         type: 'string',
-        required: true,
         len: 18,
       },
       phone_number: {
@@ -252,12 +249,10 @@ class DoctorController {
       },
       registration_fee: {
         type: 'number',
-        required: true,
         min: 0,
       },
       description: {
         type: 'string',
-        required: false,
       },
       office_id: {
         type: 'string',
