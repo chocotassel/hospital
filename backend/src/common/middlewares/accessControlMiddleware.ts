@@ -4,8 +4,8 @@ import { accessLogger } from '../logger';
 
 const unauthenticatedPaths = [
   '/',
-  '/login',
-  '/test'
+  '/api/login',
+  '/api/test'
 ]
 
 const adminPaths = [
@@ -22,6 +22,8 @@ export default async function authMiddleware(ctx: Context, next: Next) {
     throw new Error('Missing JWT_SECRET environment variable');
   }
 
+  console.log(ctx.path);
+  
   // Skip authentication for the login route
   if (unauthenticatedPaths.includes(ctx.path)) {
     await next();

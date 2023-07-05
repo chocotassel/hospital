@@ -2,7 +2,9 @@
 import Router from 'koa-router';
 import officeController from '../controllers/OfficeController';
 
-const router = new Router();
+const router = new Router({
+  prefix: '/api'  // 添加 '/api' 前缀
+});
 
 router.get('/offices', officeController.getOffices);
 router.get('/office/:id', officeController.getOffice);

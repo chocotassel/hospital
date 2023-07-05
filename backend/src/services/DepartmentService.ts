@@ -10,26 +10,25 @@ interface Condition {
 class DepartmentService {
   // 获取所有科室
   async getDepartments(page?: number, limit?: number, name?: string) {
-    let condition: Condition = {};
-    let whereCondition: Condition = {};
-    
+    let whereCondition: any = {};
+  
     // 如果传入了name，添加模糊查询条件
     if (name) {
-      condition.department_name = { [Op.like]: '%' + name + '%' }
-      whereCondition.department_name = { [Op.like]: '%' + name + '%' }
+      whereCondition.department_name = { [Op.like]: '%' + name + '%' };
     }
-
+  
+    // 创建查询选项
+    let findOptions: any = { where: whereCondition };
+  
     // 如果传入了page和limit，添加offset条件
     if (page && limit) {
-      condition.offset = (page - 1) * limit;
-      condition.limit = limit;
+      findOptions.offset = (page - 1) * limit;
+      findOptions.limit = limit;
     }
-
-    const departments = await Department.findAll(condition);
-    
-    const total = await Department.count({
-      where: whereCondition,
-    });
+  
+    const departments = await Department.findAll(findOptions);
+  
+    const total = await Department.count({ where: whereCondition });
 
     return { departments, total };
   }
