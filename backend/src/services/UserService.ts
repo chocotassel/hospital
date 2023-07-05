@@ -43,7 +43,8 @@ class UserService {
   // 创建用户
   async createUser(data: any) {
     data.user_id = BigInt(snowflake.user.nextId()).toString();
-    data.employee_number = generateEmployeeNumber(data.department, data.position);
+    const total = await User.count();
+    data.employee_number = generateEmployeeNumber(data.department, data.position, total);
     const user = await User.create(data);
     return user;
   }
