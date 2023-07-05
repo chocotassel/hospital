@@ -18,6 +18,7 @@
   "dependencies": {
     "@koa/multer": "^3.0.2",
     "@types/bcrypt": "^5.0.0",
+    "@types/joi": "^17.2.3",
     "@types/koa": "^2.13.6",
     "@types/koa-mount": "^4.0.2",
     "@types/koa-router": "^7.4.4",
@@ -28,6 +29,7 @@
     "bcrypt": "^5.1.0",
     "dotenv": "^16.3.1",
     "flake-idgen": "^1.4.0",
+    "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.0",
     "koa": "^2.14.2",
     "koa-body": "^6.0.1",

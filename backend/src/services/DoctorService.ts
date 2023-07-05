@@ -1,4 +1,5 @@
 // DoctorService.ts
+import { Op } from 'sequelize';
 import snowflake from '../common/utils/snowflake';
 import Department from '../models/Department';
 import Doctor from '../models/Doctor';
@@ -6,19 +7,33 @@ import Office from '../models/Office';
 
 class DoctorService {
   // 获取所有医生
-  async getDoctors() {
-    return await Doctor.findAll({
-      include: [{
-        model: Office,
-        include: [{
-          model: Department,
-        }]
-      }]
+  async getDoctors(page: number, limit: number, name?: string) {
+    let whereCondition = {};
+    
+    // 如果传入了name，添加模糊查询条件
+    if (name) {
+      whereCondition = {
+        doctor_name: {
+          [Op.like]: '%' + name + '%'
+        }
+      }
+    }
+
+    const doctors = await Department.findAll({
+      where: whereCondition,
+      limit,
+      offset: (page - 1) * limit,
     });
+    
+    const total = await Department.count({
+      where: whereCondition,
+    });
+
+    return { doctors, total };
   }
 
-  // 获取单个医生
-  async getDoctor(id: string) {
+  // 获取单个医生 id
+  async getDoctorById(id: string) {
     return await Doctor.findOne({ 
       where: { 
         doctor_id: BigInt(id).toString() 
@@ -31,6 +46,23 @@ class DoctorService {
       }]
     });
   }
+
+  // // 获取医生 name
+  // async getDoctorByName(name: string) {
+  //   return await Doctor.findAll({
+  //     where: {
+  //       doctor_name: {
+  //         [Op.like]: '%' + name + '%'
+  //       }
+  //     },
+  //     include: [{
+  //       model: Office,
+  //       include: [{
+  //         model: Department,
+  //       }]
+  //     }]
+  //   });
+  // }
 
   // 创建医生
   async createDoctor(data: any) {

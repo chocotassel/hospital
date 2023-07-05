@@ -1,11 +1,33 @@
 // OfficeService.ts
+import { Op } from 'sequelize';
 import snowflake from '../common/utils/snowflake';
 import Office from '../models/Office';
 
 class OfficeService {
   // 获取所有诊室
-  async getOffices() {
-    return await Office.findAll();
+  async getOffices(page: number, limit: number, name?: string) {
+    let whereCondition = {};
+    
+    // 如果传入了name，添加模糊查询条件
+    if (name) {
+      whereCondition = {
+        office_name: {
+          [Op.like]: '%' + name + '%'
+        }
+      }
+    }
+
+    const offices = await Office.findAll({
+      where: whereCondition,
+      limit,
+      offset: (page - 1) * limit,
+    });
+    
+    const total = await Office.count({
+      where: whereCondition,
+    });
+
+    return { offices, total };
   }
 
   // 获取单个诊室

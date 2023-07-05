@@ -6,6 +6,7 @@ import response from '../common/utils/response';
 import { paginate } from '../common/utils/paginate';
 import { Rules } from 'async-validator';
 import DepartmentService from '../services/DepartmentService';
+import Joi, { string } from 'joi';
 
 class DepartmentController {
   // 获取所有科室  
@@ -15,32 +16,29 @@ class DepartmentController {
       return response.fail(ctx, '权限校验失败', [], 403);
     }
 
-    // 数据校验
-    const rules: Rules = {
-      page: {
-        type: 'number',
-        required: false,
-        min: 1,
-      },
-      limit: {
-        type: 'number',
-        required: false,
-        min: 1,
-      },
-    };
+    // 查询参数校验
+    const { _page = '1', _limit = '10', _name = '' } = ctx.query;
 
-    const { data, error } = await validate(ctx, rules);
+    const { page, limit, name } = {
+      page: parseInt(<string>_page, 10),
+      limit: parseInt(<string>_limit, 10),
+      name: <string>_name,
+    } as { page: number, limit: number, name: string };
+
+    const schema = Joi.object({
+      name: Joi.string().required(),
+    });
+
+    const { error } = schema.validate({ name });
+    
     if (error) {
-      return response.fail(ctx, '非法数据', error, 400);
+      return response.fail(ctx, '非法参数', error.details, 400);
     }
 
-    const { page = 1, limit = 10 } = data;
-
+    // 业务逻辑
     try {
-      // 使用服务获取数据
-      const { departments, total } = await DepartmentService.getDepartments(page, limit);
+      const { departments, total } = await DepartmentService.getDepartments(page, limit, name);
       
-      // 发送响应
       return response.success(ctx, paginate(departments, page, total, limit));
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
@@ -48,8 +46,8 @@ class DepartmentController {
   }
 
 
-  // 获取单个科室
-  async getDepartment(ctx: Context) {
+  // 获取单个科室 id
+  async getDepartmentById(ctx: Context) {
     // 权限检查
     if (!can(ctx.state.user.permissions, 'viewDepartment')) {
       return response.fail(ctx, '权限校验失败', [], 403);
@@ -59,13 +57,45 @@ class DepartmentController {
 
     try {
       // 使用服务获取数据
-      const department = await DepartmentService.getDepartment(id);
+      const department = await DepartmentService.getDepartmentById(id);
       // 发送响应
       return response.success(ctx, department);
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
     }
   }
+
+  // // 获取科室 查询
+  // async getDepartment(ctx: Context) {
+  //   // 权限检查
+  //   if (!can(ctx.state.user.permissions, 'viewDepartment')) {
+  //     return response.fail(ctx, '权限校验失败', [], 403);
+  //   }
+
+  //   const { name } = ctx.query; 
+
+  //   // 定义查询参数的验证规则
+  //   const schema = Joi.object({
+  //     name: Joi.string().required(),
+  //   });
+
+  //   // 对查询参数进行验证
+  //   const { error } = schema.validate({ name });
+    
+  //   // 如果验证失败，返回错误信息
+  //   if (error) {
+  //     return response.fail(ctx, '非法参数', error.details, 400);
+  //   }
+
+  //   try {
+  //     // 使用服务获取数据
+  //     const department = await DepartmentService.getDepartmentByName(name as string);
+  //     // 发送响应
+  //     return response.success(ctx, department);
+  //   } catch (err) {
+  //     return response.fail(ctx, '服务器错误', err, 500);
+  //   }
+  // }
 
   // 创建科室
   async createDepartment(ctx: Context) {

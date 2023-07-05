@@ -1,11 +1,33 @@
 // VisitService.ts
+import { Op } from 'sequelize';
 import snowflake from '../common/utils/snowflake';
 import Visit from '../models/Visit';
 
 class VisitService {
   // 获取所有出诊
-  async getVisits() {
-    return await Visit.findAll();
+  async getVisits(page: number, limit: number, name?: string) {
+    let whereCondition = {};
+    
+    // 如果传入了name，添加模糊查询条件
+    if (name) {
+      whereCondition = {
+        visit_name: {
+          [Op.like]: '%' + name + '%'
+        }
+      }
+    }
+
+    const visits = await Visit.findAll({
+      where: whereCondition,
+      limit,
+      offset: (page - 1) * limit,
+    });
+    
+    const total = await Visit.count({
+      where: whereCondition,
+    });
+
+    return { visits, total };
   }
 
   // 获取单个出诊

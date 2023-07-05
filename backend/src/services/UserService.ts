@@ -1,11 +1,33 @@
 import User from '../models/User';
 import Role from '../models/Role';
 import snowflake from '../common/utils/snowflake';
+import { Op } from 'sequelize';
 
 class UserService {
   // 获取所有用户
-  async getUsers() {
-    return await User.findAll();
+  async getUsers(page: number, limit: number, name?: string) {
+    let whereCondition = {};
+    
+    // 如果传入了name，添加模糊查询条件
+    if (name) {
+      whereCondition = {
+        user_name: {
+          [Op.like]: '%' + name + '%'
+        }
+      }
+    }
+
+    const users = await User.findAll({
+      where: whereCondition,
+      limit,
+      offset: (page - 1) * limit,
+    });
+    
+    const total = await User.count({
+      where: whereCondition,
+    });
+
+    return { users, total };
   }
 
   // 查找单个用户

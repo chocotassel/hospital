@@ -1,22 +1,44 @@
 // DepartmentService.ts
+import { Op } from 'sequelize';
 import snowflake from '../common/utils/snowflake';
 import Department from '../models/Department';
 
 class DepartmentService {
   // 获取所有科室
-  async getDepartments(page: number, limit: number) {
+  async getDepartments(page: number, limit: number, name?: string) {
+    let whereCondition = {};
+    
+    // 如果传入了name，添加模糊查询条件
+    if (name) {
+      whereCondition = {
+        departments_name: {
+          [Op.like]: '%' + name + '%'
+        }
+      }
+    }
+
     const departments = await Department.findAll({
+      where: whereCondition,
       limit,
       offset: (page - 1) * limit,
     });
-    const total = await Department.count();
+    
+    const total = await Department.count({
+      where: whereCondition,
+    });
+
     return { departments, total };
   }
 
-  // 获取单个科室
-  async getDepartment(id: string) {
+  // 获取单个科室 id
+  async getDepartmentById(id: string) {
     return await Department.findOne({ where: { department_id: BigInt(id).toString() } });
   }
+
+  // // 获取单个科室 name
+  // async getDepartmentByName(name: string) {
+  //   return await Department.findOne({ where: { department_name: name } });
+  // }
 
   // 创建科室
   async createDepartment(data: any) {

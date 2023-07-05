@@ -5,6 +5,7 @@ import response from '../common/utils/response';
 import { Rules } from 'async-validator';
 import validate from '../common/utils/validate';
 import { can } from '../common/utils/rbac';
+import Joi from 'joi';
 
 class DoctorController {
   // 获取所有医生
@@ -14,16 +15,37 @@ class DoctorController {
       return response.fail(ctx, '权限校验失败', [], 403);
     }
 
+    // 查询参数校验
+    const { _page = '1', _limit = '10', _name = '' } = ctx.query;
+
+    const { page, limit, name } = {
+      page: parseInt(<string>_page, 10),
+      limit: parseInt(<string>_limit, 10),
+      name: <string>_name,
+    } as { page: number, limit: number, name: string };
+
+    const schema = Joi.object({
+      name: Joi.string().required(),
+    });
+
+    const { error } = schema.validate({ name });
+    
+    if (error) {
+      return response.fail(ctx, '非法参数', error.details, 400);
+    }
+
+    // 业务逻辑
     try {
-      const doctors = await DoctorService.getDoctors();
+      const doctors = await DoctorService.getDoctors(page, limit, name);
       return response.success(ctx, doctors);
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
     }
   }
 
-  // 获取某个医生
-  async getDoctor(ctx: Context) {
+
+  // 获取某个医生 id
+  async getDoctorById(ctx: Context) {
     // 权限检查
     if (!can(ctx.state.user.permissions, 'viewDoctor')) {
       return response.fail(ctx, '权限校验失败', [], 403);
@@ -32,12 +54,43 @@ class DoctorController {
     const { id } = ctx.params;
 
     try {
-      const doctor = await DoctorService.getDoctor(id);
+      const doctor = await DoctorService.getDoctorById(id);
       return response.success(ctx, doctor);
     } catch (err) {
       return response.fail(ctx, '服务器错误', err, 500);
     }
   }
+
+  // // 获取医生 name
+  // async getDoctor(ctx: Context) {
+  //   // 权限检查
+  //   if (!can(ctx.state.user.permissions, 'viewDoctor')) {
+  //     return response.fail(ctx, '权限校验失败', [], 403);
+  //   }
+
+  //   const { name } = ctx.query;
+
+  //   // 定义查询参数的验证规则
+  //   const schema = Joi.object({
+  //     name: Joi.string().required(),
+  //   });
+
+  //   // 对查询参数进行验证
+  //   const { error } = schema.validate({ name });
+    
+  //   // 如果验证失败，返回错误信息
+  //   if (error) {
+  //     return response.fail(ctx, '非法参数', error.details, 400);
+  //   }
+
+  //   try {
+  //     const doctor = await DoctorService.getDoctorByName(name as string);
+  //     return response.success(ctx, doctor);
+  //   } catch (err) {
+  //     return response.fail(ctx, '服务器错误', err, 500);
+  //   }
+  // }
+
 
   // 创建医生
   async createDoctor(ctx: Context) {
