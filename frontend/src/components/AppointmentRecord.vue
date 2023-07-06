@@ -73,9 +73,18 @@
           <el-form-item label="出诊时长" :label-width="formLabelWidth">
             <el-input v-model="form.visit_hour" autocomplete="off"></el-input>
           </el-form-item>
+
           <el-form-item label="医生姓名" :label-width="formLabelWidth">
-            <el-input v-model="form.doctor_name" autocomplete="off"></el-input>
+            <el-select v-model="form.doctor_id" placeholder="请选择医生姓名">
+              <el-option
+                v-for="item in doctorsData"
+                :key="item.doctor_id"
+                :label="item.doctor_name"
+                :value="item.doctor_id">
+              </el-option>
+            </el-select>
           </el-form-item>
+
         </el-form>
         <div slot="footer" class="dialog-footer" >
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -119,6 +128,8 @@ import axios from 'axios'
             visit_id: 0,
             status:0,
   
+            doctorsData: [],
+
             //编辑 添加
             dialogFormVisible: false,
             form: {
@@ -292,9 +303,31 @@ import axios from 'axios'
           console.error(error);
         });
     },
+
+    handleQueryAllDoctors() {
+      const token = localStorage.getItem('token');
+      axios.get('/api/doctors', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log("222222:",response.data.data.data); // 输出响应数据，检查其格式是否为数组
+        
+          if (Array.isArray(response.data.data.data)) {
+            this.DoctorsData = response.data.data.data; 
+            console.log("123",this.DoctorsData);
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+
   },
   mounted() {
-    // this.handleQueryAll();
+    this.handleQueryAll();
+    this.handleQueryAllDoctors()
   }
 }
 </script>

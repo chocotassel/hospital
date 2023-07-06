@@ -129,15 +129,15 @@
             <el-input v-model="form.phone_number" autocomplete="off" placeholder="请输入11位"></el-input>
           </el-form-item>
           <el-form-item label="挂号费" :label-width="formLabelWidth">
-            <el-input v-model="form.registration_fee" autocomplete="off" placeholder="请输入XX.XX形式"></el-input>
+            <el-input  v-model.number="form.registration_fee" autocomplete="off" placeholder="请输入XX.XX形式"></el-input>
           </el-form-item>
           <el-form-item label="医生描述" :label-width="formLabelWidth">
             <el-input v-model="form.description" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="所属诊室" :label-width="formLabelWidth">
-            <el-select v-model="form.department_id" placeholder="请选择所属诊室">
+            <el-select v-model="form.office_id" placeholder="请选择所属诊室">
               <el-option
-                v-for="item in departmentsData"
+                v-for="item in officesData"
                 :key="item.office_id"
                 :label="item.office_name"
                 :value="item.office_id">
@@ -183,13 +183,13 @@ export default {
         date_of_birth: "",
         identity_card: "",
         phone_number: "",
-        registration_fee: ""+"元",
+        registration_fee: "",
         description: "",
         office_name: "",
         photoUrl: ""
       }],
       departmentOptions:[],
-      departmentsData: [],
+      officesData: [],
       currentPage: 1,
       pageSize: 10,
       employee_number: 0,
@@ -197,7 +197,8 @@ export default {
 
       // 编辑 添加
       dialogFormVisible: false,
-      form: {},
+      form: {
+      },
       formLabelWidth: '120px',
       index: ''
     };
@@ -298,7 +299,7 @@ export default {
     },
 
     handleEdit(index, row){
-      const doctorId = row.employee_number;
+      const doctorId = row.doctor_id;
       this.editingDoctorId = doctorId;
       this.dialogFormVisible = true;
       this.editingMode =true;
@@ -346,7 +347,7 @@ export default {
       }
     },
 
-    handleQueryAllDepartments() {
+    handleQueryAllOffices() {
       const token = localStorage.getItem('token');
       axios.get('/api/offices', {
         headers: {
@@ -357,7 +358,7 @@ export default {
           console.log("1111:",response.data.data.data); // 输出响应数据，检查其格式是否为数组
         
           if (Array.isArray(response.data.data.data)) {
-            this.departmentsData = response.data.data.data; 
+            this.officesData = response.data.data.data; 
           }
         })
         .catch(error => {
@@ -367,7 +368,7 @@ export default {
   },
   mounted() {
     this.handleQueryAll();
-    this.handleQueryAllDepartments()
+    this.handleQueryAllOffices()
   }
 };
 </script>
