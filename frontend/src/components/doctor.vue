@@ -300,6 +300,7 @@ export default {
 
     handleEdit(index, row){
       const doctorId = row.doctor_id;
+      this.form = row;
       this.editingDoctorId = doctorId;
       this.dialogFormVisible = true;
       this.editingMode =true;
