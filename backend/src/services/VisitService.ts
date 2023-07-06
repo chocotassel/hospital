@@ -3,6 +3,8 @@ import { Op } from 'sequelize';
 import snowflake from '../common/utils/snowflake';
 import Visit from '../models/Visit';
 import Doctor from '../models/Doctor';
+import Office from '../models/Office';
+import Department from '../models/Department';
 
 class VisitService {
   // 获取所有出诊
@@ -62,7 +64,27 @@ class VisitService {
   // 创建出诊
   async createVisit(data: any) {
     data.visit_id = BigInt(snowflake.visit.nextId()).toString();
-    return await Visit.create(data);
+    
+    const createVisit = await Visit.create(data);
+
+    // 重新获取
+    const visitWithDoctor = await Doctor.findOne({
+      where: { visit_id: BigInt(createVisit.visit_id).toString() },
+      include: [{
+        model: Doctor,
+        attributes: ['doctor_name'],
+        include: [{
+          model: Office,
+          attributes: ['office_name'],
+          include: [{
+            model: Department,
+            attributes: ['department_name'],
+          }]
+        }]
+      }]
+    });
+
+    return visitWithDoctor;
   }
 
   // 更新出诊信息
@@ -72,7 +94,23 @@ class VisitService {
       throw new Error('出诊记录不存在');
     }
 
-    return await visit.update(data);
+    const createVisit = await visit.update(data);
+
+    // 重新获取
+    const visitWithDoctor = await Visit.findOne({
+      where: { visit_id: BigInt(createVisit.visit_id).toString() },
+      include: [{
+        model: Doctor,
+        include: [{
+          model: Office,
+          include: [{
+            model: Department
+          }]
+        }]
+      }]
+    });
+
+    return visitWithDoctor;
   }
 
   // 删除出诊

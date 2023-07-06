@@ -57,7 +57,18 @@ class OfficeService {
   // 创建诊室
   async createOffice(data: any) {
     data.office_id = BigInt(snowflake.office.nextId()).toString();
-    return await Office.create(data);
+    const createOffice = await Office.create(data);
+
+    // 重新获取
+    const officeWithDepartment = await Office.findOne({
+      where: { office_id: BigInt(createOffice.office_id).toString() },
+      include: [{
+        model: Department,
+        attributes: ['department_name'],
+      }]
+    });
+
+    return officeWithDepartment;
   }
 
   // 更新诊室信息
@@ -67,7 +78,20 @@ class OfficeService {
       throw new Error('诊室不存在');
     }
 
-    return await office.update(data);
+    // return await office.update(data);
+
+    const updatedOffice = await office.update(data);
+    
+    // 重新获取
+    const officeWithDepartment = await Office.findOne({
+      where: { office_id: BigInt(updatedOffice.office_id).toString() },
+      include: [{
+        model: Department,
+        attributes: ['department_name'],
+      }]
+    });
+
+    return officeWithDepartment;
   }
 
   // 删除诊室

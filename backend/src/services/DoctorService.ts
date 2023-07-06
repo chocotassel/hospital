@@ -96,7 +96,22 @@ class DoctorService {
   // 创建医生
   async createDoctor(data: any) {
     data.doctor_id = BigInt(snowflake.doctor.nextId()).toString();
-    return await Doctor.create(data);
+    const createDoctor = await Doctor.create(data);
+
+    // 重新获取
+    const doctorWithOffice = await Doctor.findOne({
+      where: { doctor_id: BigInt(createDoctor.doctor_id).toString() },
+      include: [{
+        model: Office,
+        attributes: ['office_name'],
+        include: [{
+          model: Department,
+          attributes: ['department_name'],
+        }]
+      }]
+    });
+
+    return doctorWithOffice;
   }
 
   // 更新医生信息
@@ -106,7 +121,22 @@ class DoctorService {
       throw new Error('医生不存在');
     }
 
-    return await doctor.update(data);
+    const updateDoctor = await doctor.update(data);
+
+    // 重新获取
+    const doctorWithOffice = await Doctor.findOne({
+      where: { doctor_id: BigInt(updateDoctor.doctor_id).toString() },
+      include: [{
+        model: Office,
+        attributes: ['office_name'],
+        include: [{
+          model: Department,
+          attributes: ['department_name'],
+        }]
+      }]
+    });
+
+    return doctorWithOffice;
   }
 
   // 更新医生头像
