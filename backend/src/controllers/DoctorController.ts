@@ -151,7 +151,7 @@ class DoctorController {
         min: 0,
       },
       office_id: {
-        type: 'string',
+        type: 'number',
         required: true,
         pattern: /^\d+$/,
       },

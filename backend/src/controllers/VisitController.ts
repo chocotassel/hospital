@@ -61,7 +61,7 @@ class VisitController {
     
     const rules: Rules = {
       doctor_id: {
-        type: 'string',
+        type: 'number',
         required: true,
         pattern: /^\d+$/,
       },
