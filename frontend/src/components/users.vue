@@ -37,7 +37,7 @@
           label="所属角色"
           width="200">
           <template slot-scope="scope">
-            <span style="margin-left: 10px">{{ scope.row.role_name }}</span>
+            <span style="margin-left: 10px">{{ scope.row.role.role_name }}</span>
           </template>
         </el-table-column>
 
