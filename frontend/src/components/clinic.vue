@@ -72,7 +72,14 @@
             <el-input v-model="form.office_description" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="所属科室" :label-width="formLabelWidth">
-            <el-input v-model="form.department_name" autocomplete="off"></el-input>
+            <el-select v-model="form.department_id" placeholder="请选择所属科室">
+              <el-option
+                v-for="item in departmentsData"
+                :key="item.department_id"
+                :label="item.department_name"
+                :value="item.department_id">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" >
@@ -114,6 +121,8 @@ import axios from 'axios'
             pageSize: 10,
             office_id: 0,
             status:0,
+
+            departmentsData: [],
             
             //编辑 添加
             dialogFormVisible: false,
@@ -285,9 +294,29 @@ import axios from 'axios'
         });
     },
 
+    handleQueryAllDepartments() {
+      const token = localStorage.getItem('token');
+      axios.get('/api/departments', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log(response.data.data.data); // 输出响应数据，检查其格式是否为数组
+        
+          if (Array.isArray(response.data.data.data)) {
+            this.departmentsData = response.data.data.data; // 将响应数据中的data属性赋值给tableData
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+
   },
   mounted() {
-    // this.handleQueryAll();
+    this.handleQueryAll();
+    this.handleQueryAllDepartments();
   }
 }
 </script>
