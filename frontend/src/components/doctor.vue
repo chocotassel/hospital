@@ -113,23 +113,23 @@
       <!-- Form -->
       <el-dialog title="医生信息" :visible.sync="dialogFormVisible" >
         <el-form :model="form">
-          <el-form-item label="员工号" :label-width="formLabelWidth">
-            <el-input v-model="form.employee_number" autocomplete="off"></el-input>
-          </el-form-item>
           <el-form-item label="医生姓名" :label-width="formLabelWidth">
             <el-input v-model="form.doctor_name" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="性别" :label-width="formLabelWidth">
-            <el-input v-model="form.gender" autocomplete="off"></el-input>
+            <el-input v-model="form.gender" autocomplete="off" placeholder="请输入男/女"></el-input>
+          </el-form-item>
+          <el-form-item label="出生日期" :label-width="formLabelWidth">
+            <el-input v-model="form.date_of_birth" autocomplete="off" placeholder="请输入XXXX-XX-XX形式"></el-input>
           </el-form-item>
           <el-form-item label="身份证号" :label-width="formLabelWidth">
-            <el-input v-model="form.identity_card" autocomplete="off"></el-input>
+            <el-input v-model="form.identity_card" autocomplete="off" placeholder="请输入18位"></el-input>
           </el-form-item>
           <el-form-item label="电话号码" :label-width="formLabelWidth">
-            <el-input v-model="form.phone_number" autocomplete="off"></el-input>
+            <el-input v-model="form.phone_number" autocomplete="off" placeholder="请输入11位"></el-input>
           </el-form-item>
           <el-form-item label="挂号费" :label-width="formLabelWidth">
-            <el-input v-model="form.registration_fee" autocomplete="off"></el-input>
+            <el-input v-model="form.registration_fee" autocomplete="off" placeholder="请输入XX.XX形式"></el-input>
           </el-form-item>
           <el-form-item label="医生描述" :label-width="formLabelWidth">
             <el-input v-model="form.description" autocomplete="off"></el-input>
@@ -183,7 +183,7 @@ export default {
         date_of_birth: "",
         identity_card: "",
         phone_number: "",
-        registration_fee: "",
+        registration_fee: ""+"元",
         description: "",
         office_name: "",
         photoUrl: ""

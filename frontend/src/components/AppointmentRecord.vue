@@ -68,7 +68,7 @@
       <el-dialog title="出诊信息" :visible.sync="dialogFormVisible" >
         <el-form :model="form">
           <el-form-item label="出诊时长" :label-width="formLabelWidth">
-            <el-input v-model="form.visit_date" autocomplete="off"></el-input>
+            <el-input v-model="form.visit_date" autocomplete="off" placeholder = "请输入XXXX-XX-XX形式"></el-input>
           </el-form-item>
           <el-form-item label="出诊时长" :label-width="formLabelWidth">
             <el-input v-model="form.visit_hour" autocomplete="off"></el-input>
