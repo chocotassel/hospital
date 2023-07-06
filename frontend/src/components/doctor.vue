@@ -253,6 +253,7 @@ export default {
             // const bufferData = doctor.photo.data;
             // const base64Data = btoa(String.fromCharCode(...bufferData));
             // doctor.photoUrl = `data:image/png;base64,${base64Data}`;
+            doctor.photoUrl = `https://localhost/${doctor.avatar}`;
             });           
           }
 
