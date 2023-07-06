@@ -316,8 +316,7 @@ import axios from 'axios'
           console.log("222222:",response.data.data.data); // 输出响应数据，检查其格式是否为数组
         
           if (Array.isArray(response.data.data.data)) {
-            this.DoctorsData = response.data.data.data; 
-            console.log("123",this.DoctorsData);
+            this.doctorsData = response.data.data.data; 
           }
         })
         .catch(error => {
