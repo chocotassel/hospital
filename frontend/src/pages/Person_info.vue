@@ -42,17 +42,20 @@
           <!-- Form -->
           <el-dialog title="个人信息" :visible.sync="dialogVisible">
             <el-form :model="form">
-              <el-form-item label="姓名" :label-width="formLabelWidth">
+              <el-form-item label="-姓名" :label-width="formLabelWidth">
                 <el-input v-model="form.doctor_name" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="手机号" :label-width="formLabelWidth">
+              <el-form-item label="-手机号" :label-width="formLabelWidth">
                 <el-input v-model="form.phone_number" autocomplete="off"></el-input>
               </el-form-item>
               <el-form-item label="医生号" :label-width="formLabelWidth">
                 <el-input v-model="form.doctor_id" autocomplete="off"></el-input>
               </el-form-item>
               <el-form-item label="员工号" :label-width="formLabelWidth">
-                <el-input v-model="form.employee_number_number" autocomplete="off"></el-input>
+                <el-input v-model="form.employee_number" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="-身份证" :label-width="formLabelWidth">
+                <el-input v-model="form.identity_card" autocomplete="off"></el-input>
               </el-form-item>
               <el-form-item label="性别" :label-width="formLabelWidth">
                 <el-input v-model="form.gender" autocomplete="off"></el-input>
@@ -60,8 +63,8 @@
               <el-form-item label="所属诊室" :label-width="formLabelWidth">
                 <el-input v-model="form.phone_number" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="挂号费" :label-width="formLabelWidth">
-                <el-input v-model="form.registration_fee" autocomplete="off"></el-input>
+              <el-form-item label="-挂号费" :label-width="formLabelWidth">
+                <el-input v-model.number="form.registration_fee" autocomplete="off"></el-input>
               </el-form-item>
               <el-form-item label="自我描述" :label-width="formLabelWidth">
                 <el-input v-model="form.description" autocomplete="off"></el-input>
@@ -182,7 +185,7 @@ export default {
     },
 
     handleEdit(info){
-      console.log(info.doctor_id);
+      this.form = info;
       const doctorId = info.doctor_id;
       this.editingDoctorId = doctorId;
       this.dialogVisible = true;
