@@ -81,9 +81,8 @@ class UserController {
         type: 'string',
       },
       department_id: {
-        type: 'string',
+        type: 'number',
         required: true,
-        pattern: /^\d+$/,
       },
       position: {
         type: 'string',
@@ -99,9 +98,9 @@ class UserController {
     try {
       const user = await UserService.createUser(data);
       
-      if (data.role_id) {
-        await PermissionService.assignRole(user.user_id, data.role_id);
-      }
+      // if (data.role_id) {
+      //   await PermissionService.assignRole(user.user_id, data.role_id);
+      // }
 
       return response.success(ctx, user);
     } catch (err) {

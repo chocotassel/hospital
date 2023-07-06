@@ -37,7 +37,7 @@
           label="所属角色"
           width="200">
           <template slot-scope="scope">
-            <span style="margin-left: 10px">{{ scope.row.role.role_name }}</span>
+            <span style="margin-left: 10px">{{ scope.row.role ? scope.row.role.role_name : '' }}</span>
           </template>
         </el-table-column>
 
@@ -68,8 +68,11 @@
           <el-form-item label="用户名" :label-width="formLabelWidth">
             <el-input v-model="form.username" autocomplete="off"></el-input>
           </el-form-item>
+          <el-form-item label="密码" :label-width="formLabelWidth"  v-if="!editingMode" >
+            <el-input v-model="form.password" autocomplete="off"></el-input>
+          </el-form-item>
           <el-form-item label="所属角色" :label-width="formLabelWidth">
-            <el-select v-model="form.role_name" placeholder="请选择角色">
+            <el-select v-model="form.role_id" placeholder="请选择角色">
               <el-option
                 v-for="item in rolesData"
                 :key="item.role_id"
@@ -169,6 +172,7 @@ import axios from 'axios'
               }
             ],
             rolesData: [],
+            editingMode: true
         };
   },
   created() {
@@ -272,6 +276,7 @@ import axios from 'axios'
           }
         })
           .then(response => {
+            console.log('role',response.data.data);
             this.rolesData = response.data.data;
           })
           .catch(error => {
@@ -302,6 +307,7 @@ import axios from 'axios'
       const token = localStorage.getItem('token');
     
       if (this.editingMode === true) {
+        console.log('edit', this.form);
         // 编辑确认
         axios.put(`/api/users/${this.editingUserId}`, this.form, {
           headers: {
