@@ -228,6 +228,7 @@ import axios from 'axios'
     handleEdit(index, row){
       // 在这里可以访问到对应的科室号
       const officeId = row.office_id;
+      this.form = row;
       this.editingofficeId = officeId;
       this.dialogFormVisible = true;
       this.editingMode =true;
