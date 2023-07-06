@@ -130,6 +130,7 @@ export default {
       })
         .then(response => {
           console.log("单个:", response.data.data); // 输出响应数据，检查其格式是否符合预期
+          this.imageUrl = 'https://localhost/' + response.data.data.avatar
         
           if (response.data.data) {
             const doctorData = response.data.data;
