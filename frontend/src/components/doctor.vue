@@ -299,6 +299,7 @@ export default {
 
     handleEdit(index, row){
       const doctorId = row.employee_number;
+      this.form = row;
       this.editingDoctorId = doctorId;
       this.dialogFormVisible = true;
       this.editingMode =true;

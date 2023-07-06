@@ -284,6 +284,7 @@ import axios from 'axios'
       handleEdit(index, row){
       // 在这里可以访问到对应的科室号
       const userId = row.user_id;
+      this.form = row;
       this.editingUserId = userId;
       this.dialogFormVisible = true;
       this.editingMode =true;

@@ -203,6 +203,7 @@ import axios from 'axios'
     handleEdit(index, row){
       // 在这里可以访问到对应的科室号
       const departmentId = row.department_id;
+      this.form = row;
       this.editingDepartmentId = departmentId;
       this.dialogFormVisible = true;
       this.editingMode =true;
