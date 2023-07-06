@@ -7,6 +7,8 @@ import Office from '../models/Office';
 import path from 'path';
 import { sequelize } from '../db';
 import Visit from '../models/Visit';
+import { generateEmployeeNumber } from '../common/utils/employeeNumber';
+import User from '../models/User';
 
 interface Condition {
   [key: string]: any; // 索引签名
@@ -96,6 +98,15 @@ class DoctorService {
   // 创建医生
   async createDoctor(data: any) {
     data.doctor_id = BigInt(snowflake.doctor.nextId()).toString();
+    const total =  await User.count();
+    const office = await Office.findOne({ where: { office_id: data.office_id }})
+
+    if (!office) {
+      throw new Error('诊室不存在');
+    } 
+
+    data.employee_number = generateEmployeeNumber(office.department_id, '01', total)
+    
     const createDoctor = await Doctor.create(data);
 
     // 重新获取
