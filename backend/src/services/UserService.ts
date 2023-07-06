@@ -3,6 +3,9 @@ import Role from '../models/Role';
 import snowflake from '../common/utils/snowflake';
 import { Op } from 'sequelize';
 import { generateEmployeeNumber } from '../common/utils/employeeNumber';
+import Permission from '../models/Permission';
+import RolePermission from '../models/RolePermission';
+import bcrypt from 'bcrypt';
 
 interface Condition {
   [key: string]: any; // 索引签名
@@ -48,8 +51,10 @@ class UserService {
   async createUser(data: any) {
     data.user_id = BigInt(snowflake.user.nextId()).toString();
     const total = await User.count();
-    data.employee_number = generateEmployeeNumber(data.department, data.position, total);
+    data.employee_number = generateEmployeeNumber(data.department_id, data.position, total);
+    data.password = bcrypt.hashSync(data.password, 10)
     const user = await User.create(data);
+
     return user;
   }
 
