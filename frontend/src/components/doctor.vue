@@ -122,9 +122,6 @@
           <el-form-item label="性别" :label-width="formLabelWidth">
             <el-input v-model="form.gender" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="出生日期" :label-width="formLabelWidth">
-            <el-input v-model="form.date_of_birth" autocomplete="off"></el-input>
-          </el-form-item>
           <el-form-item label="身份证号" :label-width="formLabelWidth">
             <el-input v-model="form.identity_card" autocomplete="off"></el-input>
           </el-form-item>
@@ -138,7 +135,14 @@
             <el-input v-model="form.description" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="所属诊室" :label-width="formLabelWidth">
-            <el-input v-model="form.office_name" autocomplete="off"></el-input>
+            <el-select v-model="form.department_id" placeholder="请选择所属诊室">
+              <el-option
+                v-for="item in departmentsData"
+                :key="item.office_id"
+                :label="item.office_name"
+                :value="item.office_id">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" >
@@ -185,6 +189,7 @@ export default {
         photoUrl: ""
       }],
       departmentOptions:[],
+      departmentsData: [],
       currentPage: 1,
       pageSize: 10,
       employee_number: 0,
@@ -249,11 +254,6 @@ export default {
             // 遍历每个医生对象，将其对应的 office_name 存储到 doctor 对象中
             this.tableData.forEach(doctor => {
               doctor.office_name = doctor.office.office_name;
-            // 将 Buffer 数据转换为图片 URL
-            // const bufferData = doctor.photo.data;
-            // const base64Data = btoa(String.fromCharCode(...bufferData));
-            // doctor.photoUrl = `data:image/png;base64,${base64Data}`;
-            doctor.photoUrl = `https://localhost/${doctor.avatar}`;
             });           
           }
 
@@ -288,10 +288,7 @@ export default {
             this.tableData = response.data.data.data; 
             this.tableData.forEach(doctor => {
               doctor.office_name = doctor.office.office_name;
-            // 将 Buffer 数据转换为图片 URL
-            // const bufferData = doctor.photo.data;
-            // const base64Data = btoa(String.fromCharCode(...bufferData));
-            // doctor.photoUrl = `data:image/png;base64,${base64Data}`;
+
             });  
           }
         })
@@ -348,9 +345,29 @@ export default {
           });
       }
     },
+
+    handleQueryAllDepartments() {
+      const token = localStorage.getItem('token');
+      axios.get('/api/offices', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          console.log("1111:",response.data.data.data); // 输出响应数据，检查其格式是否为数组
+        
+          if (Array.isArray(response.data.data.data)) {
+            this.departmentsData = response.data.data.data; 
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
   },
   mounted() {
-    // this.handleQueryAll();
+    this.handleQueryAll();
+    this.handleQueryAllDepartments()
   }
 };
 </script>

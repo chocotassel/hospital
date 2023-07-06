@@ -48,6 +48,24 @@
               <el-form-item label="手机号" :label-width="formLabelWidth">
                 <el-input v-model="form.phone_number" autocomplete="off"></el-input>
               </el-form-item>
+              <el-form-item label="医生号" :label-width="formLabelWidth">
+                <el-input v-model="form.doctor_id" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="员工号" :label-width="formLabelWidth">
+                <el-input v-model="form.employee_number_number" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="性别" :label-width="formLabelWidth">
+                <el-input v-model="form.gender" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="所属诊室" :label-width="formLabelWidth">
+                <el-input v-model="form.phone_number" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="挂号费" :label-width="formLabelWidth">
+                <el-input v-model="form.registration_fee" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="自我描述" :label-width="formLabelWidth">
+                <el-input v-model="form.description" autocomplete="off"></el-input>
+              </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogVisible = false">取消</el-button>
@@ -97,8 +115,14 @@ export default {
       // 修改信息
       dialogVisible: false,
       form: {
+        employee_number: '',
         doctor_name: '',
         phone_number: '',
+        gender: '',
+        office_name: '',
+        doctor_id:'',
+        registration_fee: '',
+        description: '',
       },
       formLabelWidth: '72px',
       radio: '1',
@@ -288,6 +312,10 @@ export default {
     margin-top: 3px;
     margin-left: 10px;
   }
+
+::v-deep .el-dialog{
+  height: 580px;
+}
 
   .site{
     display: flex;
