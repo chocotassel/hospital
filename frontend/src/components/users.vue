@@ -126,7 +126,6 @@ import axios from 'axios'
         return {
             formInline: {
               username: "",
-              role_name: "",
             },
             value: "",
             //列表
@@ -304,7 +303,7 @@ import axios from 'axios'
     
       if (this.editingMode === true) {
         // 编辑确认
-        axios.put(`/api/departments/${this.editingUserId}`, this.form, {
+        axios.put(`/api/users/${this.editingUserId}`, this.form, {
           headers: {
             Authorization: 'Bearer ' + token
           }
@@ -318,7 +317,7 @@ import axios from 'axios'
           });
       } else {
         // 添加确认
-        axios.post('/api/departments', this.form, {
+        axios.post('/api/users', this.form, {
           headers: {
             Authorization: 'Bearer ' + token
           }

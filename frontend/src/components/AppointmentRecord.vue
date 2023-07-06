@@ -272,6 +272,7 @@ import axios from 'axios'
           });
       } else {
         // 添加确认
+        this.form.doctor_id = parseInt(this.form.doctor_id)
         axios.post('/api/visits', this.form, {
           headers: {
             Authorization: 'Bearer ' + token
